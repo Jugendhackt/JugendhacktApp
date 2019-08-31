@@ -32,7 +32,7 @@ body {
   top: 53px;
   bottom: 0;
   overflow: auto;
-  background: url("https://jugendhackt.org/wp-content/themes/jugend-hackt/library/images/background.png") repeat;
+  background: url("/assets/images/default-background.png") repeat;
 }
 
 .navigation .nav {
@@ -48,8 +48,9 @@ body {
 }
 
 .navigation .nav .icon {
-  height: 80px;
-  width: 80px;
+  height: 60px;
+  margin: 10px;
+  width: 60px;
 }
 
 @media screen and (max-width: 900px) {
@@ -76,7 +77,7 @@ body {
   padding: 12px 20px 8px 20px;
   width: 100%;
   font-size: 1em;
-  display: inline-block;
+  display: inline;
   text-decoration: none;
   text-transform: uppercase;
   cursor: pointer;
@@ -87,4 +88,9 @@ body {
 .button.primary {
   color: white;
   background-color: #f86d14;
+}
+
+.button.secondary {
+  color: white;
+  background-color: #808080;
 }
