@@ -6,6 +6,7 @@ const dbController = require('./dbController');
 const api = require("./api.js");
 const user = require('./userHandler');
 const lostItems = require('./lostItems');
+const packingList = require('./packingList');
 
 const app = express();
 const PORT = process.env.PORT || 80;
@@ -25,5 +26,6 @@ dbController.init();
 app.use("/api", api);
 app.use('/user', user);
 app.use('/lostitems', lostItems);
+app.use('/packinglist', packingList);
 
 app.listen(PORT, () => console.log(`Listening on http://localhost:${PORT}`));
