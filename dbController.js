@@ -1,5 +1,6 @@
 const mariadb = require('mariadb');
 const bCrypt = require('bcrypt');
+const fs = require('fs');
 
 const userTable = `
 	CREATE TABLE IF NOT EXISTS users (
@@ -103,21 +104,33 @@ const self = module.exports = {
 		self.con.getConnection().then(con => {
 			const img = req.file;
 			const type = img.split('.').reverse()[0];
+			if (['jpg', 'jpeg', 'png', 'webm'].contains(type)) {
 			con.query("SELECT id FROM lost_items ORDER BY id DESC")
 			.then(res => {
 				let name;
 				if (res) name = `${res[0].id + 1}.${type}`;
 				else name = `0.${type}`;
-				con.query("INSERT INTO lost_items (location, what, img_name) VALUE (?,?,?)", [req.body.location, req.body.what]);
+				con.query("INSERT INTO lost_items (location, what, img_name) VALUE (?,?,?)", [req.body.location, req.body.what])
+				.then(() => fs.rename(req.file.path, `./uploads/lostItems/${name}`))
+				.catch(err => {
+					console.error(err);
+					res.json({success: false, message: "An error occured!"})
+					con.end();
+				});
 			})
 			.catch(err => {
 				console.log(err);
 				resp.json({success: false, message: "An error occured!"});
 				con.end();
 			})
+			} else {
+				console.error(err);
+				resp.json({success: false, message: "Only .png, .jpg, .jpeg, .webm files are allowed!"});
+				con.end();
+			}
 		}).catch(err => {
 			console.error(err);
-			resp.json({success: false, message: "An error occured!"})
+			resp.json({success: false, message: "An error occured!"});
 			con.end();
 		})
 	},
