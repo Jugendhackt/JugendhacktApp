@@ -1,6 +1,7 @@
 const express = require('express');
 const hackdash = require("./data/hackdash.js");
 const github = require("./data/github.js");
+const jh = require("./data/website.js");
 
 const api = express.Router();
 const apiUrls = {
@@ -10,6 +11,8 @@ const apiUrls = {
 	"Zulip": "/api/Zulip"
 }
 
+api.use("/events",
+	async (_, res) => res.send(await jh.getEvents()));
 api.use("/github",
 	async (_, res) => res.send(await github.get()));
 api.use("/hackdash/list",
