@@ -3,6 +3,9 @@ const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
 
 module.exports.get = async () => {
+	console.log = () => {};
+	console.warn = () => {};
+	console.error = () => {};
 	const html = await request.start("https://twitter.com/jugendhackt", false)
 	const dom = new JSDOM(html);
 	const tweets = dom.window.document.querySelectorAll("#stream-items-id li");
