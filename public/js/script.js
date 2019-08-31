@@ -1,9 +1,10 @@
+if ('serviceWorker' in navigator) {
+  console.log("Service worker support");
+  navigator.serviceWorker.register("/js/service-worker.js");
+} else console.warn("No service worker support!");
+
+
 httpVueLoader.register(Vue, 'js/components/navigation.vue');
-
-if ("serviceWorker" in navigator) {
-	navigator.serviceWorker.register("js/service-worker.js");
-}
-
 
 const routes = [
   { path: "/", component: httpVueLoader('views/events.vue')},

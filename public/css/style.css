@@ -41,6 +41,7 @@ body {
   font-family: sans-serif;
   background: #fff;
   margin-top: 0;
+  box-shadow: 0 0 2px #cecece;
 }
 
 .btn-back {
@@ -48,9 +49,9 @@ body {
 }
 
 .navigation .nav .icon {
-  height: 60px;
+  height: 32px;
   margin: 10px;
-  width: 60px;
+  width: 32px;
 }
 
 @media screen and (max-width: 900px) {
