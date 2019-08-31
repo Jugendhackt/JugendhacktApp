@@ -7,7 +7,7 @@ const userTable = `
 		full_name VARCHAR(100) NOT NULL,
 		password VARCHAR(64) NOT NULL,
 		email VARCHAR(255) UNIQUE NOT NULL,
-		birthday DATETIME NOT NULL,
+		birthday INT NOT NULL,
 		PRIMARY KEY(id)
 	)
 `
@@ -40,6 +40,7 @@ const self = module.exports = {
 		self.con.getConnection().then(con => {
 			bCrypt.hash(req.body.password, 12, (err, password) => {
 				if (err) throw err;
+				const username = req.body.username ? req.body.username.length <= 100 : req.body.username.slice(0, 101);
 				con.query("INSERT INTO users (full_name, password, email, birthday) VALUE (?,?,?,?)",
 					[req.body.fullName, password, req.body.email, req.body.birthday]
 				)
