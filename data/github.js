@@ -1,20 +1,5 @@
-const https = require("https");
+const request = require("./request.js");
 
-module.exports.get = (callback) => {
-	let output = "";
-	const req = https.request(
-		{
-			host: "api.github.com",
-			port: 443,
-			headers: {
-				"User-Agent": "JugendHackt"
-			},
-			path: "/orgs/JugendHackt/repos"
-		}, res => {
-			res.on("data", chunk => output += chunk);
-			res.on("end", () => callback(JSON.parse(output)));
-		});
-
-	req.on("error", err => callback(err));
-	req.end();
+module.exports.get = async () => {
+	return await request.start("https://api.github.com/orgs/JugendHackt/repos")
 }

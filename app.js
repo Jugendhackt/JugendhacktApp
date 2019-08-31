@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const github = require("./data/github.js");
+const hackdash = require("./data/hackdash.js");
 
 const app = express();
 const PORT = process.env.PORT || 80;
@@ -17,7 +18,8 @@ const apiUrls = {
 	"Zulip": "/api/Zulip"
 }
 
-api.use("/github", (_, res) => github.get(data => res.send(data)));
+api.use("/github", async (_, res) => res.send(await github.get()));
+api.use("/hackdash/list", async (_, res) => res.send(await hackdash.getBoards()));
 api.use("*", (_, res) => res.send(apiUrls));
 app.use("/api", api);
 
