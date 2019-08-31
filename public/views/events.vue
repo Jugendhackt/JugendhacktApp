@@ -1,5 +1,6 @@
 <template>
   <div>
+    <div class="card" :class="{ hide: !loading}">Loading</div>
     <div v-for="event in events" class="card">
       <img class="cover" :src="event.img">
       <p>{{ event.date }}</p>
@@ -14,15 +15,18 @@
 module.exports = {
   data: function(){
     return {
-      events: []
+      events: [],
+      loading: false
     }
   },
   methods: {
     fetch(){
+      this.loading = true;
       let xhr = new XMLHttpRequest();
       xhr.addEventListener("load", () => {
         console.log(xhr.response);
         this.events = xhr.response;
+        this.loading = false;
       });
       xhr.open("GET", "/api/events");
       xhr.responseType = "json";
@@ -43,5 +47,13 @@ width: 100%;
 
 .card {
 padding-bottom: 16px;
+}
+
+.card.hide {
+transition: height 1000ms linear, padding-top 1000ms linear;
+height: 0;
+overflow: hidden;
+padding: 0;
+margin: 0;
 }
 </style>
