@@ -23,6 +23,7 @@ body {
   left: 0;
   right: 0;
   top: 0;
+  box-shadow: 0 0 4px #cecece;
 }
 
 #app {
@@ -41,7 +42,7 @@ body {
   font-family: sans-serif;
   background: #fff;
   margin-top: 0;
-  box-shadow: 0 0 2px #cecece;
+  box-shadow: 0 0 4px #cecece;
 }
 
 .btn-back {
@@ -54,10 +55,14 @@ body {
   width: 32px;
 }
 
+.router-link-exact-active svg g {
+  fill: #eee;
+}
+
 @media screen and (max-width: 900px) {
   #app {
     top: 53px;
-    bottom: 94px;
+    bottom: 66px;
     background-size: 100%;
   }
 

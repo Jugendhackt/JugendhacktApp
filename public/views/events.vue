@@ -24,7 +24,6 @@ module.exports = {
       this.loading = true;
       let xhr = new XMLHttpRequest();
       xhr.addEventListener("load", () => {
-        console.log(xhr.response);
         this.events = xhr.response;
         this.loading = false;
       });
@@ -38,6 +37,7 @@ module.exports = {
   }
 }
 </script>
+
 <style scoped>
 .cover {
 max-width: 1024px;
