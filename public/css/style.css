@@ -47,14 +47,23 @@ body {
   display: none;
 }
 
+.navigation .nav a {
+  width: 56px;
+  height: 56px;
+  text-align: center;
+}
+
 .navigation .nav .icon {
   height: 32px;
   margin: 10px;
   width: 32px;
+  height: 32px;
+  cursor: pointer;
 }
 
-.router-link-exact-active svg g {
-  fill: #eee;
+.router-link-exact-active {
+  background-color: #eee;
+  border-radius: 50%;
 }
 
 @media screen and (max-width: 900px) {
