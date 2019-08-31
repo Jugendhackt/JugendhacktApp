@@ -30,9 +30,10 @@ module.exports = {
 .board-navigation {
   position: fixed;
   height: 32px;
-  bottom: 32px;
+  bottom: 66px;
   left: 0;
   right: 0;
   overflow: scroll-y;
+  background: #fff; 
 }
 </style>

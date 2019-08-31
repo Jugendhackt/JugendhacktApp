@@ -69,8 +69,9 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    flex-direction: row;
     display: inline-flex;
+    flex-direction: row;
+    justify-content: center;
     max-width: 100vw;
   }
 }
