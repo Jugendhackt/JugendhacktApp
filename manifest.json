@@ -1,0 +1,9 @@
+{
+	"name": "JugendHackt App",
+	"short_name": "JH-App",
+	"description": "Shows jugendhackt information",
+	"start_url": "/start",
+	"display": "fullscreen",
+	"theme_color": "#00a5dc",
+	"background_color": "#ffffff"
+}
