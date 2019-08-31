@@ -1,5 +1,5 @@
-var name = 'Jugendhackt App',
-    filesToCache = [
+const name = 'Jugendhackt';
+const filesToCache = [
       '/index.html',
       '/css/style.css',
       '/js/script.js',
@@ -17,7 +17,7 @@ var name = 'Jugendhackt App',
       '/api/events/',
       '/api/twitter/',
       '/api/hackdash/'
-    ];
+];
 
 self.addEventListener('install', event => {
   console.log("installing");
@@ -41,7 +41,6 @@ self.addEventListener('activate', event => {
    })
  );
 });
-
 
 self.addEventListener('fetch', event => {
   console.log("fetching");
