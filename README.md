@@ -2,7 +2,7 @@
 
 We love Jugendhackt!
 Therefore we want to contribute to it with this App - The Jugendhackt App!
-The App will have plenty of features for Jugendhackt - even some who doesn't exist in any other form yet!
+The App will have plenty of features for Jugendhackt - even some which doesn't exist in any other form yet!
 
 ## Features
 - Lost and Found, forgot something or lost something at Jugendhackt? Ask for it here!
@@ -12,10 +12,10 @@ The App will have plenty of features for Jugendhackt - even some who doesn't exi
 - Digital Badge Collection - The stickers are great, but also stuck on your old notebook - Let's make the badge collection digital as well!
 
 ## Contributors
-- AuspiciousLynx
-- LarsVomMars
-- marvinborner
-- Mondanzo
+- @AuspiciousLynx
+- @LarsVomMars
+- @marvinborner
+- @Mondanzo
 
 ## Credits
 Icons and Backgrounds from [https://jugendhackt.org](https://jugendhackt.org)
