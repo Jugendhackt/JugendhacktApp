@@ -2,8 +2,16 @@
 
 body {
   margin: 0;
-  background: url("https://jugendhackt.org/wp-content/themes/jugend-hackt/library/images/background.png") repeat;
-  height: 1000px;
+}
+
+.card {
+  font-family: sans-serif;
+  margin: 8px;
+  padding: 12px;
+  background: #fff;
+  margin: 5px;
+  box-shadow: #cecece 0 0 4px;
+  margin-bottom: 24px;
 }
 
 .navigation .branding {
@@ -14,6 +22,17 @@ body {
   position: fixed;
   left: 0;
   right: 0;
+  top: 0;
+}
+
+#app {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 53px;
+  bottom: 0;
+  overflow: auto;
+  background: url("https://jugendhackt.org/wp-content/themes/jugend-hackt/library/images/background.png") repeat;
 }
 
 .navigation .nav {
@@ -34,7 +53,9 @@ body {
 }
 
 @media screen and (max-width: 900px) {
-  body {
+  #app {
+    top: 53px;
+    bottom: 94px;
     background-size: 100%;
   }
 
@@ -47,4 +68,23 @@ body {
     display: inline-flex;
     max-width: 100vw;
   }
+}
+
+.button {
+  font-family: sans-serif;
+  border: none;
+  padding: 12px 20px 8px 20px;
+  width: 100%;
+  font-size: 1em;
+  display: inline-block;
+  text-decoration: none;
+  text-transform: uppercase;
+  cursor: pointer;
+  margin-bottom: 20px;
+  white-space: nowrap;
+}
+
+.button.primary {
+  color: white;
+  background-color: #f86d14;
 }
