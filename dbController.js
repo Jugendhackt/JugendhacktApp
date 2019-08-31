@@ -15,9 +15,9 @@ const userTable = `
 const self = module.exports = {
 	con: mariadb.createPool({
 		host: process.env.DBHost || 'localhost',
-		user: process.env.DBUser || 'jha',
-		password: process.env.DBPassword || 'jha',
-		database: process.env.DBName || 'jha'
+		user: process.env.DBUser || 'root',
+		password: process.env.DBPassword || 'root',
+		database: process.env.DBName || 'JHA'
 	}),
 
 	init: () => {
