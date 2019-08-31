@@ -8,7 +8,8 @@ httpVueLoader.register(Vue, 'js/components/navigation.vue');
 
 const routes = [
   { path: "/", component: httpVueLoader('views/events.vue')},
-  { path: "/login", component: httpVueLoader('views/login.vue')}
+  { path: "/login", component: httpVueLoader('views/login.vue')},
+  { path: "/hackdash", component: httpVueLoader('views/hackdash.vue')}
 ]
 
 const router = new VueRouter({

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="card" :class="{ hide: !loading}">Loading</div>
+    <div class="card" :class="{ hide: !loading}">Loading <img src="/images/icons/badges/SuperAlpaka.png" alt="..."></div>
     <div v-for="event in events" class="card">
       <img class="cover" :src="event.img">
       <p>{{ event.date }}</p>
