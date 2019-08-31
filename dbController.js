@@ -15,7 +15,7 @@ const userTable = `
 const lostItemsTable = `
 	CREATE TABLE IF NOT EXISTS lost_items (
 		id INT NOT NULL AUTO_INCREMENT,
-		where VARCHAR(255) NOT NULL,
+		location VARCHAR(255) NOT NULL,
 		what VARCHAR(255) NOT NULL,
 		img_name VARCHAR(20) NOT NULL,
 		PRIMARY KEY(id)
@@ -108,7 +108,7 @@ const self = module.exports = {
 				let name;
 				if (res) name = `${res[0].id + 1}.${type}`;
 				else name = `0.${type}`;
-				con.query("INSERT INTO lost_items (where, what, img_name) VALUE (?,?,?)", [req.body.where, req.body.what]);
+				con.query("INSERT INTO lost_items (location, what, img_name) VALUE (?,?,?)", [req.body.location, req.body.what]);
 			})
 			.catch(err => {
 				console.log(err);
@@ -142,7 +142,7 @@ const self = module.exports = {
 	delLostItem: (req, res) => {
 		self.con.getConnection().then(con => {
 			con.query("DELETE FROM lost_items WHERE id = ?", [req.body.id])
-			.then(() => resp.json({success: true}));
+			.then(() => resp.json({success: true}))
 			.catch(err => {
 				console.error(err);
 				resp.json({success: false, message: "An error occured!"})
