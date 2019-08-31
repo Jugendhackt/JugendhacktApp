@@ -1,0 +1,6 @@
+PORT=8080
+
+DBHost=localhost
+DBUser=admin
+DBPassword=admin
+DBName=jhapp
