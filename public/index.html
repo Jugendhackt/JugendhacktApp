@@ -4,20 +4,16 @@
 		<title>JugendHackt App</title>
 		<link rel="manifest" href="jugendhackt.webmanifest">
 		<link rel="stylesheet" href="css/style.css">
+
+		<script src="js/vue.js"></script>
+		<script src="js/vue-router.js"></script>
+		<script src="https://unpkg.com/http-vue-loader"></script>
 	</head>
 
 	<body>
-		<nav class="navigation">
-			<span class="mobile-only"></span>
-			<div class="branding">
-				Jugendhackt App
-			</div>
-			<div class="nav hide" id="navigation">
-				<span class="btn-back" onclick="closemenu()">=></span>
-				<br>
-				<span class="item"><img src="assets/icons/jh-event.jpg" alt="Events"></span>
-			</div>
-		</nav>
+		<div id="app">
+			<navigation></navigation>
+		</div>
 		<script src="js/script.js"></script>
 	</body>
 </html>
