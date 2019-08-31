@@ -17,4 +17,7 @@ The App will have plenty of features for Jugendhackt - even some who doesn't exi
 - marvinborner
 - Mondanzo
 
+## Credits
+Icons and Backgrounds from [https://jugendhackt.org](https://jugendhackt.org)
+
 [View this Project on HackDash](https://hackdash.org/projects/5d6a4242c587e70bcdacccc6)
