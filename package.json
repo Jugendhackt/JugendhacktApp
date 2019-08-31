@@ -16,6 +16,7 @@
     "express-session": "^1.16.2",
     "jsdom": "^15.1.1",
     "mariadb": "^2.1.0",
-    "node-fetch": "^2.6.0"
+    "node-fetch": "^2.6.0",
+    "zulip-js": "^2.0.6"
   }
 }

@@ -3,6 +3,7 @@ const hackdash = require("./data/hackdash.js");
 const github = require("./data/github.js");
 const jh = require("./data/website.js");
 const twitter = require("./data/twitter.js");
+const zulip = require("./data/zulip.js");
 
 const api = express.Router();
 const apiUrls = {
@@ -24,6 +25,8 @@ api.get("/hackdash",
 	async (_, res) => res.send(await hackdash.listBoards()));
 api.get("/twitter",
 	async (_, res) => res.send(await twitter.get()));
+api.get("/zulip",
+	async (_, res) => res.send(await zulip.get()));
 api.get("*", (_, res) => res.send(apiUrls));
 
 module.exports = api;
