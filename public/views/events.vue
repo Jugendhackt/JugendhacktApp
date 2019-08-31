@@ -4,8 +4,8 @@
       <img class="cover" :src="event.img">
       <p>{{ event.date }}</p>
       <p>{{ event.location }}</p>
-      <a class="button btn-primary" v-if="{ event.anmelden !== 'expired'}" :href="event.anmelden">Anmelden</a>
-      <a :href="event.information" class="button btn-secondary">Mehr Infos</a>
+      <a class="button primary" target="_blank" v-if="event.anmelden !== 'expired'" :href="event.anmelden">Anmelden</a>
+      <a :href="event.information" target="_blank" class="button secondary">Mehr Infos</a>
     </div>
   </div>
 </template>
@@ -34,10 +34,14 @@ module.exports = {
   }
 }
 </script>
-<style>
+<style scoped>
 .cover {
 max-width: 1024px;
 max-height: 614px;
 width: 100%;
+}
+
+.card {
+padding-bottom: 16px;
 }
 </style>

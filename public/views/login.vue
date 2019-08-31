@@ -82,7 +82,7 @@ module.exports = {
 	}
 }
 </script>
-<style>
+<style scoped>
 
 	.name {
 		font-size: 1.4em;
@@ -102,5 +102,9 @@ module.exports = {
 		width: 100%;
 		margin-bottom: 25px;
 		margin-top: 5px;
+	}
+
+	.button {
+		display: inline-block;
 	}
 </style>
