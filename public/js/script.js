@@ -1,6 +1,6 @@
 if ('serviceWorker' in navigator) {
   console.log("Service worker support!");
-  navigator.serviceWorker.register("/js/service-worker.js", { scope: "/" } );
+  navigator.serviceWorker.register("/service-worker.js", { scope: "/" } );
 } else console.warn("No service worker support!");
 
 

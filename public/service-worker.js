@@ -9,7 +9,7 @@ const filesToCache = [
       '/views/events.vue',
       '/views/login.vue',
       '/js/components/navigation.vue',
-      '/js/service-worker.js',
+      '/service-worker.js',
       '/api/',
       '/api/events',
       '/api/twitter',
