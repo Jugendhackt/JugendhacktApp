@@ -1,5 +1,6 @@
 const name = 'Jugendhackt';
 const filesToCache = [
+      '/',
       '/index.html',
       '/css/style.css',
       '/js/script.js',
@@ -16,7 +17,10 @@ const filesToCache = [
       '/api/hackdash',
       '/api/events/',
       '/api/twitter/',
-      '/api/hackdash/'
+      '/api/hackdash/',
+      '/assets/icons/calendar.svg',
+      '/assets/icons/key.svg',
+      '/assets/icons/clipboard.svg'
 ];
 
 self.addEventListener('install', event => {
