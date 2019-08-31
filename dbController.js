@@ -23,6 +23,14 @@ const lostItemsTable = `
 	)
 `;
 
+const packingListTable = `
+	CREATE TABLE IF NOT EXISTS packing_list (
+		id INT NOT NULL AUTO_INCREMENT,
+		item VARCHAR(100) NOT NULL,
+		PRIMARY KEY(id)
+	)
+`;
+
 const self = module.exports = {
 	con: mariadb.createPool({
 		host: process.env.DBHost || 'localhost',
@@ -44,6 +52,11 @@ const self = module.exports = {
 				console.error(err);
 				con.end();
 			});
+			con.query(packingListTable)
+			.catch(err => {
+				console.error(err);
+				con.end();
+			})
 			con.end()
 		}).catch(err => {
 			console.log(err);
@@ -158,15 +171,67 @@ const self = module.exports = {
 			.then(() => resp.json({success: true}))
 			.catch(err => {
 				console.error(err);
-				resp.json({success: false, message: "An error occured!"})
+				res.json({success: false, message: "An error occured!"})
 				con.end();
 			})
 		})
 		.catch(err => {
 			console.error(err);
-			resp.json({success: false, message: "An error occured!"})
+			res.json({success: false, message: "An error occured!"})
 			con.end();
 		})
+	},
+
+	addPackingListItem: (req, res) => {
+		self.con.getConnection().then(con => {
+			con.query("INSERT INTO packing_list (item) VALUE (?)", [req.body.item])
+			.then(() => res.json({success: true}))
+			.catch(err => {
+				console.error(err);
+				res.json({success: false, messege: "An error occured"});
+				con.end();
+			})
+		})
+		.catch(err => {
+			console.error(err);
+			res.json({success: false, messege: "An error occured"});
+			con.end();
+		})
+	},
+
+	getPackingListItem: (req, resp) => {
+		self.con.getConnection().then(con => {
+			con.query("SELECT * FROM packing_list")
+			.then(res => resp.json(res))
+			.catch(err => {
+				console.error(err);
+				res.json({success: false, messege: "An error occured"});
+				con.end();
+			})
+		})
+		.catch(res => {
+			console.error(err);
+			resp.json({success: false, messege: "An error occured"});
+			con.end();
+		})
+	},
+
+	delPackingListItem: (req, res) => {
+		self.con.getConnection().then(con => {
+			con.query("DELETE FROM  packing_list WHERE id = ?", [req.body.id])
+			.then(() => resp.json({success: true}))
+			.catch(err => {
+				console.error(err);
+				res.json({success: false, message: "An error occured!"})
+				con.end();
+			})
+		})
+		.catch(err => {
+			console.error(err);
+			res.json({success: false, message: "An error occured!"})
+			con.end();
+		})
+
 	},
 
 }
