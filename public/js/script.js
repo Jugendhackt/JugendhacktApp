@@ -1,5 +1,8 @@
 httpVueLoader.register(Vue, 'js/components/navigation.vue');
 
+if ("serviceWorker" in navigator) {
+	navigator.serviceWorker.register("js/service-worker.js");
+}
 
 
 const routes = [
