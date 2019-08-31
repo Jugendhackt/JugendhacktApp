@@ -1,7 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const github = require("./data/github.js");
-const hackdash = require("./data/hackdash.js");
+const api = require("./api.js");
 
 const app = express();
 const PORT = process.env.PORT || 80;
@@ -10,18 +9,6 @@ app.use(express.static('public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-const api = express.Router();
-const apiUrls = {
-	"GitHub": "/api/github",
-	"HackDash": "/api/HackDash",
-	"Twitter": "/api/Twitter",
-	"Zulip": "/api/Zulip"
-}
-
-api.use("/github", async (_, res) => res.send(await github.get()));
-api.use("/hackdash/list", async (_, res) => res.send(await hackdash.listBoards()));
-api.use("/hackdash/board/:board", async (req, res) => res.send(await hackdash.getBoardInfo(req.params.board)));
-api.use("*", (_, res) => res.send(apiUrls));
 app.use("/api", api);
 
 app.listen(PORT, () => console.log(`Listening on http://localhost:${PORT}`));
