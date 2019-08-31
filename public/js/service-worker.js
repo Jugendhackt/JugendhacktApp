@@ -19,20 +19,20 @@ var name = 'Jugendhackt App',
       '/api/hackdash/'
     ];
 
-self.addEventListener('install', function (event) {
+self.addEventListener('install', event => {
   console.log("installing");
   event.waitUntil(
-    caches.open(name).then(function (cache) {
+    caches.open(name).then(cache => {
       return cache.addAll(filesToCache);
     })
   );
 });
 
-self.addEventListener('activate', function (event) {
+self.addEventListener('activate', event => {
   console.log("activating");
   event.waitUntil(
-   caches.keys().then(function(cachedFiles) {
-     return Promise.all(cachedFiles.map(function(cacheFile) {
+   caches.keys().then(cachedFiles => {
+     return Promise.all(cachedFiles.map(cacheFile => {
        if (cacheFile !== name) {
          console.log('Removing Cached Files from Cache - ', cacheFile);
          return caches.delete(cacheFile);
@@ -43,11 +43,7 @@ self.addEventListener('activate', function (event) {
 });
 
 
-self.addEventListener('fetch', function (event) {
+self.addEventListener('fetch', event => {
   console.log("fetching");
-  event.respondWith(
-    fetch(event.request).catch(function() {
-      return caches.match(event.request);
-    })
-  );
+  event.respondWith(caches.match(event.request).then(response => response || fetch(event.request));
 });
