@@ -12,18 +12,18 @@ const apiUrls = {
 	"Zulip": "/api/Zulip"
 }
 
-api.use("/events",
+api.get("/events",
 	async (_, res) => res.send(await jh.getEvents()));
-api.use("/github",
+api.get("/github",
 	async (_, res) => res.send(await github.get()));
-api.use("/hackdash/list",
-	async (_, res) => res.send(await hackdash.listBoards()));
-api.use("/hackdash/board/:board",
+api.get("/hackdash/board/:board",
 	async (req, res) => res.send(await hackdash.getBoardInfo(req.params.board)));
-api.use("/hackdash/project/:pid",
+api.get("/hackdash/project/:pid",
 	async (req, res) => res.send(await hackdash.getProjectInfo(req.params.pid)));
-api.use("/twitter",
+api.get("/hackdash",
+	async (_, res) => res.send(await hackdash.listBoards()));
+api.get("/twitter",
 	async (_, res) => res.send(await twitter.get()));
-api.use("*", (_, res) => res.send(apiUrls));
+api.get("*", (_, res) => res.send(apiUrls));
 
 module.exports = api;
