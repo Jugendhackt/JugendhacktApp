@@ -19,7 +19,8 @@ const filesToCache = [
       '/api/twitter/',
       '/api/hackdash/',
       '/assets/icons/calendar.svg',
-      '/assets/icons/key.svg'
+      '/assets/icons/key.svg',
+      '/assets/icons/clipboard.svg'
 ];
 
 self.addEventListener('install', event => {
