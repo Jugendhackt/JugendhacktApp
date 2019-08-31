@@ -12,7 +12,7 @@ The App will have plenty of features for Jugendhackt - even some who doesn't exi
 - Digital Badge Collection - The stickers are great, but also stuck on your old notebook - Let's make the badge collection digital as well!
 
 ## Contributors
-- Benny
+- AuspiciousLynx
 - LarsVomMars
 - marvinborner
 - Mondanzo
