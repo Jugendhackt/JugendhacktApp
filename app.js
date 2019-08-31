@@ -14,6 +14,10 @@ const PORT = process.env.PORT || 80;
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use((_, res, next) => {
+	res.append("Service-Worker-Allowed", "/");
+	next();
+});
 app.use(session({
 	secret: 'theBestSecretKey', // TODO: Random key
   	resave: false,
