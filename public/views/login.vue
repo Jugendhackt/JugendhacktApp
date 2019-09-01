@@ -14,7 +14,7 @@
 			<h2 class="name">Register</h2>
 			<form @submit="register()">
 				<label for="register_username">Username:</label>
-				<input maxlength=100 placeholder="Alpaka" type="text" id="register_username" v-model="register_data.username" required>
+				<input maxlength=100 placeholder="Alpaka" type="text" id="register_username" v-model="register_data.fullName" required>
 				<label for="register_email">Email:</label>
 				<input type="email" placeholder="admin" id="register_email" v-model="register_data.email" required>
 
@@ -40,7 +40,7 @@ module.exports = {
 				password: ""
 			},
 			register_data: {
-				username: "",
+				fullName: "",
 				email: "",
 				password: "",
 				birthday: ""
@@ -48,6 +48,27 @@ module.exports = {
 		}
 	},
 	methods: {
+		login: function() {
+			const data = JSON.stringify(this.login_data);
+			const xhr = new XMLHttpRequest();
+			xhr.onload = function () {
+				console.log(xhr.response);
+			}
+			xhr.open('POST', '/user/login');
+			xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+			xhr.send(data);
+        	},
+		register: function() {
+			const data = JSON.stringify(this.register_data);
+			const xhr = new XMLHttpRequest();
+			xhr.onload = function () {
+				console.log(xhr.response);
+			}
+			xhr.open('POST', '/user/register');
+			xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+			xhr.send(data);
+		}
+		/*
 		login(){
 			return new Promise(function(resolve, reject) {
 				let xhr = new XMLHttpRequest();
@@ -55,9 +76,9 @@ module.exports = {
 					console.log(xhr.response);
 				});
 				var formdata = new FormData();
-				formdata.set("email", $vm.login_data.email);
-				formdata.set("password", $vm.login_data.assword);
-				xhr.open("POST", "http://172.16.101.42/user/login");
+				formdata.set("email", this.vm.login_data.email);
+				formdata.set("password", this.vm.login_data.assword);
+				xhr.open("POST", "/user/login");
 				xhr.responseType = "json";
 				xhr.send(formdata);
 			});
@@ -70,15 +91,15 @@ module.exports = {
 					console.log(xhr.response);
 				});
 				var formdata = new FormData();
-				formdata.set("username", $vm.register_data.username);
-				formdata.set("email", $vm.register_data.email);
-				formdata.set("password", $vm.register_data.password);
-				formdata.set("birthday", $vm.register_data.birthday);
-				xhr.open("POST", "http://172.16.101.42/user/register");
+				formdata.set("username", vm.register_data.username);
+				formdata.set("email", vm.register_data.email);
+				formdata.set("password", vm.register_data.password);
+				formdata.set("birthday", vm.register_data.birthday);
+				xhr.open("POST", "/user/register");
 				xhr.responseType = "json";
 				xhr.send(formdata);
 			});
-		}
+		}*/
 	}
 }
 </script>
