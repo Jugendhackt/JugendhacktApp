@@ -20,4 +20,7 @@ The App will have plenty of features for Jugendhackt - even some which don't exi
 ## Credits
 Icons and Backgrounds from [https://jugendhackt.org](https://jugendhackt.org)
 
+## Präsentation
+https://docs.google.com/presentation/d/1PPoLmnE9aVviCshcAMaX2ZMAdrH4FzFpZJJvj-4iyFc/edit?usp=sharing
+
 [View this Project on HackDash](https://hackdash.org/projects/5d6a4242c587e70bcdacccc6)
