@@ -9,7 +9,9 @@ module.exports.listBoards = async () => {
 }
 
 module.exports.getBoardInfo = async board => {
-	const data = await request.start("https://hackdash.org/api/v2/" + board + "/projects");
+	let data = await request.start("https://hackdash.org/api/v2/dashboards/" + board);
+	const projects = await request.start("https://hackdash.org/api/v2/" + board + "/projects");
+	data["projects"] = projects;
 	return data;
 }
 
