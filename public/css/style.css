@@ -41,6 +41,7 @@ body {
   background: #fff;
   margin-top: 0;
   box-shadow: 0 0 4px #cecece;
+  z-index: 5;
 }
 
 .btn-back {
