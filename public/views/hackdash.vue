@@ -29,6 +29,7 @@ module.exports = {
         console.log(xhr.response);
         this.loading = false;
         this.boards = xhr.response;
+	this.boards.reverse();
       });
       xhr.open("GET", "/api/hackdash");
       xhr.responseType = "json";
@@ -39,11 +40,6 @@ module.exports = {
     }
   },
   computed: {
-    sorted_boards(){
-      return this.boards.sort(function(a, b){
-        return new Date(a.created_at) - new Date(b.created_at);
-      });
-    },
     boardOpen(){
       return this.current_board !== undefined;
     }
