@@ -119,8 +119,9 @@ const self = module.exports = {
 
 	addLostItem: (req, resp) => {
 		self.con.getConnection().then(con => {
+			// TODO: Fix file
 			const img = req.file;
-			const type = img.split('.').reverse()[0];
+			const type = img.path.split('.').reverse()[0];
 			if (['jpg', 'jpeg', 'png', 'webm'].contains(type)) {
 			con.query("SELECT id FROM lost_items ORDER BY id DESC")
 			.then(res => {
