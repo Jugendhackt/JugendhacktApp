@@ -20,7 +20,11 @@ const filesToCache = [
       '/api/hackdash/',
       '/assets/icons/calendar.svg',
       '/assets/icons/key.svg',
-      '/assets/icons/clipboard.svg'
+      '/assets/icons/clipboard.svg',
+      '/assets/icons/arrow-down.svg',
+      '/assets/icons/briefcase.svg',
+      '/assets/icons/list.svg',
+      '/assets/icons/badges/SuperAlpaka.png'
 ];
 
 self.addEventListener('install', event => {
