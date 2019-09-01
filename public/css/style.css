@@ -63,6 +63,7 @@ body {
 }
 
 .nav .router-link-exact-active {
+  transition: background-color linear 200ms;
   background-color: #eee;
   border-radius: 50%;
 }

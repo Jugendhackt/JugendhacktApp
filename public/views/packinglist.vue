@@ -1,6 +1,13 @@
 <template>
 	<div>
 		<div class="card">
+			<ul id="dpl_list">
+				<li v-for="item in items">
+					{{ item.item }}
+				</li>
+			</ul>
+		</div>
+		<div class="card">
 			<h2 class="name">Packing list</h2>
 			<form @submit="updatePackingList()">
 				<label for="packing_list_item">Item:</label>
@@ -17,7 +24,8 @@ module.exports = {
 		return {
 			pl: {
 				item: ""
-			}
+			},
+			items: []
 		}
 	},
 	methods: {
@@ -31,7 +39,19 @@ module.exports = {
 			xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 			xhr.send(data);
 			document.querySelector('#packing_list_item').value = '';
-        	}
+			this.fetchPackingList();
+        	},
+		fetchPackingList() {
+			const xhr = new XMLHttpRequest();
+			xhr.onload = () => {
+				this.items =  JSON.parse(xhr.response)
+			}
+			xhr.open('GET', '/packinglist/get')
+			xhr.send();
+		}
+	},
+	beforeMount() {
+		this.fetchPackingList();
 	}
 }
 </script>

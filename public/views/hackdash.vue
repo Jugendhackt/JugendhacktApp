@@ -108,7 +108,13 @@ module.exports = {
   height: 50px;
   border-radius: 50%;
   fill: #fff;
+  transform: rotateZ(90deg);
   box-shadow: 0 0 12px #cecece;
+  transition: transform 300ms ease;
+}
+
+.back.hide img {
+  transform: rotateZ(-90deg);
 }
 
 .back.hide {
