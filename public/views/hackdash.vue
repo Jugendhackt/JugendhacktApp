@@ -1,9 +1,13 @@
 <template>
-  <div>
-    <Board class="board-view" v-if="this.current_board !== undefined" :board="this.boards[this.current_board]"></Board>
-    <div class="board-navigation">
-      <span v-for="(board, i) in boards" @click="setActive(i)" class="board card" :title="board.title" :key="board._id">{{board.title || board.domain}}</span>
+  <div class="focuser">
+    <Board class="board-view" v-if="this.boardOpen" :board="this.boards[this.current_board]"></Board>
+    <div :class="{ hide: boardOpen}" class="board-navigation">
+      <div v-for="(board, i) in boards" @click="setActive(i)" class="board card" :title="board.title" :key="board._id">
+        {{board.title || board.domain}}
+        <img class="cover" v-if="board.covers[0]" :src="board.covers[0].startsWith('http') ? board.covers[0] : 'https://hackdash.s3-us-west-2.amazonaws.com' + board.covers[0]">
+      </div>
     </div>
+    <span class="back" :class="{ hide : !boardOpen}"><img @click="current_board = undefined" src="/assets/icons/arrow-down.svg" alt="Back"></span>
   </div>
 </template>
 
@@ -39,10 +43,14 @@ module.exports = {
       return this.boards.sort(function(a, b){
         return new Date(b.created_at) - new Date(a.created_at);
       });
+    },
+    boardOpen(){
+      return this.current_board !== undefined;
     }
   },
   beforeMount(){
     this.fetch();
+    this.current_board = undefined;
   },
   components: {
     Board
@@ -55,6 +63,13 @@ module.exports = {
   display: flex;
   flex-direction: column;
   width: 100%;
+  transition: height 500ms linear;
+  z-index: -2;
+}
+
+.board-navigation.hide {
+  height: 0 !important;
+  overflow: hidden;
 }
 
 .board {
@@ -73,14 +88,44 @@ module.exports = {
   overflow: hidden;
 }
 
-.board-navigation.hide {
-  height: 0;
-  overflow: hidden;
+.board .cover {
+  height: 88px;
+  margin-left: auto;
+  border-radius: 5px;
+}
+
+.back {
+  position: fixed;
+  bottom: 66px;
+  display: inline;
+  text-align: center;
+  transition: bottom ease 200ms;
+  left: 0;
+  right: 0;
+  cursor: pointer;
+  z-index: -1;
+}
+
+.back img {
+  background: #00a5dc;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  fill: #fff;
+  box-shadow: 0 0 12px #cecece;
+}
+
+.back.hide {
+  bottom: -80px;
 }
 
 .card {
   margin-top: 4px;
   margin-bottom: 4px;
   box-shadow: 0 0 6px #cecece;
+}
+
+.card:last-child {
+  margin-bottom: 50px;
 }
 </style>
