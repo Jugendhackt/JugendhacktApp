@@ -7,8 +7,25 @@
 	"theme_color": "#00a5dc",
 	"background_color": "#ffffff",
 	"icons": [{
+		"src": "assets/icons/res/mipmap-mdpi/JHHH2019AppLogo.png",
+		"sizes": "48x48",
+		"type": "image/png"
+	},{
 		"src": "assets/icons/res/mipmap-hdpi/JHHH2019AppLogo.png",
 		"sizes": "72x72",
 		"type": "image/png"
-	}]
+	},{
+		"src": "assets/icons/res/mipmap-xhdpi/JHHH2019AppLogo.png",
+		"sizes": "96x96",
+		"type": "image/png"
+	},{
+		"src": "assets/icons/res/mipmap-xxhdpi/JHHH2019AppLogo.png",
+		"sizes": "144x144",
+		"type": "image/png"
+	},{
+		"src": "assets/icons/res/mipmap-xxxhdpi/JHHH2019AppLogo.png",
+		"sizes": "48x48",
+		"type": "image/png"
+	}
+	]
 }
