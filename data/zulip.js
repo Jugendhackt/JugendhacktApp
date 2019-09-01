@@ -7,7 +7,7 @@ module.exports.get = async () => {
 
 	const zulipObj = await zulip(config);
 	const streams = await zulipObj.streams.retrieve();
-	const stream = "hamburg";
+	const stream = "42";
 
 	const params = {
 		stream,
