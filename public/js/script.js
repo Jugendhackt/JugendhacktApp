@@ -23,3 +23,5 @@ let app = new Vue({
   router,
   el: "#app"
 });
+
+global.vm = app;

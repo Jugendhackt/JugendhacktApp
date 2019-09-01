@@ -69,7 +69,7 @@ const self = module.exports = {
 		self.con.getConnection().then(con => {
 			bCrypt.hash(req.body.password, 12, (err, password) => {
 				if (err) throw err;
-				const username = req.body.username ? req.body.username.length <= 100 : req.body.username.slice(0, 101);
+				const username = req.body.fullName ? req.body.fullName.length <= 100 : req.body.fullName.slice(0, 101);
 				con.query("INSERT INTO users (full_name, password, email, birthday) VALUE (?,?,?,?)",
 					[req.body.fullName, password, req.body.email, req.body.birthday]
 				)
@@ -83,6 +83,9 @@ const self = module.exports = {
 			}
 		}).catch(err => {
 			console.error(err);
+			res.json({success: false, message: "User already exists!"})
+		}).catch(err => {
+			console.error(err);
 			res.json({success: false, message: "An error occured"});
 			con.end();
 		})
@@ -92,6 +95,7 @@ const self = module.exports = {
 		self.con.getConnection().then(con => {
 			con.query("SELECT * FROM users WHERE email = ?", [req.body.email])
 		.then(res => {
+			console.log(res);
 			if (res) {
 				if (bCrypt.compareSync(req.body.password, res[0].password)) {
 					req.session.loggedIn = true;
@@ -102,7 +106,7 @@ const self = module.exports = {
 			con.end();
 		}).catch(err => {
 			console.error(err);
-			resp.json({success: false, message: "An error occured!"});
+			resp.json({success: false, message: "No user registered!"});
 			con.end();
 		})
 			.catch(err => {
