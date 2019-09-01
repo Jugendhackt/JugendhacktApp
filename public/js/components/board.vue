@@ -2,6 +2,12 @@
   <div class="card">
     <h3>{{ board.title }}</h3>
     <p>{{ boardData.description }}</p>
+    <ul>
+      <li v-for="project in boardData.projects">
+        <h4>{{ project.title }}</h4>
+	<p>{{ project.description }}</p>
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -15,6 +21,7 @@ module.exports = {
   },
   methods: {
     fetch(){
+      this.boardData.description = "Loading...";
       this.loading = true;
       let xhr = new XMLHttpRequest();
       xhr.addEventListener("load", () => {
