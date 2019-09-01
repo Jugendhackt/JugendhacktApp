@@ -1,6 +1,7 @@
 <template>
-  <div class="board">
-    <h2>Hello World! {{ board.title }}</h2>
+  <div class="card">
+    <h3>{{ board.title }}</h3>
+    
   </div>
 </template>
 
