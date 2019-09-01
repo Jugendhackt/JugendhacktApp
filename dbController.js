@@ -83,7 +83,7 @@ const self = module.exports = {
 			}
 		}).catch(err => {
 			console.error(err);
-			res.json({success: false, messege: "An error occured"});
+			res.json({success: false, message: "An error occured"});
 			con.end();
 		})
 	},
@@ -97,12 +97,12 @@ const self = module.exports = {
 					req.session.loggedIn = true;
 					req.session.isAdmin = false; // TODO: From db
 					resp.redirect('/')
-				} else resp.json({success: false, messege: "Username and/or password incorrect!"});
-			} else resp.json({success: false, messege: "Username and/or password incorrect!"});
+				} else resp.json({success: false, message: "Username and/or password incorrect!"});
+			} else resp.json({success: false, message: "Username and/or password incorrect!"});
 			con.end();
 		}).catch(err => {
 			console.error(err);
-			resp.json({success: false, messege: "An error occured!"});
+			resp.json({success: false, message: "An error occured!"});
 			con.end();
 		})
 			.catch(err => {
@@ -188,13 +188,13 @@ const self = module.exports = {
 			.then(() => res.json({success: true}))
 			.catch(err => {
 				console.error(err);
-				res.json({success: false, messege: "An error occured"});
+				res.json({success: false, message: "An error occured"});
 				con.end();
 			})
 		})
 		.catch(err => {
 			console.error(err);
-			res.json({success: false, messege: "An error occured"});
+			res.json({success: false, message: "An error occured"});
 			con.end();
 		})
 	},
@@ -205,13 +205,13 @@ const self = module.exports = {
 			.then(res => resp.json(res))
 			.catch(err => {
 				console.error(err);
-				res.json({success: false, messege: "An error occured"});
+				res.json({success: false, message: "An error occured"});
 				con.end();
 			})
 		})
 		.catch(res => {
 			console.error(err);
-			resp.json({success: false, messege: "An error occured"});
+			resp.json({success: false, message: "An error occured"});
 			con.end();
 		})
 	},
