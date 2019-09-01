@@ -11,8 +11,7 @@ let hackdash = httpVueLoader('views/hackdash.vue');
 const routes = [
   { path: "/", component: httpVueLoader('views/events.vue')},
   { path: "/login", component: httpVueLoader('views/login.vue')},
-  { path: "/hackdash", component: hackdash},
-  { path: "/hackdash/:name", component: hackdash}
+  { path: "/hackdash", component: hackdash}
 ]
 
 const router = new VueRouter({

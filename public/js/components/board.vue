@@ -1,6 +1,6 @@
 <template>
   <div class="board">
-    <h2>Hello World! {{ board }}</h2>
+    <h2>Hello World! {{ board.title }}</h2>
   </div>
 </template>
 
