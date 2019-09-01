@@ -41,7 +41,7 @@ module.exports = {
   computed: {
     sorted_boards(){
       return this.boards.sort(function(a, b){
-        return new Date(b.created_at) - new Date(a.created_at);
+        return new Date(a.created_at) - new Date(b.created_at);
       });
     },
     boardOpen(){
@@ -103,7 +103,7 @@ module.exports = {
   left: 0;
   right: 0;
   cursor: pointer;
-  z-index: -1;
+  z-index: 1;
 }
 
 .back img {
