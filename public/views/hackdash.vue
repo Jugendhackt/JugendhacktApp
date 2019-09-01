@@ -1,18 +1,19 @@
 <template>
   <div>
-    <!--<board v-if="$route.params.hasOwnAttribute('board')" :board="$route.params.board"></board>-->
+    <Board class="board-view" v-if="this.current_board !== undefined" :board="this.boards[this.current_board]"></Board>
     <div class="board-navigation">
-      <router-link v-for="board in boards" :to="'hackdash/' + board.domain" class="board">{{board.domain}}</router-link>
+      <span v-for="(board, i) in boards" @click="setActive(i)" class="board card" :title="board.title" :key="board._id">{{board.title || board.domain}}</span>
     </div>
   </div>
 </template>
 
 <script>
-
+const Board = httpVueLoader("/js/components/board.vue");
 module.exports = {
   data: function(){
     return {
       boards: {},
+      current_board: undefined,
       loading: false
     }
   },
@@ -28,29 +29,36 @@ module.exports = {
       xhr.open("GET", "/api/hackdash");
       xhr.responseType = "json";
       xhr.send();
+    },
+    setActive(id){
+      this.current_board = id;
+    }
+  },
+  computed: {
+    sorted_boards(){
+      return this.boards.sort(function(a, b){
+        return new Date(b.created_at) - new Date(a.created_at);
+      });
     }
   },
   beforeMount(){
     this.fetch();
+  },
+  components: {
+    Board
   }
 }
 </script>
 <style scoped>
 .board-navigation {
-  border: solid 1px #cecece;
-  position: fixed;
+  position: absolute;
   display: flex;
-  font-size: .75em;
-  height: 64px;
-  bottom: 66px;
-  left: 0;
-  right: 0;
-  overflow: scroll;
-  background: #fff;
-  z-index: -1;
+  flex-direction: column;
+  width: 100%;
 }
 
 .board {
+  cursor: pointer;
   display: flex;
   border-right: solid 1px #cecece;
   justify-content: center;
@@ -63,5 +71,16 @@ module.exports = {
   font-weight: bold;
   font-family: sans-serif;
   overflow: hidden;
+}
+
+.board-navigation.hide {
+  height: 0;
+  overflow: hidden;
+}
+
+.card {
+  margin-top: 4px;
+  margin-bottom: 4px;
+  box-shadow: 0 0 6px #cecece;
 }
 </style>

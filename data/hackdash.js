@@ -3,7 +3,9 @@ const request = require("./request.js");
 
 module.exports.listBoards = async () => {
 	const boards = await request.start("https://hackdash.org/api/v2/profiles/557323e279ef5d384ac04aeb");
-	return boards["dashboards"];
+	let dashboards = boards["dashboards"];
+	dashboards = dashboards.filter(elem => elem["showcase"].length > 0);
+	return dashboards;
 }
 
 module.exports.getBoardInfo = async board => {

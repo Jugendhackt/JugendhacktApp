@@ -61,7 +61,7 @@ body {
   cursor: pointer;
 }
 
-.router-link-exact-active {
+.nav .router-link-exact-active {
   background-color: #eee;
   border-radius: 50%;
 }
