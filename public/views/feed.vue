@@ -12,7 +12,12 @@
     module.exports = {
         data: function () {
             return {
-                feed: [],
+                feed: [{
+                    "name": "Rainbow alpacas fetching the feed!",
+                    "text": "The alpacas are currently chasing the requested data - please wait a bit.",
+                    "time": (new Date("04/20/1337 13:37:42")).getTime() / 1000,
+                    "pictures": []
+                }],
             }
         },
         methods: {
@@ -20,7 +25,7 @@
                 return new Promise(resolve => {
                     let xhr = new XMLHttpRequest();
                     xhr.addEventListener("load", () => {
-                        this.feed = this.feed.concat(xhr.response);
+                        this.feed = xhr.response;
                         resolve(this.feed)
                     });
                     xhr.open("GET", "/api/twitter");
