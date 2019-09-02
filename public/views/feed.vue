@@ -38,7 +38,7 @@
 <style scoped>
     .card {
         padding-bottom: 16px;
-        margin-bottom: 10px;
+        margin: 10px;
     }
 
     img {
