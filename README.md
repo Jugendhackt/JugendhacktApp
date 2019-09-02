@@ -23,7 +23,10 @@ To contribute to this project create a pull request which will then be merged on
 ## Credits
 Icons and Backgrounds from [https://jugendhackt.org](https://jugendhackt.org)
 
-## Präsentation
-https://docs.google.com/presentation/d/1PPoLmnE9aVviCshcAMaX2ZMAdrH4FzFpZJJvj-4iyFc/edit?usp=sharing
+## Additional Links
+
+[Google Presentation (German)](https://docs.google.com/presentation/d/1PPoLmnE9aVviCshcAMaX2ZMAdrH4FzFpZJJvj-4iyFc/edit?usp=sharing)
 
 [View this Project on HackDash](https://hackdash.org/projects/5d6a4242c587e70bcdacccc6)
+
+[The Etherpad Entry (used for API Documentation)](https://pad.okfn.de/p/JugendhacktApp)

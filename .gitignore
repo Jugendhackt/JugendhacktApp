@@ -1,7 +1,7 @@
 node_modules
 .idea/
 
-uploads/
+uploads/lostItems/*
 
 package-lock.json
 yarn.lock

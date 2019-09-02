@@ -154,11 +154,6 @@ const self = module.exports = {
                         resp.status(500).json({success: false, message: "Could not save image"});
                         conn.end();
                     })
-                    .catch(err => {
-                        console.error(err);
-                        conn.end();
-                        resp.status(400).json({success: false, message: "Unknown error"});
-                    })
                 } else {
                     resp.json({success: false, message: "File type not allowed"});
                     conn.end();
