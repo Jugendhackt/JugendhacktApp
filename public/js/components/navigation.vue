@@ -1,7 +1,7 @@
 <template>
     <nav class="navigation">
         <div class="branding">
-            Jugendhackt App
+            Jugendhackt App <small style="cursor: pointer; font-size: 8px" v-on:click="clearCache()">clear cache</small>
         </div>
         <div class="nav">
             <router-link to="/"><img class="icon" src="assets/icons/calendar.svg" alt="Events"></router-link>
@@ -13,3 +13,15 @@
         </div>
     </nav>
 </template>
+
+<script>
+    module.exports = {
+        methods: {
+            clearCache: function () {
+                console.log("Cleared caches!");
+                caches.delete("Jugendhackt");
+                location.reload(true);
+            }
+        }
+    }
+</script>
