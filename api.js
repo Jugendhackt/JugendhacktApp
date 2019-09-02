@@ -7,26 +7,26 @@ const zulip = require("./data/zulip.js");
 
 const api = express.Router();
 const apiUrls = {
-	"GitHub": "/api/github",
-	"HackDash": "/api/HackDash",
-	"Twitter": "/api/Twitter",
-	"Zulip": "/api/Zulip"
-}
+    "GitHub": "/api/github",
+    "HackDash": "/api/HackDash",
+    "Twitter": "/api/Twitter",
+    "Zulip": "/api/Zulip"
+};
 
 api.get("/events",
-	async (_, res) => res.send(await jh.getEvents()));
+    async (_, res) => res.send(await jh.getEvents()));
 api.get("/github",
-	async (_, res) => res.send(await github.get()));
+    async (_, res) => res.send(await github.get()));
 api.get("/hackdash/board/:board",
-	async (req, res) => res.send(await hackdash.getBoardInfo(req.params.board)));
+    async (req, res) => res.send(await hackdash.getBoardInfo(req.params.board)));
 api.get("/hackdash/project/:pid",
-	async (req, res) => res.send(await hackdash.getProjectInfo(req.params.pid)));
+    async (req, res) => res.send(await hackdash.getProjectInfo(req.params.pid)));
 api.get("/hackdash",
-	async (_, res) => res.send(await hackdash.listBoards()));
+    async (_, res) => res.send(await hackdash.listBoards()));
 api.get("/twitter",
-	async (_, res) => res.send(await twitter.get()));
+    async (_, res) => res.send(await twitter.get()));
 api.get("/zulip",
-	async (_, res) => res.send(await zulip.get()));
+    async (_, res) => res.send(await zulip.get()));
 api.get("*", (_, res) => res.send(apiUrls));
 
 module.exports = api;

@@ -14,17 +14,17 @@ const app = express();
 const PORT = process.env.PORT || 80;
 
 app.use(express.static('public'));
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use((_, res, next) => {
-	res.append("Service-Worker-Allowed", "/");
-	next();
+    res.append("Service-Worker-Allowed", "/");
+    next();
 });
 app.use(session({
-	secret: 'theBestSecretKey', // TODO: Random key
-  	resave: false,
-  	saveUninitialized: true,
-  	cookie: { secure: true }
+    secret: 'theBestSecretKey', // TODO: Random key
+    resave: false,
+    saveUninitialized: true,
+    cookie: {secure: true}
 }));
 
 dbController.init();
