@@ -18,7 +18,13 @@ module.exports.get = async () => {
 
     };
     const messages = await zulipObj.messages.retrieve(params);
-    const cleaned = messages.messages.map(elem => elem.content);
-
-    return cleaned;
+    return messages.messages.map(elem => {
+        return {
+            "name": "Zulip",
+            "text": elem.content.replace(/<[^>]*>?/gm, ''),
+            "time": elem.timestamp,
+            "pictures": [], // for feed
+            // "name": elem.sender_email.split("@")[0]
+        }
+    });
 };

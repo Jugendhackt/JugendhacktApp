@@ -1,9 +1,9 @@
 <template>
     <div>
-        <div class="card" v-for="tweet in tweets">
-            <h3>{{ tweet.name }} @ <small>{{ new Date(tweet.time * 1000).toLocaleString("de") }}</small></h3>
-            <p>{{ tweet.text }}</p>
-            <img :src="picture" alt="" v-for="picture in tweet.pictures" v-on:click="openImage(picture)">
+        <div class="card" v-for="post in feed">
+            <h3>{{ post.name }} @ <small>{{ new Date(post.time * 1000).toLocaleString("de") }}</small></h3>
+            <p>{{ post.text }}</p>
+            <img :src="picture" alt="" v-for="picture in post.pictures" v-on:click="openImage(picture)">
         </div>
     </div>
 </template>
@@ -12,29 +12,43 @@
     module.exports = {
         data: function () {
             return {
-                tweets: [],
-                loading: false
+                feed: [],
             }
         },
         methods: {
-            fetch() {
-                this.loading = true;
-                let xhr = new XMLHttpRequest();
-                xhr.addEventListener("load", () => {
-                    this.tweets = xhr.response;
-                    this.loading = false;
-                });
-                xhr.open("GET", "/api/twitter");
-                xhr.responseType = "json";
-                xhr.send();
+            fetchTwitter() {
+                return new Promise(resolve => {
+                    let xhr = new XMLHttpRequest();
+                    xhr.addEventListener("load", () => {
+                        this.feed = this.feed.concat(xhr.response);
+                        resolve(this.feed)
+                    });
+                    xhr.open("GET", "/api/twitter");
+                    xhr.responseType = "json";
+                    xhr.send();
+                })
+            },
+            fetchZulip() {
+                return new Promise(resolve => {
+                    let xhr = new XMLHttpRequest();
+                    xhr.addEventListener("load", () => {
+                        this.feed = this.feed.concat(xhr.response);
+                        resolve(this.feed)
+                    });
+                    xhr.open("GET", "/api/zulip");
+                    xhr.responseType = "json";
+                    xhr.send();
+                })
             },
             openImage(url) {
                 const win = window.open(url, "_blank");
                 win.focus();
             }
         },
-        beforeMount() {
-            this.fetch();
+        mounted() {
+            this.fetchTwitter()
+                .then(_ => this.fetchZulip()
+                    .then(_ => this.feed = this.feed.sort((a, b) => b.time - a.time)));
         }
     }
 </script>
