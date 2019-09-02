@@ -16,6 +16,7 @@ const PORT = process.env.PORT || 80;
 
 app.use(fileupload({}));
 app.use(express.static("public"));
+app.use("/lostitems/images", express.static("uploads/lostItems/"));
 app.use(bodyParser.urlencoded({extended: false, limit: "50mb"}));
 app.use(bodyParser.json({limit: "50mb"}));
 app.use((_, res, next) => {

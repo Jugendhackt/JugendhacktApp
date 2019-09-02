@@ -1,6 +1,15 @@
 <template>
     <div>
         <div class="card">
+            <div v-for="item in items" class="lost-item">
+                <img v-bind:src="'/lostitems/images/' + item.img_name" alt="Image of the item" class="image">
+                <div class="desc">
+                    <h1>{{item.what}}</h1>
+                    <p>{{item.location}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="card">
             <h2 class="name">Lost and Found</h2>
             <form @submit="submitLostItem()" enctype="multipart/form-data">
                 <label for="lnf_what">Item found:</label>
@@ -23,12 +32,13 @@
                     what: "",
                     location: "",
                     img: ""
-                }
+                },
+                items: []
             }
         },
         methods: {
             submitLostItem: function () {
-                const formData = new  FormData();
+                const formData = new FormData();
                 formData.append("what", this.lnf.what);
                 formData.append("location", this.lnf.location);
                 formData.append("img", document.getElementById("lnf_img").files[0]);
@@ -38,7 +48,19 @@
                 };
                 xhr.open('POST', '/lostitems/add');
                 xhr.send(formData);
+                this.fetchLostItemList();
+            },
+            fetchLostItemList() {
+                const xhr = new XMLHttpRequest();
+                xhr.onload = () => {
+                    this.items = JSON.parse(xhr.response)
+                };
+                xhr.open('GET', '/lostitems/get');
+                xhr.send();
             }
+        },
+        beforeMount() {
+            this.fetchLostItemList();
         }
     }
 </script>
@@ -66,5 +88,15 @@
 
     .button {
         display: inline-block;
+    }
+
+    .lost-item {
+        display: flex;
+        padding: 10px;
+
+    }
+    .image {
+        height: 300px;
+        padding-right: 50px;
     }
 </style>
