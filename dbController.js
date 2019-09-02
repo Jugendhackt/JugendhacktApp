@@ -136,18 +136,18 @@ const self = module.exports = {
             .then(conn => {
                 // Maybe check file size
                 const allowedTypes = ['jpg', 'jpeg', 'png', 'webm'];
-                const image = req.file;
-                const imageType = image.path.split('.').reverse()[0];
+                const image = req.files.img;
+                const imageType = image.name.split('.').reverse()[0];
                 if (allowedTypes.includes(imageType)) {
                     conn.query("SELECT * FROM lost_items ORDER BY id DESC")
                         .then(res => {
                             // Possible issue with name through id caused by deleting latest item
-                            const name = `${res[0].id + 1}.${type}` ? res : `0.${type}`;
+                            const name = `${(new Date()).getTime()}.${imageType}`;
                             conn.query("INSERT INTO lost_items (location, what, img_name) VALUE (?,?,?)",
                                 [req.body.location, req.body.what, name]
                             )
                                 .then(() => {
-                                    fs.rename(image.path, `./uploads/lostItems/${name}`);
+                                    image.mv(`./uploads/lostItems/${name}`);
                                     resp.json({success: true});
                                     conn.end();
                                 })

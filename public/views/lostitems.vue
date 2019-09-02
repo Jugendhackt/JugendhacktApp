@@ -28,14 +28,16 @@
         },
         methods: {
             submitLostItem: function () {
-                const data = JSON.stringify(this.lnf);
+                const formData = new  FormData();
+                formData.append("what", this.lnf.what);
+                formData.append("location", this.lnf.location);
+                formData.append("img", document.getElementById("lnf_img").files[0]);
                 const xhr = new XMLHttpRequest();
                 xhr.onload = function () {
                     console.log(xhr.response);
                 };
                 xhr.open('POST', '/lostitems/add');
-                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-                xhr.send(data);
+                xhr.send(formData);
             }
         }
     }
