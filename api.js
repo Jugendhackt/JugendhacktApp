@@ -7,10 +7,15 @@ const zulip = require("./data/zulip.js");
 
 const api = express.Router();
 const apiUrls = {
+    "Documentation": "/api",
     "GitHub": "/api/github",
-    "HackDash": "/api/HackDash",
-    "Twitter": "/api/Twitter",
-    "Zulip": "/api/Zulip"
+    "HackDash": {
+        "List dashboards": "/api/hackdash",
+        "Dashboards": "/api/hackdash/board/:board",
+        "Single project": "/api/hackdash/project/:project_id",
+    },
+    "Twitter": "/api/twitter",
+    "Zulip": "/api/zulip"
 };
 
 api.get("/events",
