@@ -2,7 +2,7 @@
     <div>
         <div class="card">
             <h2 class="name">Lost and Found</h2>
-            <form @submit="lostNFound()" enctype="multipart/form-data">
+            <form @submit="submitLostItem()" enctype="multipart/form-data">
                 <label for="lnf_what">Item found:</label>
                 <input type="text" id="lnf_what" v-model="lnf.what" required>
                 <label for="lnf_location">Item found where:</label>
@@ -27,7 +27,7 @@
             }
         },
         methods: {
-            lostNFound: function () {
+            submitLostItem: function () {
                 const data = JSON.stringify(this.lnf);
                 const xhr = new XMLHttpRequest();
                 xhr.onload = function () {

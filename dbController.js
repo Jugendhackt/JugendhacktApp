@@ -10,6 +10,7 @@ const userTable = `
         password  VARCHAR(64)         NOT NULL,
         email     VARCHAR(255) UNIQUE NOT NULL,
         birthday  DATETIME            NOT NULL,
+        is_admin  BOOLEAN             NOT NULL,
         PRIMARY KEY (id)
     )
 `;
@@ -35,209 +36,238 @@ const packingListTable = `
 `;
 
 const self = module.exports = {
-    con: mariadb.createPool({
-        host: process.env.DBHost || 'localhost',
-        user: process.env.DBUser || 'root',
-        password: process.env.DBPassword || 'root',
-        database: process.env.DBName || 'JHA'
+    pool: mariadb.createPool({
+        host: process.env.DBHost,
+        user: process.env.DBUser,
+        password: process.env.DBPassword,
+        database: process.env.DBName
     }),
 
+    /**
+     * Connect to database
+     * @returns conn
+     */
+    connect: async res => {
+        try {
+            return await self.pool.getConnection()
+        } catch (err) {
+            console.error(`Could not connect to database: ${process.env.DBName}`, err);
+            if (res) res.status(500).json({success: false, message: "An error occurred"})
+        }
+    },
+
+    /**
+     * Initializes database tables
+     */
     init: () => {
-        self.con.getConnection().then(con => {
-            console.log(`Connected to ${process.env.DBName}`);
-            con.query(userTable)
-                .catch(err => {
-                    console.error(err);
-                    con.end();
-                });
-            con.query(lostItemsTable)
-                .catch(err => {
-                    console.error(err);
-                    con.end();
-                });
-            con.query(packingListTable)
-                .catch(err => {
-                    console.error(err);
-                    con.end();
-                });
-            con.end()
-        }).catch(err => {
-            console.log(err);
-            con.end();
-        })
-    },
-
-    addUser: (res, req) => {
-        req = req.req;
-        self.con.getConnection().then(con => {
-            bCrypt.hash(req.body.password, 12, (err, password) => {
-                if (err) throw err;
-                con.query("INSERT INTO users (full_name, password, email, birthday) VALUE (?,?,?,?)",
-                    [req.body.fullName, password, req.body.email, req.body.birthday]
-                )
-            })
-        })
-            .then(res => {
-                if (res) {
-                    console.log("Added new user!");
-                    res.json({success: true});
-                    con.end();
+        self.connect()
+            .then(conn => {
+                console.log(`Connected to database: ${process.env.DBName}`);
+                for (const table of [userTable, lostItemsTable, packingListTable]) {
+                    conn.query(table)
+                        .catch(err => {
+                            console.error('Could not create table', err);
+                            conn.end();
+                        })
                 }
-            }).catch(err => {
-            console.error(err);
-            res.json({success: false, message: "User already exists!"})
-        }).catch(err => {
-            console.error(err);
-            res.json({success: false, message: "An error occured"});
-            con.end();
-        })
+                conn.end();
+            })
     },
 
+    /**
+     * Creates a new user
+     * @param req
+     * @param res
+     */
+    addUser: (req, res) => {
+        self.connect(res)
+            .then(conn => {
+                bCrypt.hash(req.body.password, 12, (err, password) => {
+                    if (err) throw err;
+                    const fullName = req.body.fullName ? req.body.fullName.length <= 100 : req.body.fullName.slice(0, 101);
+                    conn.query("INSERT INTO users (full_name, password, email, birthday, is_admin) VALUE (?,?,?,?,?)",
+                        [fullName, password, req.body.email, req.body.birthday, false]
+                    )
+                        .then(() => {
+                            res.json({success: true});
+                            conn.end();
+                        })
+                        .catch(err => {
+                            console.error('Could not create user', err);
+                            res.status(400).json({success: false, message: "User already exists"});
+                            conn.end();
+                        })
+                })
+            })
+    },
+
+    /**
+     * Logs the user in to the system
+     * @param req
+     * @param resp
+     */
     login: (req, resp) => {
-        self.con.getConnection().then(con => {
-            con.query("SELECT * FROM users WHERE email = ?", [req.body.email])
-                .then(res => {
-                    console.log(res);
-                    if (res) {
+        self.connect(resp)
+            .then(conn => {
+                conn.query("SELECT * FROM users WHERE email = ?", [req.body.email])
+                    .then(res => {
                         if (bCrypt.compareSync(req.body.password, res[0].password)) {
                             req.session.loggedIn = true;
-                            req.session.isAdmin = false; // TODO: From db
-                            resp.redirect('/')
-                        } else resp.json({success: false, message: "Username and/or password incorrect!"});
-                    } else resp.json({success: false, message: "Username and/or password incorrect!"});
-                    con.end();
-                }).catch(err => {
-                console.error(err);
-                resp.json({success: false, message: "No user registered!"});
-                con.end();
+                            req.session.isAdmin = res[0].is_admin;
+                            resp.json({success: true});
+                        } else resp.status(400).json({success: false, message: "Password and/or username incorrect"});
+                        conn.end();
+                    })
+                    .catch(err => {
+                        console.error('Login failed', err);
+                        resp.status(400).json({success: false, message: "Password and/or username incorrect"});
+                        conn.end();
+                    })
             })
-                .catch(err => {
-                    console.error(err);
-                    resp.json({success: false, message: "An error occured!"});
-                    con.end();
-                })
-        })
     },
 
+    /**
+     * Adds item to the "Lost and Found" list
+     * @param req
+     * @param resp
+     */
     addLostItem: (req, resp) => {
-        self.con.getConnection().then(con => {
-            // TODO: Fix file
-            const img = req.file;
-            const type = img.path.split('.').reverse()[0];
-            if (['jpg', 'jpeg', 'png', 'webm'].contains(type)) {
-                con.query("SELECT id FROM lost_items ORDER BY id DESC")
+        self.connect(resp)
+            .then(conn => {
+                // Maybe check file size
+                const allowedTypes = ['jpg', 'jpeg', 'png', 'webm'];
+                const image = req.file;
+                const imageType = image.path.split('.').reverse()[0];
+                if (allowedTypes.includes(imageType)) {
+                    conn.query("SELECT * FROM lost_items ORDER BY id DESC")
+                        .then(res => {
+                            // Possible issue with name through id caused by deleting latest item
+                            const name = `${res[0].id + 1}.${type}` ? res : `0.${type}`;
+                            conn.query("INSERT INTO lost_items (location, what, img_name) VALUE (?,?,?)",
+                                [req.body.location, req.body.what, name]
+                            )
+                                .then(() => {
+                                    fs.rename(image.path, `./uploads/lostItems/${name}`);
+                                    resp.json({success: true});
+                                    conn.end();
+                                })
+                                .catch(err => {
+                                    console.error(err);
+                                    resp.status(500).json({success: false, message: "Could not save image"});
+                                    conn.end();
+                                })
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            conn.end();
+                            resp.status(400).json({success: false, message: "Unknown error"});
+                        })
+                }
+            })
+    },
+
+    /**
+     * Get all "Lost and Found" items
+     * @param req
+     * @param resp
+     */
+    getLostItems: (req, resp) => {
+        self.connect(resp)
+            .then(conn => {
+                conn.query("SELECT * FROM lost_items")
                     .then(res => {
-                        let name;
-                        if (res) name = `${res[0].id + 1}.${type}`;
-                        else name = `0.${type}`;
-                        con.query("INSERT INTO lost_items (location, what, img_name) VALUE (?,?,?)", [req.body.location, req.body.what])
-                            .then(() => fs.rename(req.file.path, `./uploads/lostItems/${name}`))
-                            .catch(err => {
-                                console.error(err);
-                                res.json({success: false, message: "An error occured!"});
-                                con.end();
-                            });
+                        resp.json(res);
+                        conn.end()
                     })
                     .catch(err => {
                         console.log(err);
-                        resp.json({success: false, message: "An error occured!"});
-                        con.end();
+                        resp.status(500).json({success: false, message: "Unknown error"});
+                        conn.end();
                     })
-            } else {
-                console.error(err);
-                resp.json({success: false, message: "Only .png, .jpg, .jpeg, .webm files are allowed!"});
-                con.end();
-            }
-        }).catch(err => {
-            console.error(err);
-            resp.json({success: false, message: "An error occured!"});
-            con.end();
-        })
+            })
     },
 
-    getLostItems: (req, resp) => {
-        self.con.getConnection().then(con => {
-            con.query("SELECT * FROM lost_items")
-                .then(res => resp.json(res))
-                .catch(err => {
-                    console.error(err);
-                    resp.json({success: false, message: "An error occured!"});
-                    con.end();
-                })
-        })
-            .catch(err => {
-                console.error(err);
-                resp.json({success: false, message: "An error occured!"});
-                con.end();
-            });
-    },
-
+    /**
+     * Deletes item from db
+     * @param req
+     * @param res
+     */
     delLostItem: (req, res) => {
-        self.con.getConnection().then(con => {
-            con.query("DELETE FROM lost_items WHERE id = ?", [req.body.id])
-                .then(() => resp.json({success: true}))
-                .catch(err => {
-                    console.error(err);
-                    res.json({success: false, message: "An error occured!"});
-                    con.end();
-                })
-        })
-            .catch(err => {
-                console.error(err);
-                res.json({success: false, message: "An error occured!"});
-                con.end();
+        self.connect(res)
+            .then(conn => {
+                conn.query("DELETE FROM lost_items WHERE id = ?")
+                    .then(() => {
+                        res.json({success: true});
+                        conn.end();
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        res.status(400).json({success: true, message: "Item not found"});
+                        conn.end();
+                    })
             })
     },
 
+    /**
+     * Adds item to packing list
+     * @param req
+     * @param res
+     */
     addPackingListItem: (req, res) => {
-        self.con.getConnection().then(con => {
-            con.query("INSERT INTO packing_list (item) VALUE (?)", [req.body.item])
-                .then(() => res.json({success: true}))
-                .catch(err => {
-                    console.error(err);
-                    res.json({success: false, message: "An error occured"});
-                    con.end();
-                })
-        })
-            .catch(err => {
-                console.error(err);
-                res.json({success: false, message: "An error occured"});
-                con.end();
+        self.connect(res)
+            .then(conn => {
+                conn.query("INSERT INTO packing_list (item) VALUE (?)", [req.body.item])
+                    .then(() => {
+                        res.json({success: true});
+                        conn.end();
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        res.status(400).json({success: false, message: "No item sent"});
+                        conn.end();
+                    })
             })
     },
 
+    /*
+     * Get all items from the packing list
+     * @param req
+     * @param resp
+     */
     getPackingListItem: (req, resp) => {
-        self.con.getConnection().then(con => {
-            con.query("SELECT * FROM packing_list")
-                .then(res => resp.json(res))
-                .catch(err => {
-                    console.error(err);
-                    res.json({success: false, message: "An error occured"});
-                    con.end();
-                })
-        })
-            .catch(res => {
-                console.error(err);
-                resp.json({success: false, message: "An error occured"});
-                con.end();
+        self.connect()
+            .then(conn => {
+                conn.query("SELECT * FROM packing_list")
+                    .then(res => {
+                        resp.json(res);
+                        conn.end();
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        resp.status(500).json({success: false, message: "Unkmown error"});
+                    })
             })
     },
 
+    /**
+     * Deletes item from db
+     * @param req
+     * @param res
+     */
     delPackingListItem: (req, res) => {
-        self.con.getConnection().then(con => {
-            con.query("DELETE FROM  packing_list WHERE id = ?", [req.body.id])
-                .then(() => resp.json({success: true}))
-                .catch(err => {
-                    console.error(err);
-                    res.json({success: false, message: "An error occured!"});
-                    con.end();
-                })
-        })
-            .catch(err => {
-                console.error(err);
-                res.json({success: false, message: "An error occured!"});
-                con.end();
+        self.connect(res)
+            .then(conn => {
+                conn.query("DELETE FROM packing_list WHERE id = ?")
+                    .then(() => {
+                        res.json({success: true});
+                        conn.end();
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        res.status(400).json({success: true, message: "Item not found"});
+                        conn.end();
+                    })
             })
-
     },
 };
+
