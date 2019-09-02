@@ -3,7 +3,7 @@
         <div class="card" v-for="tweet in tweets">
             <h3>{{ tweet.name }} @ <small>{{ new Date(tweet.time * 1000).toLocaleString("de") }}</small></h3>
             <p>{{ tweet.text }}</p>
-            <img :src="picture" alt="" v-for="picture in tweet.pictures">
+            <img :src="picture" alt="" v-for="picture in tweet.pictures" v-on:click="openImage(picture)">
         </div>
     </div>
 </template>
@@ -27,6 +27,10 @@
                 xhr.open("GET", "/api/twitter");
                 xhr.responseType = "json";
                 xhr.send();
+            },
+            openImage(url) {
+                const win = window.open(url, "_blank");
+                win.focus();
             }
         },
         beforeMount() {
@@ -42,6 +46,7 @@
     }
 
     img {
+        cursor: pointer;
         padding: 5px;
         height: 100px;
     }
