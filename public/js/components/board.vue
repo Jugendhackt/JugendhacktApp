@@ -46,7 +46,7 @@
         },
     }
 </script>
-<style>
+<style scoped>
     img {
         width: auto;
         height: 100px;

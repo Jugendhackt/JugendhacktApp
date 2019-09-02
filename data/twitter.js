@@ -17,9 +17,16 @@ module.exports.get = async () => {
         let object = {};
         const text = tweet.querySelector("div .content p.TweetTextSize");
         const name = tweet.querySelector("div .content .fullname");
+        const time = tweet.querySelector("div .content ._timestamp");
+        const pictures = tweet.querySelectorAll("img");
         if (text && name.textContent.includes("hackt")) {
-            object["text"] = text.textContent;
+            object["text"] = text.textContent.substr(0, text.textContent.length - 26).startsWith("pic.twitter.com")
+                ? text.textContent.substr(0, text.textContent.length - 26)
+                : text.textContent;
             object["name"] = name.textContent;
+            object["time"] = parseInt(time.getAttribute("data-time"));
+            object["pictures"] = [];
+            pictures.forEach(elem => object["pictures"].push(elem.getAttribute("src")));
             tweetsArr.push(object);
         }
     }
