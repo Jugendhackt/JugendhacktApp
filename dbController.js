@@ -138,30 +138,30 @@ const self = module.exports = {
                 const allowedTypes = ['jpg', 'jpeg', 'png', 'webm'];
                 const image = req.files.img;
                 const imageType = image.name.split('.').reverse()[0];
-                if (allowedTypes.includes(imageType)) {
-                    conn.query("SELECT * FROM lost_items ORDER BY id DESC")
-                        .then(res => {
-                            // Possible issue with name through id caused by deleting latest item
-                            const name = `${(new Date()).getTime()}.${imageType}`;
-                            conn.query("INSERT INTO lost_items (location, what, img_name) VALUE (?,?,?)",
-                                [req.body.location, req.body.what, name]
-                            )
-                                .then(() => {
-                                    image.mv(`./uploads/lostItems/${name}`);
-                                    resp.json({success: true});
-                                    conn.end();
-                                })
-                                .catch(err => {
-                                    console.error(err);
-                                    resp.status(500).json({success: false, message: "Could not save image"});
-                                    conn.end();
-                                })
-                        })
-                        .catch(err => {
-                            console.error(err);
-                            conn.end();
-                            resp.status(400).json({success: false, message: "Unknown error"});
-                        })
+                if (allowedTypes.includes(imageType.toLowerCase())) {
+                    // Possible issue with name through id caused by deleting latest item
+                    const name = `${(new Date()).getTime()}.${imageType}`;
+                    conn.query("INSERT INTO lost_items (location, what, img_name) VALUE (?,?,?)",
+                        [req.body.location, req.body.what, name]
+                    )
+                    .then(() => {
+                        image.mv(`./uploads/lostItems/${name}`);
+                        resp.json({success: true});
+                        conn.end();
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        resp.status(500).json({success: false, message: "Could not save image"});
+                        conn.end();
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        conn.end();
+                        resp.status(400).json({success: false, message: "Unknown error"});
+                    })
+                } else {
+                    resp.json({success: false, message: "File type not allowed"});
+                    conn.end();
                 }
             })
     },
