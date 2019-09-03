@@ -76,27 +76,30 @@ const self = module.exports = {
     /**
      * Creates a new user
      * @param req
-     * @param res
+     * @param resp
      */
-    addUser: (req, res) => {
-        self.connect(res)
+    addUser: (req, resp) => {
+        self.connect(resp)
             .then(conn => {
                 bCrypt.hash(req.body.password, 12, (err, password) => {
                     if (err) throw err;
                     const fullName = req.body.fullName ? req.body.fullName.length <= 100 : req.body.fullName.slice(0, 101);
-                    conn.query("INSERT INTO users (full_name, password, email, birthday, is_admin) VALUE (?,?,?,?,?)",
-                        [fullName, password, req.body.email, req.body.birthday, false]
-                    )
-                        .then(() => {
-                            // res.json({success: true});
-                            conn.end();
-                            self.login(req, res);
-                        })
-                        .catch(err => {
-                            console.error('Could not create user', err);
-                            res.status(400).json({success: false, message: "User already exists"});
-                            conn.end();
-                        })
+                    conn.query("SELECT * FROM users LIMIT 1")
+                        .then(res => {
+                            const isAdmin = !res[0];
+                            conn.query("INSERT INTO users (full_name, password, email, birthday, is_admin) VALUE (?,?,?,?,?)",
+                                [fullName, password, req.body.email, req.body.birthday, isAdmin]
+                            )
+                                .then(() => {
+                                    conn.end();
+                                    self.login(req, resp);
+                                })
+                                .catch(err => {
+                                    console.error('Could not create user', err);
+                                    resp.status(400).json({success: false, message: "User already exists"});
+                                    conn.end();
+                                })
+                        });
                 })
             })
     },
@@ -158,16 +161,16 @@ const self = module.exports = {
                     conn.query("INSERT INTO lost_items (location, what, img_name) VALUE (?,?,?)",
                         [req.body.location, req.body.what, name]
                     )
-                    .then(() => {
-                        image.mv(`./uploads/lostItems/${name}`);
-                        resp.json({success: true});
-                        conn.end();
-                    })
-                    .catch(err => {
-                        console.error(err);
-                        resp.status(500).json({success: false, message: "Could not save image"});
-                        conn.end();
-                    })
+                        .then(() => {
+                            image.mv(`./uploads/lostItems/${name}`);
+                            resp.json({success: true});
+                            conn.end();
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            resp.status(500).json({success: false, message: "Could not save image"});
+                            conn.end();
+                        })
                 } else {
                     resp.json({success: false, message: "File type not allowed"});
                     conn.end();
