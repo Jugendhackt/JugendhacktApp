@@ -124,10 +124,12 @@ body {
     justify-content: center;
     align-items: center;
     position: fixed;
-    background: #cecece;
+    /* background: #cecece; */
 }
 
 .loading img {
+    width: 20vw;
+    height: auto;
     animation: jump 1s infinite linear;
     pointer-events: none;
     visibility: visible;
@@ -150,7 +152,9 @@ body {
 }
 
 @keyframes jump {
-    0%: { transform: scale(1)}
+    0% {
+        transform: scale(1)
+    }
     50% { transform: scale(1.18)}
     70% { transform: scale(1)}
     80% { transform: scale(1.07)}
