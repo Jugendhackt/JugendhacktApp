@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div v-for="event in events" class="card">
+        <div class="event card" v-for="event in events">
             <img class="cover" :src="event.img">
             <p>{{ event.date }}</p>
             <p>{{ event.location }}</p>
@@ -38,13 +38,24 @@
 </script>
 
 <style scoped>
-    .cover {
-        max-width: 1024px;
-        max-height: 614px;
+    .card.event .cover {
         width: 100%;
+        margin: 0 auto;
     }
 
-    .card {
+    .card.event {
+        padding-top: 16px;
         padding-bottom: 16px;
+    }
+
+    @media only screen and (min-width: 900px) {
+        .card.event {
+            max-width: 50vw;
+            margin: 5px auto 24px auto;
+        }
+
+        .card.event .cover {
+            width: 100%;
+        }
     }
 </style>

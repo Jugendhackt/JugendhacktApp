@@ -4,12 +4,10 @@ body {
 
 .card {
     font-family: sans-serif;
-    margin: 8px;
     padding: 12px;
     background: #fff;
-    margin: 5px;
     box-shadow: #cecece 0 0 4px;
-    margin-bottom: 24px;
+    margin: 5px 5px 24px 5px;
 }
 
 .navigation .branding {
