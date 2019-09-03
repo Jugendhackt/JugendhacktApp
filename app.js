@@ -39,9 +39,3 @@ app.use("/lostitems", lostItems);
 app.use("/packinglist", packingList);
 
 app.listen(PORT, () => console.log(`Listening on http://localhost:${PORT}`));
-
-setInterval(() => {
-    console.log("Refreshing cache - " + (new Date()).toLocaleString("de"));
-    request.start(`http://localhost:${PORT}/api/events`);
-    request.start(`http://localhost:${PORT}/api/twitter`);
-}, 15 * 60 * 1000);
