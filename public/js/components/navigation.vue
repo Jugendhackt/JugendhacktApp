@@ -10,18 +10,37 @@
             <router-link to="/packingList"><img class="icon" src="assets/icons/list.svg" alt="Packing List"></router-link>
             <router-link to="/lostitems"><img class="icon" src="assets/icons/briefcase.svg" alt="Lost and Found"></router-link>
             <router-link to="/login"><img class="icon" src="assets/icons/key.svg" alt="Login"></router-link>
+            <router-link to="/admin" v-if="isAdmin">ADMIN ICON LUL</router-link>
         </div>
     </nav>
 </template>
 
 <script>
     module.exports = {
+        data: function () {
+            return {
+                isAdmin: false,
+            }
+        },
         methods: {
             clearCache: function () {
                 console.log("Cleared caches!");
                 caches.delete("Jugendhackt");
                 location.reload(true);
+            },
+            checkAdmin() {
+                const xhr = new XMLHttpRequest();
+                xhr.onload = () => {
+                    // TODO: Validate security: check if user can somehow change this variable
+                    this.isAdmin = xhr.response.isAdmin;
+                };
+                xhr.open("GET", "/user/status");
+                xhr.responseType = "json";
+                xhr.send();
             }
+        },
+        beforeMount() {
+            this.checkAdmin();
         }
     }
 </script>

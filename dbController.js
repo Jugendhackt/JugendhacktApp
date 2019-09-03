@@ -144,6 +144,52 @@ const self = module.exports = {
     },
 
     /**
+     * Adds user as admin
+     * @param req
+     * @param res
+     */
+    addAdmin: (req, res) => {
+        if (req.session.isAdmin) {
+            self.connect()
+                .then(conn => {
+                    conn.query("UPDATE users SET is_admin = 1 WHERE email = ?", [req.body.email])
+                        .then(() => {
+                            res.json({success: true});
+                            conn.end();
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            res.status(400).json({success: false, message: "User does not exist"});
+                            conn.end();
+                        })
+                })
+        } else res.status(403).json({success: false, message: "Operation not allowed"});
+    },
+
+    /**
+     * Returns all user from db
+     * @param req
+     * @param resp
+     */
+    getUsers: (req, resp) => {
+        if (req.session.isAdmin) {
+            self.connect()
+                .then(conn => {
+                    conn.query("SELECT * FROM users")
+                        .then(res => {
+                            resp.json(res);
+                            conn.end()
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            resp.status(500).json({success: false, message: "An error occurred"});
+                            conn.end();
+                        })
+                })
+        } else resp.status(403).json({success: false, message: "Operation not allowed"});
+    },
+
+    /**
      * Adds item to the "Lost and Found" list
      * @param req
      * @param resp
