@@ -147,19 +147,37 @@ body {
 }
 
 @keyframes spin {
-    from { transform: rotateZ(0)}
-    to {transform: rotateZ(360deg)}
+    from {
+        transform: rotateZ(0)
+    }
+    to {
+        transform: rotateZ(360deg)
+    }
 }
 
 @keyframes jump {
     0% {
         transform: scale(1)
     }
-    50% { transform: scale(1.18)}
-    70% { transform: scale(1)}
-    80% { transform: scale(1.07)}
-    87% { transform: scale(1.04)}
-    94% { transform: scale(1.02)}
-    95% { transform: scale(1.005)}
-    97% { transform: scale(1)}
+    50% {
+        transform: scale(1.18)
+    }
+    70% {
+        transform: scale(1)
+    }
+    80% {
+        transform: scale(1.07)
+    }
+    87% {
+        transform: scale(1.04)
+    }
+    94% {
+        transform: scale(1.02)
+    }
+    95% {
+        transform: scale(1.005)
+    }
+    97% {
+        transform: scale(1)
+    }
 }
