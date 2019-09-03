@@ -5,7 +5,8 @@
         <ul>
             <li v-for="project in boardData.projects">
                 <h4>{{ project.title }}</h4>
-                <img :src="project.cover.startsWith('http') ? project.cover : 'https://hackdash.s3-us-west-2.amazonaws.com' + project.cover">
+                <img :src="project.cover.startsWith('http') ? project.cover : 'https://hackdash.s3-us-west-2.amazonaws.com' + project.cover"
+                     v-if="project.cover">
                 <p>{{ project.description }}</p>
             </li>
         </ul>
