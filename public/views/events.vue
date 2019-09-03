@@ -1,6 +1,5 @@
 <template>
     <div>
-        <div class="card" :class="{ hide: !loading}">Loading <img src="/assets/icons/badges/SuperAlpaka.png" alt="..."></div>
         <div v-for="event in events" class="card">
             <img class="cover" :src="event.img">
             <p>{{ event.date }}</p>
@@ -21,11 +20,11 @@
         },
         methods: {
             fetch() {
-                this.loading = true;
+                this.$root.loading = true;
                 let xhr = new XMLHttpRequest();
                 xhr.addEventListener("load", () => {
                     this.events = xhr.response;
-                    this.loading = false;
+                    this.$root.loading = false;
                 });
                 xhr.open("GET", "/api/events");
                 xhr.responseType = "json";
@@ -47,13 +46,5 @@
 
     .card {
         padding-bottom: 16px;
-    }
-
-    .card.hide {
-        transition: height 1000ms linear, padding-top 1000ms linear;
-        height: 0;
-        overflow: hidden;
-        padding: 0;
-        margin: 0;
     }
 </style>

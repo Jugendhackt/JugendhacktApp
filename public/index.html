@@ -15,6 +15,7 @@
 
 <body>
 <div id="app">
+    <div class="loading" :class="{ hide: !loading}"><img src="/assets/icons/badges/SuperAlpaka.png" alt="..." width="64" height=74></div>
     <navigation></navigation>
     <router-view></router-view>
 </div>

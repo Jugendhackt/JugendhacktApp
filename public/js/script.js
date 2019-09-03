@@ -22,6 +22,11 @@ const router = new VueRouter({
 });
 
 let app = new Vue({
+    data: function(){
+        return {
+            loading: false
+        }
+    },
     router,
     el: "#app"
 });
