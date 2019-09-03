@@ -25,9 +25,9 @@ app.use((_, res, next) => {
 });
 app.use(session({
     secret: "theBestSecretKey", // TODO: Random key
-    resave: false,
-    saveUninitialized: true,
-    cookie: {secure: true}
+    resave: true,
+    saveUninitialized: true
+    //cookie: {secure: true}
 }));
 
 dbController.init();

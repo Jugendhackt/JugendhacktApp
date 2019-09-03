@@ -132,11 +132,11 @@ const self = module.exports = {
      * @param res
      */
     checkStatus: (req, res) => {
+        // TODO: Validate security
         const userStatus = {
-            LoggedIn: req.session.loggedIn,
+            loggedIn: req.session.loggedIn,
             isAdmin: req.session.isAdmin,
         };
-        console.log(userStatus);
         res.json(userStatus);
     },
 
