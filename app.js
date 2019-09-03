@@ -5,6 +5,7 @@ const fileupload = require("express-fileupload");
 const bodyParser = require("body-parser");
 const session = require("express-session");
 const dbController = require("./dbController");
+const request = require("./data/request");
 
 const api = require("./api.js");
 const user = require("./userHandler");
@@ -38,3 +39,9 @@ app.use("/lostitems", lostItems);
 app.use("/packinglist", packingList);
 
 app.listen(PORT, () => console.log(`Listening on http://localhost:${PORT}`));
+
+setInterval(() => {
+    console.log("Refreshing cache - " + (new Date()).toLocaleString("de"));
+    request.start(`http://localhost:${PORT}/api/events`);
+    request.start(`http://localhost:${PORT}/api/twitter`);
+}, 15 * 60 * 1000);
