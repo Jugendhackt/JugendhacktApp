@@ -1,6 +1,5 @@
 const mariadb = require('mariadb');
 const bCrypt = require('bcrypt');
-const fs = require('fs');
 
 const userTable = `
     CREATE TABLE IF NOT EXISTS users
@@ -89,8 +88,9 @@ const self = module.exports = {
                         [fullName, password, req.body.email, req.body.birthday, false]
                     )
                         .then(() => {
-                            res.json({success: true});
+                            // res.json({success: true});
                             conn.end();
+                            self.login(req, res);
                         })
                         .catch(err => {
                             console.error('Could not create user', err);
@@ -124,6 +124,20 @@ const self = module.exports = {
                         conn.end();
                     })
             })
+    },
+
+    /**
+     * Checks the status of the user
+     * @param req
+     * @param res
+     */
+    checkStatus: (req, res) => {
+        const userStatus = {
+            LoggedIn: req.session.loggedIn,
+            isAdmin: req.session.isAdmin,
+        };
+        console.log(userStatus);
+        res.json(userStatus);
     },
 
     /**

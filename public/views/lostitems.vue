@@ -1,15 +1,6 @@
 <template>
     <div>
-        <div class="card">
-            <div v-for="item in items" class="lost-item">
-                <img v-bind:src="'/lostitems/images/' + item.img_name" alt="Image of the item" class="image">
-                <div class="desc">
-                    <h1>{{item.what}}</h1>
-                    <p>{{item.location}}</p>
-                </div>
-            </div>
-        </div>
-        <div class="card">
+        <div class="card" v-if="isAdmin">
             <h2 class="name">Lost and Found</h2>
             <form @submit="submitLostItem()" enctype="multipart/form-data">
                 <label for="lnf_what">Item found:</label>
@@ -20,6 +11,15 @@
                 <input type="file" id="lnf_img" v-model=lnf.img required>
                 <button type="submit" class="button primary">Add item to list</button>
             </form>
+        </div>
+        <div class="card">
+            <div v-for="item in items" class="lost-item">
+                <img v-bind:src="'/lostitems/images/' + item.img_name" alt="Image of the item" class="image">
+                <div class="desc">
+                    <h1>{{item.what}}</h1>
+                    <p>{{item.location}}</p>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -33,7 +33,8 @@
                     location: "",
                     img: ""
                 },
-                items: []
+                items: [],
+                isAdmin: true
             }
         },
         methods: {
@@ -57,10 +58,20 @@
                 };
                 xhr.open('GET', '/lostitems/get');
                 xhr.send();
+            },
+            checkAdmin() {
+                const xhr = new XMLHttpRequest();
+                xhr.onload = () => {
+                    this.isAdmin = xhr.response.isAdmin;
+                };
+                xhr.open("GET", "/user/isadmin");
+                xhr.responseType = "json";
+                xhr.send();
             }
         },
         beforeMount() {
             this.fetchLostItemList();
+            // this.checkAdmin();
         }
     }
 </script>
