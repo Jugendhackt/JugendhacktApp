@@ -1,5 +1,6 @@
 const mariadb = require('mariadb');
 const bCrypt = require('bcrypt');
+const fs = require('fs');
 
 const userTable = `
     CREATE TABLE IF NOT EXISTS users
@@ -76,27 +77,30 @@ const self = module.exports = {
     /**
      * Creates a new user
      * @param req
-     * @param res
+     * @param resp
      */
-    addUser: (req, res) => {
-        self.connect(res)
+    addUser: (req, resp) => {
+        self.connect(resp)
             .then(conn => {
                 bCrypt.hash(req.body.password, 12, (err, password) => {
                     if (err) throw err;
                     const fullName = req.body.fullName ? req.body.fullName.length <= 100 : req.body.fullName.slice(0, 101);
-                    conn.query("INSERT INTO users (full_name, password, email, birthday, is_admin) VALUE (?,?,?,?,?)",
-                        [fullName, password, req.body.email, req.body.birthday, false]
-                    )
-                        .then(() => {
-                            // res.json({success: true});
-                            conn.end();
-                            self.login(req, res);
-                        })
-                        .catch(err => {
-                            console.error('Could not create user', err);
-                            res.status(400).json({success: false, message: "User already exists"});
-                            conn.end();
-                        })
+                    conn.query("SELECT * FROM users LIMIT 1")
+                        .then(res => {
+                            const isAdmin = !res[0];
+                            conn.query("INSERT INTO users (full_name, password, email, birthday, is_admin) VALUE (?,?,?,?,?)",
+                                [fullName, password, req.body.email, req.body.birthday, isAdmin]
+                            )
+                                .then(() => {
+                                    conn.end();
+                                    self.login(req, resp);
+                                })
+                                .catch(err => {
+                                    console.error('Could not create user', err);
+                                    resp.status(400).json({success: false, message: "User already exists"});
+                                    conn.end();
+                                })
+                        });
                 })
             })
     },
@@ -141,38 +145,85 @@ const self = module.exports = {
     },
 
     /**
+     * Inverts admin status of the user
+     * @param req
+     * @param res
+     */
+    updateAdmin: (req, res) => {
+        if (req.session.isAdmin) {
+            self.connect(res)
+                .then(conn => {
+                    conn.query("UPDATE users SET is_admin = NOT is_admin WHERE email = ?", [req.body.email])
+                        .then(() => {
+                            res.json({success: true});
+                            conn.end();
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            res.status(400).json({success: false, message: "User does not exist"});
+                            conn.end();
+                        })
+                })
+        } else res.status(403).json({success: false, message: "Operation not allowed"});
+    },
+
+    /**
+     * Returns all user from db
+     * @param req
+     * @param resp
+     */
+    getUsers: (req, resp) => {
+        if (req.session.isAdmin) {
+            self.connect()
+                .then(conn => {
+                    conn.query("SELECT * FROM users")
+                        .then(res => {
+                            resp.json(res);
+                            conn.end()
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            resp.status(500).json({success: false, message: "An error occurred"});
+                            conn.end();
+                        })
+                })
+        } else resp.status(403).json({success: false, message: "Operation not allowed"});
+    },
+
+    /**
      * Adds item to the "Lost and Found" list
      * @param req
      * @param resp
      */
     addLostItem: (req, resp) => {
-        self.connect(resp)
-            .then(conn => {
-                // Maybe check file size
-                const allowedTypes = ['jpg', 'jpeg', 'png', 'webm'];
-                const image = req.files.img;
-                const imageType = image.name.split('.').reverse()[0];
-                if (allowedTypes.includes(imageType.toLowerCase())) {
-                    // Possible issue with name through id caused by deleting latest item
-                    const name = `${(new Date()).getTime()}.${imageType}`;
-                    conn.query("INSERT INTO lost_items (location, what, img_name) VALUE (?,?,?)",
-                        [req.body.location, req.body.what, name]
-                    )
-                    .then(() => {
-                        image.mv(`./uploads/lostItems/${name}`);
-                        resp.json({success: true});
+        if (req.session.isAdmin) {
+            self.connect(resp)
+                .then(conn => {
+                    // Maybe check file size
+                    const allowedTypes = ['jpg', 'jpeg', 'png', 'webm'];
+                    const image = req.files.img;
+                    const imageType = image.name.split('.').reverse()[0];
+                    if (allowedTypes.includes(imageType.toLowerCase())) {
+                        const name = `${(new Date()).getTime()}.${imageType}`;
+                        conn.query("INSERT INTO lost_items (location, what, img_name) VALUE (?,?,?)",
+                            [req.body.location, req.body.what, name]
+                        )
+                            .then(() => {
+                                image.mv(`./uploads/lostItems/${name}`);
+                                resp.json({success: true});
+                                conn.end();
+                            })
+                            .catch(err => {
+                                console.error(err);
+                                resp.status(500).json({success: false, message: "Could not save image"});
+                                conn.end();
+                            })
+                    } else {
+                        resp.json({success: false, message: "File type not allowed"});
                         conn.end();
-                    })
-                    .catch(err => {
-                        console.error(err);
-                        resp.status(500).json({success: false, message: "Could not save image"});
-                        conn.end();
-                    })
-                } else {
-                    resp.json({success: false, message: "File type not allowed"});
-                    conn.end();
-                }
-            })
+                    }
+                })
+        } else resp.status(403).json({success: false, message: "Operation not allowed"});
     },
 
     /**
@@ -202,19 +253,23 @@ const self = module.exports = {
      * @param res
      */
     delLostItem: (req, res) => {
-        self.connect(res)
-            .then(conn => {
-                conn.query("DELETE FROM lost_items WHERE id = ?")
-                    .then(() => {
-                        res.json({success: true});
-                        conn.end();
-                    })
-                    .catch(err => {
-                        console.error(err);
-                        res.status(400).json({success: true, message: "Item not found"});
-                        conn.end();
-                    })
-            })
+        if (req.session.isAdmin) {
+            console.log(req.body);
+            self.connect(res)
+                .then(conn => {
+                    conn.query("DELETE FROM lost_items WHERE id = ?", [req.body.id])
+                        .then(() => {
+                            res.json({success: true});
+                            conn.end();
+                            fs.unlinkSync(`./uploads/lostItems/${req.body.img}`);
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            res.status(400).json({success: false, message: "Item not found", body: req.body});
+                            conn.end();
+                        })
+                })
+        } else res.status(403).json({success: false, message: "Operation not allowed"});
     },
 
     /**
@@ -223,22 +278,24 @@ const self = module.exports = {
      * @param res
      */
     addPackingListItem: (req, res) => {
-        self.connect(res)
-            .then(conn => {
-                conn.query("INSERT INTO packing_list (item) VALUE (?)", [req.body.item])
-                    .then(() => {
-                        res.json({success: true});
-                        conn.end();
-                    })
-                    .catch(err => {
-                        console.error(err);
-                        res.status(400).json({success: false, message: "No item sent"});
-                        conn.end();
-                    })
-            })
+        if (req.session.isAdmin) {
+            self.connect(res)
+                .then(conn => {
+                    conn.query("INSERT INTO packing_list (item) VALUE (?)", [req.body.item])
+                        .then(() => {
+                            res.json({success: true});
+                            conn.end();
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            res.status(400).json({success: false, message: "No item sent"});
+                            conn.end();
+                        })
+                })
+        } else res.status(403).json({success: false, message: "Operation not allowed"});
     },
 
-    /*
+    /**
      * Get all items from the packing list
      * @param req
      * @param resp
@@ -253,7 +310,7 @@ const self = module.exports = {
                     })
                     .catch(err => {
                         console.error(err);
-                        resp.status(500).json({success: false, message: "Unkmown error"});
+                        resp.status(500).json({success: false, message: "Unknown error"});
                     })
             })
     },
@@ -264,19 +321,21 @@ const self = module.exports = {
      * @param res
      */
     delPackingListItem: (req, res) => {
-        self.connect(res)
-            .then(conn => {
-                conn.query("DELETE FROM packing_list WHERE id = ?")
-                    .then(() => {
-                        res.json({success: true});
-                        conn.end();
-                    })
-                    .catch(err => {
-                        console.error(err);
-                        res.status(400).json({success: true, message: "Item not found"});
-                        conn.end();
-                    })
-            })
+        if (req.session.isAdmin) {
+            self.connect(res)
+                .then(conn => {
+                    conn.query("DELETE FROM packing_list WHERE id = ?", [req.body.id])
+                        .then(_ => {
+                            res.json({success: true});
+                            conn.end();
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            res.status(400).json({success: true, message: "Item not found"});
+                            conn.end();
+                        })
+                })
+        } else res.status(403).json({success: false, message: "Operation not allowed"});
     },
 };
 

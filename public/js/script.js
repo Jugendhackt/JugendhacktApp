@@ -13,7 +13,8 @@ const routes = [
     {path: "/hackdash", component: httpVueLoader('views/hackdash.vue')},
     {path: "/feed", component: httpVueLoader('views/feed.vue')},
     {path: "/lostitems", component: httpVueLoader('views/lostitems.vue')},
-    {path: "/packinglist", component: httpVueLoader('views/packinglist.vue')}
+    {path: "/packinglist", component: httpVueLoader('views/packinglist.vue')},
+    {path: "/admin", component: httpVueLoader('views/admin.vue')}
 ];
 
 const router = new VueRouter({

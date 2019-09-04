@@ -1,5 +1,4 @@
-const express = require("express");
-const memoryCache = require("memory-cache");
+const express = require('express');
 const hackdash = require("./data/hackdash.js");
 const github = require("./data/github.js");
 const jh = require("./data/website.js");
@@ -36,7 +35,6 @@ const apiUrls = {
     "Zulip": "/api/zulip"
 };
 
-// cache responses for 10 minutes - 600 seconds
 api.get("/events", cache(600),
     async (_, res) => res.send(await jh.getEvents()));
 api.get("/github", cache(600),
@@ -50,7 +48,10 @@ api.get("/hackdash", cache(600),
 api.get("/twitter", cache(600),
     async (_, res) => res.send(await twitter.get()));
 api.get("/zulip", cache(300),
-    async (_, res) => res.send(await zulip.get()));
+    async (req, res) => {
+        if (req.session.loggedIn) res.send(await zulip.get());
+        else res.send({});
+    });
 api.get("*", (_, res) => res.send(apiUrls));
 
 module.exports = api;
