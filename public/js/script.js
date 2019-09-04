@@ -15,6 +15,7 @@ const routes = [
     {path: "/feed", component: httpVueLoader('views/feed.vue')},
     {path: "/lostitems", component: httpVueLoader('views/lostitems.vue')},
     {path: "/packinglist", component: httpVueLoader('views/packinglist.vue')},
+    {path: "/testImage", component: httpVueLoader('views/testImage.vue')}
 ];
 
 const router = new VueRouter({

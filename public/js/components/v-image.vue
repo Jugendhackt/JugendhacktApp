@@ -15,8 +15,7 @@ module.exports = {
     props: ["src", "alt", "description"],
     data: function(){
         return {
-            isBig: false,
-            hasSlot: true
+            isBig: false
         }
     }
 }
