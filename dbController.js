@@ -195,32 +195,34 @@ const self = module.exports = {
      * @param resp
      */
     addLostItem: (req, resp) => {
-        self.connect(resp)
-            .then(conn => {
-                // Maybe check file size
-                const allowedTypes = ['jpg', 'jpeg', 'png', 'webm'];
-                const image = req.files.img;
-                const imageType = image.name.split('.').reverse()[0];
-                if (allowedTypes.includes(imageType.toLowerCase())) {
-                    const name = `${(new Date()).getTime()}.${imageType}`;
-                    conn.query("INSERT INTO lost_items (location, what, img_name) VALUE (?,?,?)",
-                        [req.body.location, req.body.what, name]
-                    )
-                        .then(() => {
-                            image.mv(`./uploads/lostItems/${name}`);
-                            resp.json({success: true});
-                            conn.end();
-                        })
-                        .catch(err => {
-                            console.error(err);
-                            resp.status(500).json({success: false, message: "Could not save image"});
-                            conn.end();
-                        })
-                } else {
-                    resp.json({success: false, message: "File type not allowed"});
-                    conn.end();
-                }
-            })
+        if (req.session.isAdmin) {
+            self.connect(resp)
+                .then(conn => {
+                    // Maybe check file size
+                    const allowedTypes = ['jpg', 'jpeg', 'png', 'webm'];
+                    const image = req.files.img;
+                    const imageType = image.name.split('.').reverse()[0];
+                    if (allowedTypes.includes(imageType.toLowerCase())) {
+                        const name = `${(new Date()).getTime()}.${imageType}`;
+                        conn.query("INSERT INTO lost_items (location, what, img_name) VALUE (?,?,?)",
+                            [req.body.location, req.body.what, name]
+                        )
+                            .then(() => {
+                                image.mv(`./uploads/lostItems/${name}`);
+                                resp.json({success: true});
+                                conn.end();
+                            })
+                            .catch(err => {
+                                console.error(err);
+                                resp.status(500).json({success: false, message: "Could not save image"});
+                                conn.end();
+                            })
+                    } else {
+                        resp.json({success: false, message: "File type not allowed"});
+                        conn.end();
+                    }
+                })
+        } else resp.status(403).json({success: false, message: "Operation not allowed"});
     },
 
     /**
@@ -250,19 +252,21 @@ const self = module.exports = {
      * @param res
      */
     delLostItem: (req, res) => {
-        self.connect(res)
-            .then(conn => {
-                conn.query("DELETE FROM lost_items WHERE id = ?")
-                    .then(() => {
-                        res.json({success: true});
-                        conn.end();
-                    })
-                    .catch(err => {
-                        console.error(err);
-                        res.status(400).json({success: true, message: "Item not found"});
-                        conn.end();
-                    })
-            })
+        if (req.session.isAdmin) {
+            self.connect(res)
+                .then(conn => {
+                    conn.query("DELETE FROM lost_items WHERE id = ?")
+                        .then(() => {
+                            res.json({success: true});
+                            conn.end();
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            res.status(400).json({success: true, message: "Item not found"});
+                            conn.end();
+                        })
+                })
+        } else res.status(403).json({success: false, message: "Operation not allowed"});
     },
 
     /**
@@ -271,19 +275,21 @@ const self = module.exports = {
      * @param res
      */
     addPackingListItem: (req, res) => {
-        self.connect(res)
-            .then(conn => {
-                conn.query("INSERT INTO packing_list (item) VALUE (?)", [req.body.item])
-                    .then(() => {
-                        res.json({success: true});
-                        conn.end();
-                    })
-                    .catch(err => {
-                        console.error(err);
-                        res.status(400).json({success: false, message: "No item sent"});
-                        conn.end();
-                    })
-            })
+        if (req.session.isAdmin) {
+            self.connect(res)
+                .then(conn => {
+                    conn.query("INSERT INTO packing_list (item) VALUE (?)", [req.body.item])
+                        .then(() => {
+                            res.json({success: true});
+                            conn.end();
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            res.status(400).json({success: false, message: "No item sent"});
+                            conn.end();
+                        })
+                })
+        } else res.status(403).json({success: false, message: "Operation not allowed"});
     },
 
     /*
@@ -312,19 +318,21 @@ const self = module.exports = {
      * @param res
      */
     delPackingListItem: (req, res) => {
-        self.connect(res)
-            .then(conn => {
-                conn.query("DELETE FROM packing_list WHERE id = ?")
-                    .then(() => {
-                        res.json({success: true});
-                        conn.end();
-                    })
-                    .catch(err => {
-                        console.error(err);
-                        res.status(400).json({success: true, message: "Item not found"});
-                        conn.end();
-                    })
-            })
+        if (req.session.isAdmin) {
+            self.connect(res)
+                .then(conn => {
+                    conn.query("DELETE FROM packing_list WHERE id = ?")
+                        .then(() => {
+                            res.json({success: true});
+                            conn.end();
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            res.status(400).json({success: true, message: "Item not found"});
+                            conn.end();
+                        })
+                })
+        } else res.status(403).json({success: false, message: "Operation not allowed"});
     },
 };
 
