@@ -5,7 +5,8 @@
         <ul>
             <li v-for="project in boardData.projects">
                 <h4>{{ project.title }}</h4>
-                <img :src="project.cover.startsWith('http') ? project.cover : 'https://hackdash.s3-us-west-2.amazonaws.com' + project.cover">
+                <img :src="project.cover.startsWith('http') ? project.cover : 'https://hackdash.s3-us-west-2.amazonaws.com' + project.cover"
+                     v-if="project.cover">
                 <p>{{ project.description }}</p>
             </li>
         </ul>
@@ -23,11 +24,11 @@
         methods: {
             fetch() {
                 this.boardData.description = "Loading...";
-                this.loading = true;
+                this.$root.loading = true;
                 let xhr = new XMLHttpRequest();
                 xhr.addEventListener("load", () => {
                     console.log(xhr.response);
-                    this.loading = false;
+                    this.$root.loading = false;
                     this.boardData = xhr.response;
                 });
                 xhr.open("GET", "/api/hackdash/board/" + this.board.domain);

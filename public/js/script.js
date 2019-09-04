@@ -5,6 +5,8 @@ if ('serviceWorker' in navigator) {
 
 httpVueLoader.register(Vue, 'js/components/navigation.vue');
 
+let app;
+
 const routes = [
     {path: "/", component: httpVueLoader('views/events.vue')},
     {path: "/login", component: httpVueLoader('views/login.vue')},
@@ -16,13 +18,23 @@ const routes = [
 ];
 
 const router = new VueRouter({
-    routes,
+    routes: routes,
     scrollBehavior(to, from, savedPosition) {
         return {x: 0, y: 0}
     }
 });
 
-let app = new Vue({
+app = new Vue({
+    data: function(){
+        return {
+            loading: false
+        }
+    },
+    watch: {
+        '$route': function(){
+            this.loading = false;
+        }
+    },
     router,
     el: "#app"
 });

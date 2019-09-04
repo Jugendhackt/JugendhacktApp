@@ -23,11 +23,6 @@
             }
         },
         methods: {
-            clearCache: function () {
-                console.log("Cleared caches!");
-                caches.delete("Jugendhackt");
-                location.reload(true);
-            },
             checkAdmin() {
                 const xhr = new XMLHttpRequest();
                 xhr.onload = () => {

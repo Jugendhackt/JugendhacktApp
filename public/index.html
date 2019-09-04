@@ -6,7 +6,13 @@
     <link href="css/style.css" rel="stylesheet">
 
     <meta charset="utf-8">
+    <meta name="theme-color" content="#2aabe1">
     <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    
+    <!-- icon in the highest resolution we need it for -->
+    <link rel="icon" sizes="192x192" href="/assets/icons/res/apple-touch/apple-touch.png">
+    <!-- reuse same icon for Safari -->
+    <link rel="apple-touch-icon" href="/assets/icons/res/apple-touch/apple-touch.png">
 
     <script src="js/vue.js"></script>
     <script src="js/vue-router.js"></script>
@@ -15,6 +21,7 @@
 
 <body>
 <div id="app">
+    <div class="loading" :class="{ hide: !loading}"><img src="/assets/icons/badges/SuperAlpaka.png" alt="..." width="64" height=74></div>
     <navigation></navigation>
     <router-view></router-view>
 </div>

@@ -4,18 +4,17 @@ body {
 
 .card {
     font-family: sans-serif;
-    margin: 8px;
     padding: 12px;
     background: #fff;
-    margin: 5px;
     box-shadow: #cecece 0 0 4px;
-    margin-bottom: 24px;
+    margin: 5px 5px 24px 5px;
 }
 
 .navigation .branding {
+    z-index: 5;
     font-size: 1.5em;
     font-family: "SourceSansPro", sans-serif;
-    background: #fff;
+    background: #f2f2f2;
     padding: 12px;
     position: fixed;
     left: 0;
@@ -38,7 +37,7 @@ body {
     padding: 5px;
     display: flex;
     font-family: sans-serif;
-    background: #fff;
+    background: #f2f2f2;
     margin-top: 0;
     box-shadow: 0 0 4px #cecece;
     z-index: 5;
@@ -64,7 +63,7 @@ body {
 
 .nav .router-link-exact-active {
     transition: background-color linear 200ms;
-    background-color: #eee;
+    background-color: #c7d4d9;
     border-radius: 50%;
 }
 
@@ -109,4 +108,74 @@ body {
 .button.secondary {
     color: white;
     background-color: #808080;
+}
+
+/* CSS for Loading View */
+.loading {
+    z-index: 1;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    /* background: #cecece; */
+}
+
+.loading img {
+    width: 20vw;
+    height: auto;
+    animation: jump 1s infinite linear;
+    pointer-events: none;
+    visibility: visible;
+}
+
+.loading.hide img {
+    visibility: hidden;
+    transition: visibility 300ms linear;
+}
+
+.loading.hide {
+    transition: background-color 300ms linear;
+    background: transparent;
+    pointer-events: none;
+}
+
+@keyframes spin {
+    from {
+        transform: rotateZ(0)
+    }
+    to {
+        transform: rotateZ(360deg)
+    }
+}
+
+@keyframes jump {
+    0% {
+        transform: scale(1)
+    }
+    50% {
+        transform: scale(1.18)
+    }
+    70% {
+        transform: scale(1)
+    }
+    80% {
+        transform: scale(1.07)
+    }
+    87% {
+        transform: scale(1.04)
+    }
+    94% {
+        transform: scale(1.02)
+    }
+    95% {
+        transform: scale(1.005)
+    }
+    97% {
+        transform: scale(1)
+    }
 }
