@@ -4,6 +4,7 @@ if ('serviceWorker' in navigator) {
 } else console.warn("No service worker support!");
 
 httpVueLoader.register(Vue, 'js/components/navigation.vue');
+httpVueLoader.register(Vue, "js/components/v-image.vue")
 
 let app;
 
@@ -13,7 +14,8 @@ const routes = [
     {path: "/hackdash", component: httpVueLoader('views/hackdash.vue')},
     {path: "/feed", component: httpVueLoader('views/feed.vue')},
     {path: "/lostitems", component: httpVueLoader('views/lostitems.vue')},
-    {path: "/packinglist", component: httpVueLoader('views/packinglist.vue')}
+    {path: "/packinglist", component: httpVueLoader('views/packinglist.vue')},
+    {path: "/testImage", component: httpVueLoader('views/testImage.vue')}
 ];
 
 const router = new VueRouter({
