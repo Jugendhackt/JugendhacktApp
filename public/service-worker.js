@@ -18,6 +18,7 @@ workbox.routing.registerRoute(
 
 function showNotification(event) {
     return new Promise(resolve => {
+        console.log(event.data.text());
         const {body, title, tag} = JSON.parse(event.data.text());
         self.registration
             .getNotifications({tag})

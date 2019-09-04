@@ -35,24 +35,17 @@ push.post("/subscribe", (req, res) => {
     res.send(sendMessage);
 });
 
-push.post("/push", (req, res, next) => {
-    const pushSubscription = req.body.subscription;
-    const notificationMessage = req.body.message;
-    console.log("New message:", notificationMessage);
-
-    if (!pushSubscription) {
-        res.status(400).send("A subscription is required");
-        return next(false);
-    }
+push.post("/send", (req, res, next) => {
+    const message = req.body.message;
+    console.log("New message:", message);
 
     if (subscriptions.length) {
-        subscriptions.map((subscription, index) => {
+        subscriptions.forEach(subscription => {
             let jsonSub = JSON.parse(subscription);
 
-            webPush
-                .sendNotification(jsonSub, notificationMessage)
-                .then(success => handleSuccess(success, index))
-                .catch(error => handleError(error, index));
+            webPush.sendNotification(jsonSub, message)
+                .then(_ => handleSuccess())
+                .catch(_ => handleError());
         });
     } else {
         res.send("No subscribed clients found");

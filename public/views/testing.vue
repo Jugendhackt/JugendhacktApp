@@ -16,11 +16,10 @@
         methods: {
             send() {
                 const xhr = new XMLHttpRequest();
-                xhr.open("POST", "https://jh.marvinborner.de/push/push/");
+                xhr.open("POST", "https://jh.marvinborner.de/push/send/");
                 xhr.onload = () => console.log(xhr.responseText);
                 xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
                 xhr.send(JSON.stringify({
-                    "subscription": "all",
                     "message": this.data
                 }))
             },

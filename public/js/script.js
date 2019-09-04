@@ -40,6 +40,7 @@ app = new Vue({
  * NOTIFICATIONS AND CACHING
  */
 let swRegistration;
+(async () => await Notification.requestPermission())();
 
 if ("serviceWorker" in navigator) {
     console.log("Service worker support!");
@@ -47,14 +48,11 @@ if ("serviceWorker" in navigator) {
         .then(res => swRegistration = res)
 } else console.warn("No service worker support!");
 
-(async () => await Notification.requestPermission())();
-
-
 function base64ToUint8Array(base64String) {
-    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const padding = "=".repeat((4 - base64String.length % 4) % 4);
     const base64 = (base64String + padding)
-        .replace(/-/g, '+')
-        .replace(/_/g, '/');
+        .replace(/-/g, "+")
+        .replace(/_/g, "/");
 
     const rawData = window.atob(base64);
     const outputArray = new Uint8Array(rawData.length);
@@ -68,7 +66,6 @@ function base64ToUint8Array(base64String) {
 function subscribeServer(subscription) {
     if (subscription) {
         const jsonSubscription = JSON.stringify(subscription);
-
         const xhr = new XMLHttpRequest();
         xhr.open("POST", "https://jh.marvinborner.de/push/subscribe");
         xhr.setRequestHeader("Content-type", "application/json");
@@ -89,14 +86,14 @@ function subscribeUser() {
             applicationServerKey: applicationServerKey
         })
             .then(subscription => {
-                console.log('User is subscribed:', subscription);
+                console.log("Subscribed successfully!");
                 subscribeServer(subscription);
             })
             .catch(err => {
-                if (Notification.permission === 'denied') {
-                    console.warn('Permission for notifications was denied');
+                if (Notification.permission === "denied") {
+                    console.warn("Permission for notifications was denied :(");
                 } else {
-                    console.error('Failed to subscribe the user: ', err);
+                    console.error("Failed to subscribe the user: ", err);
                 }
             });
     };
