@@ -18,7 +18,14 @@ module.exports.get = async () => {
         const text = tweet.querySelector("div .content p.TweetTextSize");
         const name = tweet.querySelector("div .content .fullname");
         const time = tweet.querySelector("div .content ._timestamp");
-        const pictures = tweet.querySelectorAll("img");
+        const tmpPictures = tweet.querySelectorAll("img");
+        const pictures = [];
+        const emojis = [];
+        for (const pic of tmpPictures) {
+            if (pic.src.startsWith("https://abs.twimg.com/emoji/"))
+                emojis.push(pic);
+            else pictures.push(pic)
+        }
         if (text && name.textContent.includes("hackt")) {
             object["text"] = text.textContent.substr(text.textContent.length - 26).startsWith("pic.twitter.com")
                 ? text.textContent.substr(0, text.textContent.length - 26)
@@ -28,6 +35,9 @@ module.exports.get = async () => {
             object["pictures"] = [];
             pictures.forEach(elem => object["pictures"].push(elem.getAttribute("src")));
             object["pictures"].shift();
+            object["emojis"] = [];
+            emojis.forEach(elem => object["emojis"].push(elem.getAttribute("src")));
+            object["emojis"].shift();
             tweetsArr.push(object);
         }
     }

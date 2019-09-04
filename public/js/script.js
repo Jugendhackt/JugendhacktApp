@@ -4,6 +4,7 @@ if ('serviceWorker' in navigator) {
 } else console.warn("No service worker support!");
 
 httpVueLoader.register(Vue, 'js/components/navigation.vue');
+httpVueLoader.register(Vue, "js/components/v-image.vue")
 
 let app;
 
