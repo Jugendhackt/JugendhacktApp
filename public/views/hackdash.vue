@@ -24,11 +24,11 @@
         },
         methods: {
             fetch() {
-                this.loading = true;
+                this.$root.loading = true;
                 let xhr = new XMLHttpRequest();
                 xhr.addEventListener("load", () => {
                     console.log(xhr.response);
-                    this.loading = false;
+                    this.$root.loading = false;
                     this.boards = xhr.response;
                     this.boards.reverse();
                 });

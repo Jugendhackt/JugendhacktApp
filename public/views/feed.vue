@@ -22,6 +22,7 @@
         },
         methods: {
             fetchTwitter() {
+                this.$root.loading = true;
                 return new Promise(resolve => {
                     let xhr = new XMLHttpRequest();
                     xhr.addEventListener("load", () => {
@@ -37,6 +38,7 @@
                 return new Promise(resolve => {
                     let xhr = new XMLHttpRequest();
                     xhr.addEventListener("load", () => {
+                        this.$root.loading = false;
                         this.feed = this.feed.concat(xhr.response);
                         resolve(this.feed)
                     });

@@ -52,54 +52,24 @@
                 const data = JSON.stringify(this.login_data);
                 const xhr = new XMLHttpRequest();
                 xhr.onload = function () {
-                    console.log(xhr.response);
+                    if (xhr.response.success) location.replace("/");
                 };
                 xhr.open('POST', '/user/login');
                 xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                xhr.responseType = "json";
                 xhr.send(data);
             },
             register: function () {
                 const data = JSON.stringify(this.register_data);
                 const xhr = new XMLHttpRequest();
                 xhr.onload = function () {
-                    console.log(xhr.response);
+                    if (xhr.response.success) location.replace("/");
                 };
                 xhr.open('POST', '/user/register');
                 xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                xhr.responseType = "json";
                 xhr.send(data);
             }
-            /*
-            login(){
-                return new Promise(function(resolve, reject) {
-                    let xhr = new XMLHttpRequest();
-                    xhr.addEventListener("load", () => {
-                        console.log(xhr.response);
-                    });
-                    var formdata = new FormData();
-                    formdata.set("email", this.vm.login_data.email);
-                    formdata.set("password", this.vm.login_data.assword);
-                    xhr.open("POST", "/user/login");
-                    xhr.responseType = "json";
-                    xhr.send(formdata);
-                });
-            },
-
-            register(){
-                return new Promise(function(resolve, reject) {
-                    let xhr = new XMLHttpRequest();
-                    xhr.addEventListener("load", () => {
-                        console.log(xhr.response);
-                    });
-                    var formdata = new FormData();
-                    formdata.set("username", vm.register_data.username);
-                    formdata.set("email", vm.register_data.email);
-                    formdata.set("password", vm.register_data.password);
-                    formdata.set("birthday", vm.register_data.birthday);
-                    xhr.open("POST", "/user/register");
-                    xhr.responseType = "json";
-                    xhr.send(formdata);
-                });
-            }*/
         }
     }
 </script>

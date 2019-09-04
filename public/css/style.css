@@ -4,12 +4,10 @@ body {
 
 .card {
     font-family: sans-serif;
-    margin: 8px;
     padding: 12px;
     background: #fff;
-    margin: 5px;
     box-shadow: #cecece 0 0 4px;
-    margin-bottom: 24px;
+    margin: 5px 5px 24px 5px;
 }
 
 .navigation .branding {
@@ -124,10 +122,12 @@ body {
     justify-content: center;
     align-items: center;
     position: fixed;
-    background: #cecece;
+    /* background: #cecece; */
 }
 
 .loading img {
+    width: 20vw;
+    height: auto;
     animation: jump 1s infinite linear;
     pointer-events: none;
     visibility: visible;
@@ -145,17 +145,37 @@ body {
 }
 
 @keyframes spin {
-    from { transform: rotateZ(0)}
-    to {transform: rotateZ(360deg)}
+    from {
+        transform: rotateZ(0)
+    }
+    to {
+        transform: rotateZ(360deg)
+    }
 }
 
 @keyframes jump {
-    0%: { transform: scale(1)}
-    50% { transform: scale(1.18)}
-    70% { transform: scale(1)}
-    80% { transform: scale(1.07)}
-    87% { transform: scale(1.04)}
-    94% { transform: scale(1.02)}
-    95% { transform: scale(1.005)}
-    97% { transform: scale(1)}
+    0% {
+        transform: scale(1)
+    }
+    50% {
+        transform: scale(1.18)
+    }
+    70% {
+        transform: scale(1)
+    }
+    80% {
+        transform: scale(1.07)
+    }
+    87% {
+        transform: scale(1.04)
+    }
+    94% {
+        transform: scale(1.02)
+    }
+    95% {
+        transform: scale(1.005)
+    }
+    97% {
+        transform: scale(1)
+    }
 }

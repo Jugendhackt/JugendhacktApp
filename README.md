@@ -1,4 +1,4 @@
-# JugendhacktApp
+# JugendhacktApp ![](https://travis-ci.com/Jugendhackt/JugendhacktApp.svg?branch=master)
 
 We love Jugendhackt!
 Therefore we want to contribute to it with this App - The Jugendhackt App!
