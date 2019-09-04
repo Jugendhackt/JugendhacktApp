@@ -16,7 +16,7 @@
         methods: {
             send() {
                 const xhr = new XMLHttpRequest();
-                xhr.open("POST", "http://localhost:8080/push/push/");
+                xhr.open("POST", "https://jh.marvinborner.de/push/push/");
                 xhr.onload = () => console.log(xhr.responseText);
                 xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
                 xhr.send(JSON.stringify({
