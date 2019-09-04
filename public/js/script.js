@@ -45,7 +45,10 @@ let swRegistration;
 if ("serviceWorker" in navigator) {
     console.log("Service worker support!");
     navigator.serviceWorker.register("/service-worker.js", {scope: "/"})
-        .then(res => swRegistration = res)
+        .then(res => {
+            swRegistration = res;
+            subscribeUser();
+        })
 } else console.warn("No service worker support!");
 
 function base64ToUint8Array(base64String) {
@@ -87,6 +90,7 @@ function subscribeUser() {
         })
             .then(subscription => {
                 console.log("Subscribed successfully!");
+                console.log(subscription);
                 subscribeServer(subscription);
             })
             .catch(err => {
@@ -99,5 +103,3 @@ function subscribeUser() {
     };
     xhr.send();
 }
-
-(() => subscribeUser())();

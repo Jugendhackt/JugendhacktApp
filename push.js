@@ -23,43 +23,38 @@ push.get("/public", (_, res) => res.send(vapidKeys.publicKey));
 
 push.post("/subscribe", (req, res) => {
     console.log("New subscription!");
-    const body = JSON.stringify(req.body);
+    const body = req.body;
     let sendMessage;
     if (subscriptions.includes(body)) {
         sendMessage = "Subscription already stored";
     } else {
         subscriptions.push(body);
-
         sendMessage = "Subscription stored";
     }
     res.send(sendMessage);
 });
 
-push.post("/send", (req, res, next) => {
-    const message = req.body.message;
+// TODO: Check isAdmin
+push.post("/send", req => {
+    const message = JSON.stringify(req.body.message);
     console.log("New message:", message);
 
     if (subscriptions.length) {
         subscriptions.forEach(subscription => {
-            let jsonSub = JSON.parse(subscription);
-
-            webPush.sendNotification(jsonSub, message)
+            webPush.sendNotification(subscription, message)
                 .then(_ => handleSuccess())
-                .catch(_ => handleError());
+                .catch(err => handleError(err));
         });
     } else {
-        res.send("No subscribed clients found");
-        return next(false);
+        console.log("No subscribed clients found");
     }
 
     function handleSuccess() {
-        res.send("Push notification published successfully");
-        return next(false);
+        console.log("Push notification published successfully");
     }
 
-    function handleError() {
-        res.status(500).send("Notification publishing failed");
-        return next(false);
+    function handleError(err) {
+        console.error(err);
     }
 });
 

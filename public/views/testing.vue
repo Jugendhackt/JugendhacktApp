@@ -3,6 +3,7 @@
         <label for="data"></label>
         <input id="data" type="text" v-model="data">
         <input id="submit" type="button" v-on:click="send()" value="submit">
+        <input type="button" v-on:click="unregister()" value="unregister">
     </div>
 </template>
 
@@ -20,10 +21,14 @@
                 xhr.onload = () => console.log(xhr.responseText);
                 xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
                 xhr.send(JSON.stringify({
-                    "message": this.data
+                    "message": {
+                        "body": this.data,
+                        "title": "Jugend Hackt App",
+                        "tag": "Tolle Sachen"
+                    }
                 }))
             },
-            closePreviousConnections() {
+            unregister() {
                 navigator.serviceWorker.getRegistrations().then(function (registrations) {
                     for (let registration of registrations) {
                         registration.unregister()
