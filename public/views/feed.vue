@@ -4,6 +4,7 @@
             <h3>{{ post.name }} @ <small>{{ new Date(post.time * 1000).toLocaleString("de") }}</small></h3>
             <p>{{ post.text }}</p>
             <img :src="picture" alt="" v-for="picture in post.pictures" v-on:click="openImage(picture)">
+            <img :src="emoji" alt="" v-for="emoji in post.emojis" class="emoji-image">
         </div>
     </div>
 </template>
@@ -16,7 +17,8 @@
                     "name": "Rainbow alpacas fetching the feed!",
                     "text": "The alpacas are currently chasing the requested data - please wait a bit.",
                     "time": (new Date("04/20/1337 13:37:42")).getTime() / 1000,
-                    "pictures": []
+                    "pictures": [],
+                    "emojis": []
                 }],
             }
         },
@@ -27,6 +29,7 @@
                     let xhr = new XMLHttpRequest();
                     xhr.addEventListener("load", () => {
                         this.feed = xhr.response;
+                        console.log(xhr.response, this.feed);
                         resolve(this.feed)
                     });
                     xhr.open("GET", "/api/twitter");
@@ -70,5 +73,10 @@
         cursor: pointer;
         padding: 5px;
         height: 100px;
+    }
+
+    .emoji-image {
+        cursor: default;
+        height: 25px;
     }
 </style>
