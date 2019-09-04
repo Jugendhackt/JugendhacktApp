@@ -45,8 +45,8 @@ const wss = new webSocket.Server({
     port: 9001,
     path: "/wss/"
 });
-const clients = [];
-const admins = [];
+let clients = [];
+let admins = [];
 wss.on("connection", ws => {
     ws.firstMessage = true;
     ws.on("message", message => {
@@ -56,14 +56,15 @@ wss.on("connection", ws => {
                 ws.firstMessage = false;
                 if (object["connected"]) {
                     clients.push(ws);
-                    console.log("New connection!");
+                    console.log("New connection -", clients.length + admins.length, "connections")
                 } else if (object["admin"]) { // TODO: Add better admin verification
                     admins.push(ws);
-                    console.log("New administrative connection!");
+                    console.log("New administrative connection -", clients.length + admins.length, "connections")
                 }
-            } else if (ws in admins) {
+            } else if (admins.includes(ws)) {
                 clients.forEach(client => {
                     if (client !== ws) {
+                        console.log("New broadcast:", object["data"]);
                         client.send(object["data"]);
                     }
                 });
@@ -74,6 +75,11 @@ wss.on("connection", ws => {
             ws.send("Invalid message!");
         }
     });
+    ws.on("close", () => {
+        clients = clients.filter(item => item !== ws);
+        admins = admins.filter(item => item !== ws);
+        console.log("User disconnected -", clients.length + admins.length, "connections")
+    })
 });
 
 app.listen(PORT, () => console.log(`Listening on http://localhost:${PORT}`));
