@@ -1,7 +1,7 @@
 <template>
     <nav class="navigation">
         <div class="branding">
-            Jugendhackt App <small style="cursor: pointer; font-size: 8px" v-on:click="clearCache()">clear cache</small>
+            Jugendhackt App
         </div>
         <div class="nav">
             <router-link to="/"><img class="icon" src="assets/icons/calendar.svg" alt="Events"></router-link>

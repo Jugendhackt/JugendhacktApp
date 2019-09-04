@@ -16,7 +16,8 @@ workbox.routing.registerRoute(
     new workbox.strategies.NetworkFirst()
 );
 
-const socket = new WebSocket("ws://localhost:8080");
+// const socket = new WebSocket("ws://localhost:8080"); // TODO: More dynamic ws testing
+const socket = new WebSocket("wss://jh.marvinborner.de");
 socket.onopen = e => {
     console.log("[open] Connection established");
     socket.send(JSON.stringify({"connected": true}));
