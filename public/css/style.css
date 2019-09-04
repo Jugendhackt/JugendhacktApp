@@ -14,13 +14,15 @@ body {
     z-index: 5;
     font-size: 1.5em;
     font-family: "SourceSansPro", sans-serif;
-    background: #f2f2f2;
+    background: #2aabe1;
+    color: #fff;
     padding: 12px;
     position: fixed;
     left: 0;
     right: 0;
     top: 0;
     box-shadow: 0 0 4px #cecece;
+    border: none;
 }
 
 #app {
@@ -62,8 +64,9 @@ body {
 }
 
 .nav .router-link-exact-active {
-    transition: background-color linear 200ms;
-    background-color: #c7d4d9;
+    transition: background-color linear 200ms, filter linear 200ms;
+    background-color: #D5531D;
+    filter: invert(1);
     border-radius: 50%;
 }
 
