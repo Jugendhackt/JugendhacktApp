@@ -67,7 +67,7 @@ function subscribeServer(subscription) {
     if (subscription) {
         const jsonSubscription = JSON.stringify(subscription);
         const xhr = new XMLHttpRequest();
-        xhr.open("POST", "https://jh.marvinborner.de/push/subscribe");
+        xhr.open("POST", "/push/subscribe");
         xhr.setRequestHeader("Content-type", "application/json");
         xhr.onload = function () {
             console.log(this.responseText);
@@ -78,7 +78,7 @@ function subscribeServer(subscription) {
 
 function subscribeUser() {
     const xhr = new XMLHttpRequest();
-    xhr.open("GET", "https://jh.marvinborner.de/push/public");
+    xhr.open("GET", "/push/public");
     xhr.onload = function () {
         const applicationServerKey = base64ToUint8Array(this.responseText);
         swRegistration.pushManager.subscribe({
