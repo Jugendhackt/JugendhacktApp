@@ -2,7 +2,7 @@
     <div>
         <div class="card" v-if="isAdmin">
             <h2 class="name">Lost and Found</h2>
-            <form @submit="submitLostItem()" enctype="multipart/form-data">
+            <form @submit="submitLostItem()" enctype="multipart/form-data" id="lnf-form">
                 <label for="lnf_what">Item found:</label>
                 <input type="text" id="lnf_what" v-model="lnf.what" required>
                 <label for="lnf_location">Item found where:</label>
@@ -19,6 +19,7 @@
                     <h1>{{item.what}}</h1>
                     <p>{{item.location}}</p>
                 </div>
+                <button class="remove-lnf-btn" v-if="isAdmin" v-on:click="removeLnF(item)">Delete</button>
             </div>
         </div>
     </div>
@@ -34,7 +35,7 @@
                     img: ""
                 },
                 items: [],
-                isAdmin: true
+                isAdmin: false
             }
         },
         methods: {
@@ -49,6 +50,9 @@
                 };
                 xhr.open('POST', '/lostitems/add');
                 xhr.send(formData);
+                this.lnf.what = '';
+                this.lnf.location = '';
+                this.lnf.img = '';
                 this.fetchLostItemList();
             },
             fetchLostItemList() {
@@ -59,10 +63,22 @@
                 xhr.open('GET', '/lostitems/get');
                 xhr.send();
             },
+            removeLnF(item) {
+                const formData = new FormData();
+                formData.append("id", item.id);
+                formData.append("img", item.img_name);
+                const xhr = new XMLHttpRequest();
+                xhr.onload = () => {
+                    console.log(xhr.response);
+                };
+                xhr.open("POST", "/lostitems/del");
+                xhr.send(formData);
+                this.fetchLostItemList();
+            },
             checkAdmin() {
                 const xhr = new XMLHttpRequest();
                 xhr.onload = () => {
-                    // TODO: Validate security: check if user can somehow change this variable
+                    // TODO: Validate security: check if user can somehow change this variable -> Should work with current backend validation
                     this.isAdmin = xhr.response.isAdmin;
                 };
                 xhr.open("GET", "/user/status");
@@ -105,10 +121,22 @@
     .lost-item {
         display: flex;
         padding: 10px;
+        position: relative;
+        border-top: 2px solid #AAAAAA;
+        border-bottom: 2px solid #AAAAAA;
 
     }
+
     .image {
         height: 300px;
         padding-right: 50px;
+    }
+
+    .remove-lnf-btn {
+        position: absolute;
+        right: 5px;
+        top: 5px;
+        width: auto;
+        height: auto;
     }
 </style>

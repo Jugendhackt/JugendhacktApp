@@ -20,7 +20,8 @@
         "mariadb": "^2.1.0",
         "memory-cache": "^0.2.0",
         "node-fetch": "^2.6.0",
-        "zulip-js": "^2.0.6"
+        "zulip-js": "^2.0.6",
+        "ws": "latest"
     },
     "devDependencies": {
         "mocha": "^6.2.0"
