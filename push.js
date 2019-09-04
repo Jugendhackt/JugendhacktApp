@@ -34,27 +34,28 @@ push.post("/subscribe", (req, res) => {
     res.send(sendMessage);
 });
 
-// TODO: Check isAdmin
 push.post("/send", req => {
-    const message = JSON.stringify(req.body.message);
-    console.log("New message:", message);
+    if (req.session.isAdmin) {
+        const message = JSON.stringify(req.body.message);
+        console.log("New message:", message);
 
-    if (subscriptions.length) {
-        subscriptions.forEach(subscription => {
-            webPush.sendNotification(subscription, message)
-                .then(_ => handleSuccess())
-                .catch(err => handleError(err));
-        });
-    } else {
-        console.log("No subscribed clients found");
-    }
+        if (subscriptions.length) {
+            subscriptions.forEach(subscription => {
+                webPush.sendNotification(subscription, message)
+                    .then(_ => handleSuccess())
+                    .catch(err => handleError(err));
+            });
+        } else {
+            console.log("No subscribed clients found");
+        }
 
-    function handleSuccess() {
-        console.log("Push notification published successfully");
-    }
+        function handleSuccess() {
+            console.log("Push notification published successfully");
+        }
 
-    function handleError(err) {
-        console.error(err);
+        function handleError(err) {
+            console.error(err);
+        }
     }
 });
 
