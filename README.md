@@ -21,7 +21,8 @@ The App will have plenty of features for Jugendhackt - even some which don't exi
 To contribute to this project create a pull request which will then be merged only by the main [contributors](#contributors) so that we have at least some control over the current version of the code in this master branch
 
 ## Credits
-Icons and Backgrounds from [https://jugendhackt.org](https://jugendhackt.org)
+Badges, Jugendhackt Logo and Backgrounds from [https://jugendhackt.org](https://jugendhackt.org)<br>
+Icons from [https://feathericons.com/](https://feathericons.com/)
 
 ## Additional Links
 
