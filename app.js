@@ -42,7 +42,8 @@ app.use("/packinglist", packingList);
 
 // WebSockets - TODO: Abstract to file
 const wss = new webSocket.Server({
-    port: 9001
+    port: 9001,
+    path: "/wss/"
 });
 const clients = [];
 const admins = [];

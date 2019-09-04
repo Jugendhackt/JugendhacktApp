@@ -16,15 +16,15 @@ workbox.routing.registerRoute(
     new workbox.strategies.NetworkFirst()
 );
 
-// const socket = new WebSocket("ws://localhost:8080"); // TODO: More dynamic ws testing
-const socket = new WebSocket("wss://jh.marvinborner.de");
+// const socket = new WebSocket("ws://localhost:9001/wss/"); // TODO: More dynamic ws testing
+const socket = new WebSocket("wss://jh.marvinborner.de/wss/");
 socket.onopen = e => {
-    console.log("[open] Connection established");
+    console.log("Websocket Connection established");
     socket.send(JSON.stringify({"connected": true}));
 };
 
 socket.onmessage = async event => {
-    console.log(`[message] Data received from server: ${event.data}`);
+    console.log(`Websocket received from server: ${event.data}`);
     await self.registration.showNotification("Jugend hackt App", {
         body: event.data
     })
@@ -32,12 +32,13 @@ socket.onmessage = async event => {
 
 socket.onclose = event => {
     if (event.wasClean) {
-        console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
+        console.log(`Websocket closed cleanly, code=${event.code} reason=${event.reason}`);
     } else {
-        console.log('[close] Connection died');
+        console.warn("Websocket disconnected!");
     }
 };
 
-socket.onerror = error => {
-    console.log(`[error] ${error.message}`);
+socket.onerror = async error => {
+    console.error("Websocket failed", error);
+    await self.registration.unregister()
 };
