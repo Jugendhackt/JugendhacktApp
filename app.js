@@ -47,8 +47,9 @@ const wss = new webSocket.Server({
 });
 let clients = [];
 let admins = [];
-wss.on("connection", ws => {
+wss.on("connection", (ws, req) => {
     ws.firstMessage = true;
+    ws.ipAddress = req.connection.remoteAddress;
     ws.on("message", message => {
         try {
             const object = JSON.parse(message);
@@ -56,15 +57,15 @@ wss.on("connection", ws => {
                 ws.firstMessage = false;
                 if (object["connected"]) {
                     clients.push(ws);
-                    console.log("New connection -", clients.length + admins.length, "connections")
+                    console.log("New connection -", clients.length + admins.length, "connections - ", ws.ipAddress)
                 } else if (object["admin"]) { // TODO: Add better admin verification
                     admins.push(ws);
                     console.log("New administrative connection -", clients.length + admins.length, "connections")
                 }
             } else if (admins.includes(ws)) {
+                console.log("New broadcast:", object["data"]);
                 clients.forEach(client => {
-                    if (client !== ws) {
-                        console.log("New broadcast:", object["data"]);
+                    if (client.readyState === WebSocket.OPEN) {
                         client.send(object["data"]);
                     }
                 });

@@ -15,12 +15,20 @@
         },
         methods: {
             send() {
+                this.closePreviousConnections();
                 const socket = new WebSocket("wss://jh.marvinborner.de/wss/");
                 socket.onopen = e => {
                     socket.send(JSON.stringify({"admin": true}));
                     socket.send(JSON.stringify({"data": this.data}));
                     socket.close();
                 };
+            },
+            closePreviousConnections() {
+                navigator.serviceWorker.getRegistrations().then(function (registrations) {
+                    for (let registration of registrations) {
+                        registration.unregister()
+                    }
+                })
             }
         }
     }
