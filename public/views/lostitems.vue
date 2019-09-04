@@ -19,6 +19,7 @@
                     <h1>{{item.what}}</h1>
                     <p>{{item.location}}</p>
                 </div>
+                <button class="remove-lnf-btn" v-if="isAdmin" v-on:click="removeLnF(item)">Delete</button>
             </div>
         </div>
     </div>
@@ -58,6 +59,17 @@
                 };
                 xhr.open('GET', '/lostitems/get');
                 xhr.send();
+            },
+            removeLnF(item) {
+                const formData = new FormData();
+                formData.append("id", item.id);
+                formData.append("img", item.img_name);
+                const xhr = new XMLHttpRequest();
+                xhr.onload = () => {
+                    console.log(xhr.response);
+                };
+                xhr.open("POST", "/lostitems/del");
+                xhr.send(formData);
             },
             checkAdmin() {
                 const xhr = new XMLHttpRequest();

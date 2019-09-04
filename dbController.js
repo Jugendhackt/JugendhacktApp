@@ -1,5 +1,6 @@
 const mariadb = require('mariadb');
 const bCrypt = require('bcrypt');
+const fs = require('fs');
 
 const userTable = `
     CREATE TABLE IF NOT EXISTS users
@@ -253,16 +254,18 @@ const self = module.exports = {
      */
     delLostItem: (req, res) => {
         if (req.session.isAdmin) {
+            console.log(req.body);
             self.connect(res)
                 .then(conn => {
-                    conn.query("DELETE FROM lost_items WHERE id = ?")
+                    conn.query("DELETE FROM lost_items WHERE id = ?", [req.body.id])
                         .then(() => {
                             res.json({success: true});
                             conn.end();
+                            fs.unlinkSync(`./uploads/lostItems/${req.body.img}`);
                         })
                         .catch(err => {
                             console.error(err);
-                            res.status(400).json({success: true, message: "Item not found"});
+                            res.status(400).json({success: false, message: "Item not found", body: req.body});
                             conn.end();
                         })
                 })
@@ -292,7 +295,7 @@ const self = module.exports = {
         } else res.status(403).json({success: false, message: "Operation not allowed"});
     },
 
-    /*
+    /**
      * Get all items from the packing list
      * @param req
      * @param resp
@@ -307,7 +310,7 @@ const self = module.exports = {
                     })
                     .catch(err => {
                         console.error(err);
-                        resp.status(500).json({success: false, message: "Unkmown error"});
+                        resp.status(500).json({success: false, message: "Unknown error"});
                     })
             })
     },
@@ -321,8 +324,8 @@ const self = module.exports = {
         if (req.session.isAdmin) {
             self.connect(res)
                 .then(conn => {
-                    conn.query("DELETE FROM packing_list WHERE id = ?")
-                        .then(() => {
+                    conn.query("DELETE FROM packing_list WHERE id = ?", [req.body.id])
+                        .then(_ => {
                             res.json({success: true});
                             conn.end();
                         })
