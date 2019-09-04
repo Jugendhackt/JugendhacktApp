@@ -3,7 +3,7 @@
         <div class="card" v-for="post in feed">
             <h3>{{ post.name }} @ <small>{{ new Date(post.time * 1000).toLocaleString("de") }}</small></h3>
             <p>{{ post.text }}</p>
-            <img :src="picture" alt="" v-for="picture in post.pictures" v-on:click="openImage(picture)">
+            <v-image :src="picture" alt="" v-for="picture in post.pictures"></v-image>
             <img :src="emoji" alt="" v-for="emoji in post.emojis" class="emoji-image">
         </div>
     </div>
@@ -49,10 +49,6 @@
                     xhr.responseType = "json";
                     xhr.send();
                 })
-            },
-            openImage(url) {
-                const win = window.open(url, "_blank");
-                win.focus();
             }
         },
         mounted() {

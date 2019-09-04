@@ -14,7 +14,7 @@
         </div>
         <div class="card">
             <div v-for="item in items" class="lost-item">
-                <img v-bind:src="'/lostitems/images/' + item.img_name" alt="Image of the item" class="image">
+                <v-image :src="'/lostitems/images/' + item.img_name" alt="Image of the item" class="image"></v-image>
                 <div class="desc">
                     <h1>{{item.what}}</h1>
                     <p>{{item.location}}</p>
@@ -98,11 +98,6 @@
         font-size: 1.4em;
     }
 
-    .card {
-        display: block;
-        width: auto;
-    }
-
     input {
         background: #fff;
         border: 3px solid #000;
@@ -121,15 +116,14 @@
     .lost-item {
         display: flex;
         padding: 10px;
-        position: relative;
-        border-top: 2px solid #AAAAAA;
-        border-bottom: 2px solid #AAAAAA;
+        justify-content: space-between;
 
     }
 
-    .image {
-        height: 300px;
-        padding-right: 50px;
+    .image img {
+        height: 100px;
+        max-width: 100%;
+        width: auto;
     }
 
     .remove-lnf-btn {
