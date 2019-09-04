@@ -41,9 +41,7 @@ app.use("/lostitems", lostItems);
 app.use("/packinglist", packingList);
 
 // WebSockets - TODO: Abstract to file
-const server = http.createServer(app);
 const wss = new webSocket.Server({
-    server,
     port: 9001
 });
 const clients = [];
@@ -68,6 +66,8 @@ wss.on("connection", ws => {
                         client.send(object["data"]);
                     }
                 });
+            } else {
+                ws.send("You can't send messages!");
             }
         } catch (e) {
             ws.send("Invalid message!");
@@ -75,4 +75,4 @@ wss.on("connection", ws => {
     });
 });
 
-server.listen(PORT, () => console.log(`Listening on http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`Listening on http://localhost:${PORT}`));
