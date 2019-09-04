@@ -3,8 +3,10 @@
         <div class="card">
             <h2>Add another admin</h2>
             <ul class="add-user-admin">
-                <li v-for="user in users"  v-on:click="addAdmin(user)" class="user-list-item">
-                    {{user.email}}
+                <li v-for="user in users" class="user-list-item">
+                    <span>{{user.email}}</span>
+                    <button v-on:click="updateAdmin(user)" v-if="!user.is_admin" class="add-admin-btn action-admin-btn">Add</button>
+                    <button v-on:click="updateAdmin(user)" v-else class="remove-admin-btn action-admin-btn">Remove</button>
                 </li>
             </ul>
         </div>
@@ -16,6 +18,7 @@
         data: function () {
             return {
                 users: [],
+                isAdmin: false
             }
         },
         methods: {
@@ -29,7 +32,19 @@
                 xhr.open("GET", "/user/getAll");
                 xhr.send();
             },
-            addAdmin(user) {
+            checkAdmin() {
+                const xhr = new XMLHttpRequest();
+                xhr.onload = () => {
+                    // TODO: Validate security: check if user can somehow change this variable
+                    this.isAdmin = xhr.response.isAdmin;
+                    if (!this.isAdmin) location.replace('/');
+                };
+                xhr.open("GET", "/user/status");
+                xhr.responseType = "json";
+                xhr.send();
+            },
+            updateAdmin(user) {
+                // TODO: Only update if at least one other user is admin
                 const formData = new FormData();
                 formData.append('email', user.email);
                 const xhr = new XMLHttpRequest();
@@ -37,11 +52,13 @@
                     console.log(xhr.response);
                 };
                 xhr.responseType = "json";
-                xhr.open("POST", "/user/addAdmin");
+                xhr.open("POST", "/user/updateAdmin");
                 xhr.send(formData);
+                this.fetchUsers();
             }
         },
         beforeMount() {
+            this.checkAdmin();
             this.fetchUsers();
         }
     }

@@ -2,7 +2,7 @@
     <div>
         <div class="card" v-if="isAdmin">
             <h2 class="name">Lost and Found</h2>
-            <form @submit="submitLostItem()" enctype="multipart/form-data">
+            <form @submit="submitLostItem()" enctype="multipart/form-data" id="lnf-form">
                 <label for="lnf_what">Item found:</label>
                 <input type="text" id="lnf_what" v-model="lnf.what" required>
                 <label for="lnf_location">Item found where:</label>
@@ -34,7 +34,7 @@
                     img: ""
                 },
                 items: [],
-                isAdmin: true
+                isAdmin: false
             }
         },
         methods: {

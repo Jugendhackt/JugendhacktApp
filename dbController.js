@@ -144,15 +144,15 @@ const self = module.exports = {
     },
 
     /**
-     * Adds user as admin
+     * Inverts admin status of the user
      * @param req
      * @param res
      */
-    addAdmin: (req, res) => {
+    updateAdmin: (req, res) => {
         if (req.session.isAdmin) {
-            self.connect()
+            self.connect(res)
                 .then(conn => {
-                    conn.query("UPDATE users SET is_admin = 1 WHERE email = ?", [req.body.email])
+                    conn.query("UPDATE users SET is_admin = NOT is_admin WHERE email = ?", [req.body.email])
                         .then(() => {
                             res.json({success: true});
                             conn.end();

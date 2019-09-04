@@ -10,7 +10,7 @@
             <router-link to="/packingList"><img class="icon" src="assets/icons/list.svg" alt="Packing List"></router-link>
             <router-link to="/lostitems"><img class="icon" src="assets/icons/briefcase.svg" alt="Lost and Found"></router-link>
             <router-link to="/login"><img class="icon" src="assets/icons/key.svg" alt="Login"></router-link>
-            <router-link to="/admin" v-if="isAdmin">ADMIN ICON LUL</router-link>
+            <router-link to="/admin" v-if="isAdmin"><img class="icon" src="assets/icons/command.svg" alt="Admin"></router-link>
         </div>
     </nav>
 </template>
