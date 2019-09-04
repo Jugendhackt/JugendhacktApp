@@ -1,23 +1,22 @@
 <template>
     <span>
     <img :src="src" :alt="alt" @click="isBig = true">
-    <transition>
-        <div class="big" :class="{ isHidden : !isBig}" @click="isBig = false">
-            <img :src="src">
-            <div class="details">
-                <slot></slot>
-            </div>
+    <div class="big" :class="{ isHidden : !isBig}" @click="isBig = false">
+        <img :src="src">
+        <div class="details" v-if="description">
+            {{description}}
         </div>
-    </transition>
+    </div>
     </span>
 </template>
 
 <script>
 module.exports = {
-    props: ["src", "alt"],
+    props: ["src", "alt", "description"],
     data: function(){
         return {
-            isBig: false
+            isBig: false,
+            hasSlot: true
         }
     }
 }
