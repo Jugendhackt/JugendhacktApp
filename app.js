@@ -1,18 +1,16 @@
 require("dotenv").config();
 
 const express = require("express");
-const webSocket = require("ws");
-const http = require("http");
 const fileupload = require("express-fileupload");
 const bodyParser = require("body-parser");
 const session = require("express-session");
 const dbController = require("./dbController");
-const request = require("./data/request");
 
 const api = require("./api.js");
 const user = require("./userHandler");
 const lostItems = require("./lostItems");
 const packingList = require("./packingList");
+const push = require("./push");
 
 const app = express();
 const PORT = process.env.PORT || 80;
@@ -39,48 +37,7 @@ app.use("/api", api);
 app.use("/user", user);
 app.use("/lostitems", lostItems);
 app.use("/packinglist", packingList);
+app.use("/push", push);
 
-// WebSockets - TODO: Abstract to file
-const wss = new webSocket.Server({
-    port: 9001,
-    path: "/wss/"
-});
-let clients = [];
-let admins = [];
-wss.on("connection", (ws, req) => {
-    ws.firstMessage = true;
-    ws.ipAddress = req.connection.remoteAddress;
-    ws.on("message", message => {
-        try {
-            const object = JSON.parse(message);
-            if (ws.firstMessage) {
-                ws.firstMessage = false;
-                if (object["connected"]) {
-                    clients.push(ws);
-                    console.log("New connection -", clients.length + admins.length, "connections - ", ws.ipAddress)
-                } else if (object["admin"]) { // TODO: Add better admin verification
-                    admins.push(ws);
-                    console.log("New administrative connection -", clients.length + admins.length, "connections")
-                }
-            } else if (admins.includes(ws)) {
-                console.log("New broadcast:", object["data"]);
-                clients.forEach(client => {
-                    if (client.readyState === WebSocket.OPEN) {
-                        client.send(object["data"]);
-                    }
-                });
-            } else {
-                ws.send("You can't send messages!");
-            }
-        } catch (e) {
-            ws.send("Invalid message!");
-        }
-    });
-    ws.on("close", () => {
-        clients = clients.filter(item => item !== ws);
-        admins = admins.filter(item => item !== ws);
-        console.log("User disconnected -", clients.length + admins.length, "connections")
-    })
-});
 
 app.listen(PORT, () => console.log(`Listening on http://localhost:${PORT}`));

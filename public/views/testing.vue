@@ -15,13 +15,14 @@
         },
         methods: {
             send() {
-                this.closePreviousConnections();
-                const socket = new WebSocket("wss://jh.marvinborner.de/wss/");
-                socket.onopen = e => {
-                    socket.send(JSON.stringify({"admin": true}));
-                    socket.send(JSON.stringify({"data": this.data}));
-                    socket.close();
-                };
+                const xhr = new XMLHttpRequest();
+                xhr.open("POST", "http://localhost:8080/push/push/");
+                xhr.onload = () => console.log(xhr.responseText);
+                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                xhr.send(JSON.stringify({
+                    "subscription": "all",
+                    "message": this.data
+                }))
             },
             closePreviousConnections() {
                 navigator.serviceWorker.getRegistrations().then(function (registrations) {

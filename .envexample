@@ -4,3 +4,6 @@ DBHost=localhost
 DBUser=admin
 DBPassword=admin
 DBName=jhapp
+
+publicKey=GENERATE_USING_INSTRUCTIONS_FROM_{push.js}
+privateKey=GENERATE_USING_INSTRUCTIONS_FROM_{push.js}
