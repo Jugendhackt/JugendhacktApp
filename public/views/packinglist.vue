@@ -10,7 +10,7 @@
         </div>
         <div class="card">
             <ul id="dpl_list">
-                <li v-for="item in items">
+                <li v-for="item in items" class="packing-list-items">
                     <span>{{ item.item }}</span>
                     <button class="remove-pl-btn" v-if="isAdmin" v-on:click="removePl(item)">Delete</button>
                 </li>
@@ -103,5 +103,16 @@
 
     .button {
         display: inline-block;
+    }
+
+    .packing-list-items {
+        position: relative;
+    }
+
+    .packing-list-items li {
+        width: 100%;
+        position: absolute;
+        top: 1px;
+        right: 5px;
     }
 </style>

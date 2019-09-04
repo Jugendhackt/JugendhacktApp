@@ -121,10 +121,22 @@
     .lost-item {
         display: flex;
         padding: 10px;
+        position: relative;
+        border-top: 2px solid #AAAAAA;
+        border-bottom: 2px solid #AAAAAA;
 
     }
+
     .image {
         height: 300px;
         padding-right: 50px;
+    }
+
+    .remove-lnf-btn {
+        position: absolute;
+        right: 5px;
+        top: 5px;
+        width: auto;
+        height: auto;
     }
 </style>
