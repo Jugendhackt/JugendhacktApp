@@ -31,7 +31,10 @@ api.get("/hackdash",
 api.get("/twitter",
     async (_, res) => res.send(await twitter.get()));
 api.get("/zulip",
-    async (_, res) => res.send(await zulip.get()));
+    async (req, res) => {
+        if (req.session.loggedIn) res.send(await zulip.get());
+        else res.send({});
+    });
 api.get("*", (_, res) => res.send(apiUrls));
 
 module.exports = api;

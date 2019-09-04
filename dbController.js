@@ -202,7 +202,6 @@ const self = module.exports = {
                 const image = req.files.img;
                 const imageType = image.name.split('.').reverse()[0];
                 if (allowedTypes.includes(imageType.toLowerCase())) {
-                    // Possible issue with name through id caused by deleting latest item
                     const name = `${(new Date()).getTime()}.${imageType}`;
                     conn.query("INSERT INTO lost_items (location, what, img_name) VALUE (?,?,?)",
                         [req.body.location, req.body.what, name]
