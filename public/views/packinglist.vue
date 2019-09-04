@@ -11,7 +11,8 @@
         <div class="card">
             <ul id="dpl_list">
                 <li v-for="item in items">
-                    {{ item.item }}
+                    <span>{{ item.item }}</span>
+                    <button class="remove-pl-btn" v-if="isAdmin" v-on:click="removePl(item)">Delete</button>
                 </li>
             </ul>
         </div>
@@ -30,7 +31,7 @@
             }
         },
         methods: {
-            updatePackingList: function () {
+            updatePackingList() {
                 const data = JSON.stringify(this.pl);
                 const xhr = new XMLHttpRequest();
                 xhr.onload = function () {
@@ -39,7 +40,7 @@
                 xhr.open('POST', '/packinglist/add');
                 xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
                 xhr.send(data);
-                document.querySelector('#packing_list_item').value = '';
+                this.pl.item = '';
                 this.fetchPackingList();
             },
             fetchPackingList() {
@@ -49,6 +50,17 @@
                 };
                 xhr.open('GET', '/packinglist/get');
                 xhr.send();
+            },
+            removePl(item) {
+                const formData = new FormData();
+                formData.append("id", item.id);
+                const xhr = new XMLHttpRequest();
+                xhr.onload = () => {
+                    console.log(xhr.response);
+                };
+                xhr.open("POST", "/packinglist/del");
+                xhr.send(formData);
+                this.fetchPackingList();
             },
             checkAdmin() {
                 const xhr = new XMLHttpRequest();

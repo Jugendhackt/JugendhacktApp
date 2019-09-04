@@ -50,6 +50,9 @@
                 };
                 xhr.open('POST', '/lostitems/add');
                 xhr.send(formData);
+                this.lnf.what = '';
+                this.lnf.location = '';
+                this.lnf.img = '';
                 this.fetchLostItemList();
             },
             fetchLostItemList() {
@@ -70,6 +73,7 @@
                 };
                 xhr.open("POST", "/lostitems/del");
                 xhr.send(formData);
+                this.fetchLostItemList();
             },
             checkAdmin() {
                 const xhr = new XMLHttpRequest();
