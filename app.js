@@ -11,6 +11,7 @@ const user = require("./userHandler");
 const lostItems = require("./lostItems");
 const packingList = require("./packingList");
 const push = require("./push");
+const badges = require("./badges");
 
 const app = express();
 const PORT = process.env.PORT || 80;
@@ -38,6 +39,7 @@ app.use("/user", user);
 app.use("/lostitems", lostItems);
 app.use("/packinglist", packingList);
 app.use("/push", push);
+app.use("/badges", badges);
 
 
 app.listen(PORT, () => console.log(`Listening on http://localhost:${PORT}`));
