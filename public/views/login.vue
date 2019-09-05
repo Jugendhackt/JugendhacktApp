@@ -52,7 +52,7 @@
                 const data = JSON.stringify(this.login_data);
                 const xhr = new XMLHttpRequest();
                 xhr.onload = function () {
-                    if (xhr.response.success) location.replace("/");
+                    if (xhr.response.success) this.$router.push("");
                 };
                 xhr.open('POST', '/user/login');
                 xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");

@@ -25,7 +25,8 @@ const router = new VueRouter({
 app = new Vue({
     data: function () {
         return {
-            loading: false
+            loading: false,
+            current_user: false
         }
     },
     watch: {
