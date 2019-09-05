@@ -34,28 +34,28 @@ push.post("/subscribe", (req, res) => {
     res.send(sendMessage);
 });
 
-push.post("/send", (req, res) => {
+push.post("/send", function (req, res) {
     // if (req.session.isAdmin) { TODO: Make /push/send only available for admins @Lars
-        const message = JSON.stringify(req.body.message);
-        console.log("New message:", message);
+    const message = JSON.stringify(req.body.message);
+    console.log("New message:", message);
 
-        if (subscriptions.length) {
-            subscriptions.forEach(subscription => {
-                webPush.sendNotification(subscription, message)
-                    .then(_ => handleSuccess())
-                    .catch(err => handleError(err));
-            });
-        } else {
-            res.send("No subscribed clients found");
-        }
+    if (subscriptions.length) {
+        subscriptions.forEach(subscription => {
+            webPush.sendNotification(subscription, message)
+                .then(_ => handleSuccess())
+                .catch(err => handleError(err));
+        });
+    } else {
+        res.send("No subscribed clients found");
+    }
 
-        function handleSuccess() {
-            res.send("Push notification published successfully");
-        }
+    function handleSuccess() {
+        res.send("Push notification published successfully");
+    }
 
-        function handleError(err) {
-            console.error(err);
-        }
+    function handleError(err) {
+        console.error(err);
+    }
 
     // }
 });

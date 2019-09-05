@@ -1,5 +1,6 @@
 <template>
     <div>
+        <h2>{{ user }}</h2>
         <img :src="badge.image" @click="giveBadge(user, badge)" v-for="badge in badges"><br>
     </div>
 </template>
