@@ -12,10 +12,10 @@ The App will have plenty of features for Jugendhackt - even some which don't exi
 - Digital Badge Collection - The stickers are great, but also stuck on your old notebook - Let's make the badge collection digital as well!
 
 ## Contributors
-- @AuspiciousLynx
-- @LarsVomMars
-- @marvinborner
-- @Mondanzo
+- [Marvinborner](https://github.com/marvinborner)
+- [Mondanzo](https://github.com/mondanzo)
+- [LarsVomMars](https://github.com/larsvommars)
+- [AuspiciousLynx](https://github.com/auspiciouslynx)
 
 ## Contributing
 To contribute to this project create a pull request which will then be merged only by the main [contributors](#contributors) so that we have at least some control over the current version of the code in this master branch
