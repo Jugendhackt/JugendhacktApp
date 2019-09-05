@@ -118,6 +118,7 @@ const self = module.exports = {
                         if (bCrypt.compareSync(req.body.password, res[0].password)) {
                             req.session.loggedIn = true;
                             req.session.isAdmin = res[0].is_admin;
+                            req.session.user = res[0].full_name;
                             resp.json({success: true});
                         } else resp.status(400).json({success: false, message: "Password and/or username incorrect"});
                         conn.end();

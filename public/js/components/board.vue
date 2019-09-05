@@ -1,15 +1,15 @@
 <template>
-    <div class="card">
-        <h3>{{ board.title }}</h3>
-        <p>{{ boardData.description }}</p>
-        <ul>
-            <li v-for="project in boardData.projects">
-                <h4>{{ project.title }}</h4>
-                <img :src="project.cover.startsWith('http') ? project.cover : 'https://hackdash.s3-us-west-2.amazonaws.com' + project.cover"
-                     v-if="project.cover">
-                <p>{{ project.description }}</p>
-            </li>
-        </ul>
+    <div>
+        <div class="card">
+            <h3>{{ board.title }}</h3>
+            <p>{{ boardData.description }}</p>
+        </div>
+        <div class="card" v-for="project in boardData.projects">
+            <h4>{{ project.title }}</h4>
+            <v-image :src="project.cover.startsWith('http') ? project.cover : 'https://hackdash.s3-us-west-2.amazonaws.com' + project.cover"
+                 v-if="project.cover"></v-image>
+            <p>{{ project.description }}</p>
+        </div>
     </div>
 </template>
 

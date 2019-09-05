@@ -4,20 +4,17 @@
 
 const express = require("express");
 const webPush = require("web-push");
-const bodyParser = require("body-parser");
 
 const push = express.Router();
 
-let vapidKeys = {
+const vapidKeys = {
     publicKey: process.env.publicKey,
     privateKey: process.env.privateKey
 };
 
 webPush.setVapidDetails("mailto:jugendhackt@marvinborner.de", vapidKeys.publicKey, vapidKeys.privateKey);
 
-let subscriptions = [];
-
-push.use(bodyParser.json());
+const subscriptions = [];
 
 push.get("/public", (_, res) => res.send(vapidKeys.publicKey));
 
@@ -34,30 +31,22 @@ push.post("/subscribe", (req, res) => {
     res.send(sendMessage);
 });
 
-push.post("/send", function (req, res) {
-    // if (req.session.isAdmin) { TODO: Make /push/send only available for admins @Lars
-    const message = JSON.stringify(req.body.message);
-    console.log("New message:", message);
+push.post("/send", (req, res) => {
+    if (req.session.isAdmin) { // TODO: Make /push/send only available for admins @Lars; Works at least for me (@Lars)
+        const message = JSON.stringify(req.body.message);
+        console.log("New message:", message);
 
-    if (subscriptions.length) {
-        subscriptions.forEach(subscription => {
-            webPush.sendNotification(subscription, message)
-                .then(_ => handleSuccess())
-                .catch(err => handleError(err));
-        });
-    } else {
-        res.send("No subscribed clients found");
-    }
-
-    function handleSuccess() {
-        res.send("Push notification published successfully");
-    }
-
-    function handleError(err) {
-        console.error(err);
-    }
-
-    // }
+        if (subscriptions.length) {
+            subscriptions.forEach(subscription => {
+                webPush.sendNotification(subscription, message)
+                    .then(_ => res.send("Push notification published successfully"))
+                    .catch(err => { // TODO: Error: cannot set headers
+                        console.error(err);
+                        res.json({success: false, message: "Cannot send message"});
+                    });
+            });
+        } else res.send("No subscribed clients found");
+    } else res.json({success: false, message: "Operation not allowed"});
 });
 
 module.exports = push;
