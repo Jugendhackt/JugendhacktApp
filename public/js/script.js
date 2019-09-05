@@ -11,6 +11,7 @@ const routes = [
     {path: "/lostitems", component: httpVueLoader("views/lostitems.vue")},
     {path: "/packinglist", component: httpVueLoader("views/packinglist.vue")},
     {path: "/admin", component: httpVueLoader("views/admin.vue")},
+    {path: "/user", component: httpVueLoader("views/user.vue")},
     {path: "/badges", component: httpVueLoader("views/badges.vue")},
     {path: "/test", component: httpVueLoader("views/testing.vue")}
 ];

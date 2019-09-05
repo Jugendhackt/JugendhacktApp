@@ -84,7 +84,7 @@ const self = module.exports = {
             .then(conn => {
                 bCrypt.hash(req.body.password, 12, (err, password) => {
                     if (err) throw err;
-                    const fullName = req.body.fullName ? req.body.fullName.length <= 100 : req.body.fullName.slice(0, 101);
+                    const fullName = req.body.fullName ? req.body.fullName.length <= 100 : req.body.fullName.slice(0, 101);  // TODO: Validate functionallity
                     conn.query("SELECT * FROM users LIMIT 1")
                         .then(res => {
                             const isAdmin = !res[0];
@@ -118,7 +118,8 @@ const self = module.exports = {
                         if (bCrypt.compareSync(req.body.password, res[0].password)) {
                             req.session.loggedIn = true;
                             req.session.isAdmin = res[0].is_admin;
-                            req.session.user = res[0].full_name;
+                            req.session.email = res[0].email;
+                            req.session.uid = res[0].id;
                             resp.json({success: true});
                         } else resp.status(400).json({success: false, message: "Password and/or username incorrect"});
                         conn.end();
@@ -179,8 +180,9 @@ const self = module.exports = {
                 .then(conn => {
                     conn.query("SELECT email, full_name, is_admin, birthday FROM users")
                         .then(res => {
+                            for (const r of res) delete r.password;
                             resp.json(res);
-                            conn.end()
+                            conn.end();
                         })
                         .catch(err => {
                             console.error(err);
@@ -189,6 +191,73 @@ const self = module.exports = {
                         })
                 })
         } else resp.status(403).json({success: false, message: "Operation not allowed"});
+    },
+
+    /**
+     * Get data of logged in user
+     * @param req
+     * @param resp
+     */
+    getUser: (req, resp) => {
+        if (req.session.loggedIn) {
+            self.connect()
+                .then(conn => {
+                    conn.query("SELECT * FROM users WHERE id = ?", [req.session.uid])
+                        .then(res => {
+                            for (const r of res) delete r.password;
+                            resp.send(res);
+                            conn.end();
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            resp.status(500).json({success: false, message: "An error occurred"});
+                            conn.end();
+                        })
+                })
+        }
+    },
+
+    /**
+     * Update user details
+     * @param req
+     * @param resp
+     */
+    updateUserDetails: (req, resp) => {
+        // TODO: Validate security; should be fine
+        console.log(req.body);
+        if (req.session.loggedIn) {
+            self.connect()
+                .then(conn => {
+                    bCrypt.hash(req.body.password, 12, (err, password) => {
+                        let updateString = "";
+                        let updateParams = [];
+                        if (bCrypt.compareSync('', password)) { // IDK, check for req.body.password isn't working
+                            // Checks if a new password has been set
+                            updateString = "UPDATE users SET email = ?, full_name = ?, birthday = ? WHERE id = ? AND email = ?";
+                            updateParams = [req.body.email, req.body.full_name, req.body.birthday, req.session.uid, req.session.email];
+                            console.log("Without password!");
+                        } else {
+                            updateString = "UPDATE users SET email = ?, full_name = ?, birthday = ?, password = ? WHERE id = ? AND email = ?";
+                            updateParams = [req.body.email, req.body.full_name, req.body.birthday, password, req.session.uid, req.session.email];
+                            console.log("With password!");
+                        }
+                        conn.query(updateString, updateParams)
+                            .then(_ => {
+                                req.session.email = req.body.email;
+                                req.session.loggedIn = false;
+                                req.session.isAdmin = false;
+                                // TODO: Investigate wrong response although update succeeds
+                                resp.json({success: true});
+                                conn.end();
+                            })
+                            .catch(err => {
+                                console.error(err);
+                                resp.status(400).json({success: false, message: "Could not update user details"});
+                                conn.end();
+                            })
+                    });
+                })
+        } resp.status(403).json({success: false, message: "Operation not allowed"});
     },
 
     /**
