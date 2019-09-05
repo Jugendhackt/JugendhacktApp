@@ -8,7 +8,9 @@
                      :src="board.covers[0].startsWith('http') ? board.covers[0] : 'https://hackdash.s3-us-west-2.amazonaws.com' + board.covers[0]">
             </div>
         </div>
-        <span class="back" :class="{ hide : !boardOpen}"><img @click="current_board = undefined" src="/assets/icons/arrow-down.svg" alt="Back"></span>
+        <span :class="{ hide : !boardOpen}" class="back">
+            <img @click="current_board = undefined" alt="Back" src="/assets/icons/arrow-down.svg">
+        </span>
     </div>
 </template>
 
