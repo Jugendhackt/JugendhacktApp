@@ -34,8 +34,8 @@ push.post("/subscribe", (req, res) => {
     res.send(sendMessage);
 });
 
-push.post("/send", req => {
-    if (req.session.isAdmin) {
+push.post("/send", (req, res) => {
+    // if (req.session.isAdmin) { TODO: Make /push/send only available for admins @Lars
         const message = JSON.stringify(req.body.message);
         console.log("New message:", message);
 
@@ -46,17 +46,18 @@ push.post("/send", req => {
                     .catch(err => handleError(err));
             });
         } else {
-            console.log("No subscribed clients found");
+            res.send("No subscribed clients found");
         }
 
         function handleSuccess() {
-            console.log("Push notification published successfully");
+            res.send("Push notification published successfully");
         }
 
         function handleError(err) {
             console.error(err);
         }
-    }
+
+    // }
 });
 
 module.exports = push;
