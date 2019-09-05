@@ -176,7 +176,7 @@ const self = module.exports = {
         if (req.session.isAdmin) {
             self.connect()
                 .then(conn => {
-                    conn.query("SELECT * FROM users")
+                    conn.query("SELECT email, full_name, is_admin, birthday FROM users")
                         .then(res => {
                             resp.json(res);
                             conn.end()
