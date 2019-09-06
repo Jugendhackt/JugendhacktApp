@@ -48,7 +48,7 @@ api.get("/hackdash", cache(600),
     async (_, res) => res.send(await hackdash.listBoards()));
 api.get("/twitter", cache(600),
     async (_, res) => res.send(await twitter.get()));
-api.get("/zulip", cache(300),
+api.get("/zulip", cache(20),
     async (req, res) => {
         if (req.session.loggedIn) res.send(await zulip.get());
         else res.send({});
