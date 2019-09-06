@@ -51,8 +51,8 @@
             login: function () {
                 const data = JSON.stringify(this.login_data);
                 const xhr = new XMLHttpRequest();
-                xhr.onload = function () {
-                    if (xhr.response.success) this.$router.push("/");
+                xhr.onload = () => {
+                    if (xhr.response.success) this.$router.replace("/user");
                 };
                 xhr.open('POST', '/user/login');
                 xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
@@ -62,8 +62,8 @@
             register: function () {
                 const data = JSON.stringify(this.register_data);
                 const xhr = new XMLHttpRequest();
-                xhr.onload = function () {
-                    if (xhr.response.success) location.replace("/");
+                xhr.onload = () => {
+                    if (xhr.response.success) this.$router.replace("/user");
                 };
                 xhr.open('POST', '/user/register');
                 xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");

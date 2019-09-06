@@ -49,7 +49,7 @@
                 const xhr = new XMLHttpRequest();
                 xhr.onload = () => {
                     this.isAdmin = xhr.response.isAdmin;
-                    if (!this.isAdmin) location.replace("/");
+                    if (!this.isAdmin) this.$router.replace("/");
                 };
                 xhr.open("GET", "/user/status");
                 xhr.responseType = "json";

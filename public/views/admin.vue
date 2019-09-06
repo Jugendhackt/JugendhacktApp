@@ -37,7 +37,7 @@
                 xhr.onload = () => {
                     // TODO: Validate security: check if user can somehow change this variable
                     this.isAdmin = xhr.response.isAdmin;
-                    if (!this.isAdmin) location.replace('/');
+                    if (!this.isAdmin) this.$router.replace('/');
                 };
                 xhr.open("GET", "/user/status");
                 xhr.responseType = "json";
