@@ -6,6 +6,7 @@
                 {{board.title || board.domain}}
                 <img class="cover" v-if="board.covers[0]"
                      :src="board.covers[0].startsWith('http') ? board.covers[0] : 'https://hackdash.s3-us-west-2.amazonaws.com' + board.covers[0]">
+                <img class="cover" v-else>
             </div>
         </div>
         <span :class="{ hide : !boardOpen}" class="back">
