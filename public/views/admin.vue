@@ -22,7 +22,6 @@
             }
         },
         methods: {
-            // TODO: Redirect if not admin
             fetchUsers() {
                 const xhr = new XMLHttpRequest();
                 xhr.onload = () => {
@@ -35,7 +34,6 @@
             checkAdmin() {
                 const xhr = new XMLHttpRequest();
                 xhr.onload = () => {
-                    // TODO: Validate security: check if user can somehow change this variable
                     this.isAdmin = xhr.response.isAdmin;
                     if (!this.isAdmin) this.$router.replace('/');
                 };
@@ -44,7 +42,6 @@
                 xhr.send();
             },
             updateAdmin(user) {
-                // TODO: Only update if at least one other user is admin
                 const formData = new FormData();
                 formData.append('email', user.email);
                 const xhr = new XMLHttpRequest();
@@ -52,7 +49,7 @@
                     console.log(xhr.response);
                 };
                 xhr.responseType = "json";
-                xhr.open("POST", "/user/updateAdmin");
+                xhr.open("PUT", "/user/updateAdmin");
                 xhr.send(formData);
                 this.fetchUsers();
             }

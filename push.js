@@ -32,7 +32,7 @@ push.post("/subscribe", (req, res) => {
 });
 
 push.post("/send", (req, res) => {
-    if (req.session.isAdmin) { // TODO: Make /push/send only available for admins @Lars; Works at least for me (@Lars)
+    if (req.session.isAdmin) {
         const message = JSON.stringify(req.body.message);
         console.log("New message:", message);
 

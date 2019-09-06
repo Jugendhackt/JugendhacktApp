@@ -35,7 +35,7 @@
                     // TODO: Redirect if not logged in
                 };
                 xhr.responseType = "json";
-                xhr.open("GET", "/user/getUser");
+                xhr.open("GET", "/user/get");
                 xhr.send();
             },
             update() {
@@ -44,7 +44,7 @@
                 xhr.onload = function () {
                     if (xhr.response.success) location.replace("/");
                 };
-                xhr.open('POST', '/user/update');
+                xhr.open('PUT', '/user/update');
                 xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
                 xhr.responseType = "json";
                 xhr.send(data);
@@ -55,7 +55,6 @@
             this.fetchUser();
         }
     };
-    // TODO: Thank StackOverflow
     Date.prototype.dateToInput = function(){
         return this.getFullYear() + '-' + ('0' + (this.getMonth() + 1)).substr(-2,2) + '-' + ('0' + this.getDate()).substr(-2,2);
     }

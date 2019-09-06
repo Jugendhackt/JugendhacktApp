@@ -77,10 +77,7 @@
             },
             checkAdmin() {
                 const xhr = new XMLHttpRequest();
-                xhr.onload = () => {
-                    // TODO: Validate security: check if user can somehow change this variable -> Should work with current backend validation
-                    this.isAdmin = xhr.response.isAdmin;
-                };
+                xhr.onload = () => this.isAdmin = xhr.response.isAdmin;
                 xhr.open("GET", "/user/status");
                 xhr.responseType = "json";
                 xhr.send();

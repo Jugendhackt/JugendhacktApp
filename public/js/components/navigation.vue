@@ -28,7 +28,6 @@
             checkAdmin() {
                 const xhr = new XMLHttpRequest();
                 xhr.onload = () => {
-                    // TODO: Validate security: check if user can somehow change this variable
                     this.isAdmin = xhr.response.isAdmin;
                     this.isLoggedIn = xhr.response.loggedIn;
                 };

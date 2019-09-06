@@ -84,7 +84,7 @@ const self = module.exports = {
             .then(conn => {
                 bCrypt.hash(req.body.password, 12, (err, password) => {
                     if (err) throw err;
-                    const fullName = req.body.fullName.length <= 100 ? req.body.fullName : req.body.fullName.slice(0, 101);  // TODO: Validate functionallity
+                    const fullName = req.body.fullName.length <= 100 ? req.body.fullName : req.body.fullName.slice(0, 101);
                     conn.query("SELECT * FROM users LIMIT 1")
                         .then(res => {
                             const isAdmin = !res[0];
@@ -138,7 +138,6 @@ const self = module.exports = {
      * @param res
      */
     checkStatus: (req, res) => {
-        // TODO: Validate security
         const userStatus = {
             loggedIn: req.session.loggedIn,
             isAdmin: req.session.isAdmin,
@@ -155,14 +154,40 @@ const self = module.exports = {
         if (req.session.isAdmin) {
             self.connect(res)
                 .then(conn => {
-                    conn.query("UPDATE users SET is_admin = NOT is_admin WHERE email = ?", [req.body.email])
-                        .then(() => {
-                            res.json({success: true});
-                            conn.end();
+                    conn.query("SELECT * FROM users WHERE is_admin = 1")
+                        .then(result => {
+                            if (result[1]) {
+                                conn.query("UPDATE users SET is_admin = NOT is_admin WHERE email = ?", [req.body.email])
+                                    .then(() => {
+                                        res.json({success: true});
+                                        conn.end();
+                                    })
+                                    .catch(err => {
+                                        console.error(err);
+                                        res.status(400).json({success: false, message: "User does not exist"});
+                                        conn.end();
+                                    })
+                            } else {
+                                conn.query("SELECT * FROM users WHERE email = ?", [req.body.email])
+                                    .then(result => {
+                                        if (!result[0].is_admin) {
+                                            conn.query("UPDATE users SET is_admin = NOT is_admin WHERE email = ?", [req.body.email])
+                                                .then(() => {
+                                                    res.json({success: true});
+                                                    conn.end();
+                                                })
+                                                .catch(err => {
+                                                    console.error(err);
+                                                    res.status(400).json({success: false, message: "User does not exist"});
+                                                    conn.end();
+                                                })
+                                        } else res.status(400).json({success: false, message: "Last admin user left"});
+                                    })
+                            }
                         })
                         .catch(err => {
                             console.error(err);
-                            res.status(400).json({success: false, message: "User does not exist"});
+                            res.status(400).json({success: false, message: "Error"});
                             conn.end();
                         })
                 })
@@ -180,7 +205,6 @@ const self = module.exports = {
                 .then(conn => {
                     conn.query("SELECT email, full_name, is_admin, birthday FROM users")
                         .then(res => {
-                            for (const r of res) delete r.password;
                             resp.json(res);
                             conn.end();
                         })
@@ -202,9 +226,8 @@ const self = module.exports = {
         if (req.session.loggedIn) {
             self.connect()
                 .then(conn => {
-                    conn.query("SELECT * FROM users WHERE id = ?", [req.session.uid])
+                    conn.query("SELECT full_name, email, birthday FROM users WHERE id = ?", [req.session.uid])
                         .then(res => {
-                            for (const r of res) delete r.password;
                             resp.send(res);
                             conn.end();
                         })
@@ -223,8 +246,6 @@ const self = module.exports = {
      * @param resp
      */
     updateUserDetails: (req, resp) => {
-        // TODO: Validate security; should be fine
-        console.log(req.body);
         if (req.session.loggedIn) {
             self.connect()
                 .then(conn => {
@@ -232,14 +253,11 @@ const self = module.exports = {
                         let updateString = "";
                         let updateParams = [];
                         if (bCrypt.compareSync('', password)) { // IDK, check for req.body.password isn't working
-                            // Checks if a new password has been set
                             updateString = "UPDATE users SET email = ?, full_name = ?, birthday = ? WHERE id = ? AND email = ?";
                             updateParams = [req.body.email, req.body.full_name, req.body.birthday, req.session.uid, req.session.email];
-                            console.log("Without password!");
                         } else {
                             updateString = "UPDATE users SET email = ?, full_name = ?, birthday = ?, password = ? WHERE id = ? AND email = ?";
                             updateParams = [req.body.email, req.body.full_name, req.body.birthday, password, req.session.uid, req.session.email];
-                            console.log("With password!");
                         }
                         conn.query(updateString, updateParams)
                             .then(_ => {
@@ -257,7 +275,8 @@ const self = module.exports = {
                             })
                     });
                 })
-        } resp.status(403).json({success: false, message: "Operation not allowed"});
+        }
+        resp.status(403).json({success: false, message: "Operation not allowed"});
     },
 
     /**
