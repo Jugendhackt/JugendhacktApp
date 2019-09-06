@@ -34,10 +34,8 @@
             updatePackingList() {
                 const data = JSON.stringify(this.pl);
                 const xhr = new XMLHttpRequest();
-                xhr.onload = function () {
-                    console.log(xhr.response);
-                };
-                xhr.open('POST', '/packinglist/add');
+                xhr.onload = () => this.handleResponse(xhr.response);
+                xhr.open('PUT', '/packinglist/');
                 xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
                 xhr.send(data);
                 this.pl.item = '';
@@ -45,20 +43,16 @@
             },
             fetchPackingList() {
                 const xhr = new XMLHttpRequest();
-                xhr.onload = () => {
-                    this.items = JSON.parse(xhr.response)
-                };
-                xhr.open('GET', '/packinglist/get');
+                xhr.onload = () => this.items = JSON.parse(xhr.response);
+                xhr.open('GET', '/packinglist/');
                 xhr.send();
             },
             removePl(item) {
                 const formData = new FormData();
                 formData.append("id", item.id);
                 const xhr = new XMLHttpRequest();
-                xhr.onload = () => {
-                    console.log(xhr.response);
-                };
-                xhr.open("POST", "/packinglist/del");
+                xhr.onload = () => this.handleResponse(xhr.response);
+                xhr.open("DELETE", "/packinglist/");
                 xhr.send(formData);
                 this.fetchPackingList();
             },
@@ -68,6 +62,9 @@
                 xhr.open("GET", "/user/status");
                 xhr.responseType = "json";
                 xhr.send();
+            },
+            handleResponse(resp) {
+                if (resp.success === false) alert(resp.message);
             }
         },
         beforeMount() {

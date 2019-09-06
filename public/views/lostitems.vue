@@ -45,10 +45,8 @@
                 formData.append("location", this.lnf.location);
                 formData.append("img", document.getElementById("lnf_img").files[0]);
                 const xhr = new XMLHttpRequest();
-                xhr.onload = function () {
-                    console.log(xhr.response);
-                };
-                xhr.open('POST', '/lostitems/add');
+                xhr.onload = () => this.handleResponse(xhr.response);
+                xhr.open('PUT', '/lostitems/');
                 xhr.send(formData);
                 this.lnf.what = '';
                 this.lnf.location = '';
@@ -57,10 +55,8 @@
             },
             fetchLostItemList() {
                 const xhr = new XMLHttpRequest();
-                xhr.onload = () => {
-                    this.items = JSON.parse(xhr.response)
-                };
-                xhr.open('GET', '/lostitems/get');
+                xhr.onload = () => this.items = JSON.parse(xhr.response);
+                xhr.open('GET', '/lostitems/');
                 xhr.send();
             },
             removeLnF(item) {
@@ -68,10 +64,8 @@
                 formData.append("id", item.id);
                 formData.append("img", item.img_name);
                 const xhr = new XMLHttpRequest();
-                xhr.onload = () => {
-                    console.log(xhr.response);
-                };
-                xhr.open("POST", "/lostitems/del");
+                xhr.onload = () => this.handleResponse(xhr.response);
+                xhr.open("DELETE", "/lostitems/");
                 xhr.send(formData);
                 this.fetchLostItemList();
             },
@@ -113,8 +107,7 @@
     .lost-item {
         display: flex;
         padding: 10px;
-        justify-content: space-between;
-
+        position: relative;
     }
 
     .image img {
@@ -129,5 +122,9 @@
         top: 5px;
         width: auto;
         height: auto;
+    }
+
+    .desc {
+        padding-left: 50px;
     }
 </style>

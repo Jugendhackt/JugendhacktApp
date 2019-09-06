@@ -329,7 +329,7 @@ const self = module.exports = {
                         conn.end()
                     })
                     .catch(err => {
-                        console.log(err);
+                        console.error(err);
                         resp.status(500).json({success: false, message: "Unknown error"});
                         conn.end();
                     })
@@ -343,7 +343,6 @@ const self = module.exports = {
      */
     delLostItem: (req, res) => {
         if (req.session.isAdmin) {
-            console.log(req.body);
             self.connect(res)
                 .then(conn => {
                     conn.query("DELETE FROM lost_items WHERE id = ?", [req.body.id])
