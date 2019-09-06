@@ -84,7 +84,7 @@ const self = module.exports = {
             .then(conn => {
                 bCrypt.hash(req.body.password, 12, (err, password) => {
                     if (err) throw err;
-                    const fullName = req.body.fullName ? req.body.fullName.length <= 100 : req.body.fullName.slice(0, 101);  // TODO: Validate functionallity
+                    const fullName = req.body.fullName.length <= 100 ? req.body.fullName : req.body.fullName.slice(0, 101);  // TODO: Validate functionallity
                     conn.query("SELECT * FROM users LIMIT 1")
                         .then(res => {
                             const isAdmin = !res[0];
