@@ -5,12 +5,12 @@ const bodyParser = require("body-parser");
 const cookieSession = require("cookie-session");
 const dbController = require("./dbController");
 
-const api = require("./api.js");
-const user = require("./userHandler");
-const lostItems = require("./lostItems");
-const packingList = require("./packingList");
-const push = require("./push");
-const badges = require("./badges");
+const api = require("./router/api.js");
+const user = require("./router/userHandler");
+const lostItems = require("./router/lostItems");
+const packingList = require("./router/packingList");
+const push = require("./router/push");
+const badges = require("./router/badges");
 
 const app = express();
 const PORT = process.env.PORT || 80;

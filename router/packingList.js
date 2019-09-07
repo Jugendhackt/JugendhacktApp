@@ -1,5 +1,5 @@
 const express = require('express');
-const dbController = require('./dbController');
+const dbController = require('../dbController');
 const packingList = express.Router();
 packingList.get('/', dbController.getPackingListItem);
 packingList.put('/', dbController.addPackingListItem);
