@@ -1,9 +1,8 @@
 require("dotenv").config();
-
 const express = require("express");
 const fileupload = require("express-fileupload");
 const bodyParser = require("body-parser");
-const session = require("express-session");
+const cookieSession = require("cookie-session");
 const dbController = require("./dbController");
 
 const api = require("./api.js");
@@ -25,11 +24,10 @@ app.use((_, res, next) => {
     res.append("Service-Worker-Allowed", "/");
     next();
 });
-app.use(session({
-    secret: "theBestSecretKey", // TODO: Random key
-    resave: true,
-    saveUninitialized: true
-    //cookie: {secure: true}
+
+app.use(cookieSession({
+    name: 'session',
+    secret: 'theBestSecretKey'  // TODO: Random key
 }));
 
 dbController.init();
@@ -40,6 +38,5 @@ app.use("/lostitems", lostItems);
 app.use("/packinglist", packingList);
 app.use("/push", push);
 app.use("/badges", badges);
-
 
 app.listen(PORT, () => console.log(`Listening on http://localhost:${PORT}`));
