@@ -5,6 +5,7 @@
 #     $ crontab -e
 #     */15 * * * * $USER /path/to/cron.sh >/dev/null 2>&1 # Updates every 15 minutes
 
-PORT=$(cat ./.env | grep PORT | cut -f2 -d'=')
+PROJECT_DIR="${HOME}/jugendhacktapp/" # Sorry for constant directory
+PORT=$(cat "${PROJECT_DIR}/.env" | grep PORT | cut -f2 -d'=')
 curl -s -o /dev/null "http://localhost:${PORT}/api/events"
 curl -s -o /dev/null "http://localhost:${PORT}/api/twitter"
