@@ -30,10 +30,8 @@ app = new Vue({
             current_user: false
         }
     },
-    watch: {
-        "$route": function () {
-            this.loading = false;
-        }
+    beforeRouteLeave() {
+        this.$root.loading = false;
     },
     router,
     el: "#app"

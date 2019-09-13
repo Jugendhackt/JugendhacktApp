@@ -21,8 +21,7 @@
         data: function () {
             return {
                 boards: {},
-                current_board: undefined,
-                loading: false
+                current_board: undefined
             }
         },
         methods: {

@@ -28,6 +28,7 @@
                 return new Promise(resolve => {
                     let xhr = new XMLHttpRequest();
                     xhr.addEventListener("load", () => {
+                        this.$root.loading = false;
                         this.feed = xhr.response;
                         console.log(xhr.response, this.feed);
                         resolve(this.feed)

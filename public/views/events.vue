@@ -15,7 +15,6 @@
         data: function () {
             return {
                 events: [],
-                loading: false
             }
         },
         methods: {
@@ -23,8 +22,8 @@
                 this.$root.loading = true;
                 let xhr = new XMLHttpRequest();
                 xhr.addEventListener("load", () => {
-                    this.events = xhr.response;
                     this.$root.loading = false;
+                    this.events = xhr.response;
                 });
                 xhr.open("GET", "/api/events");
                 xhr.responseType = "json";
