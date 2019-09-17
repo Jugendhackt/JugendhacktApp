@@ -8,6 +8,7 @@ user.get('/get', dbController.getUser);
 user.get('/getAll', dbController.getUsers);
 user.post('/register', dbController.addUser);
 user.post('/login', dbController.login);
+user.get('/logout', dbController.logout); // debugging
 user.put('/updateAdmin', dbController.updateAdmin);
 user.put('/update', dbController.updateUserDetails);
 

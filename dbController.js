@@ -5,12 +5,13 @@ const fs = require('fs');
 const userTable = `
     CREATE TABLE IF NOT EXISTS users
     (
-        id        INT                 NOT NULL AUTO_INCREMENT,
-        full_name VARCHAR(100)        NOT NULL,
-        password  VARCHAR(64)         NOT NULL,
-        email     VARCHAR(255) UNIQUE NOT NULL,
-        birthday  DATETIME            NOT NULL,
-        is_admin  BOOLEAN             NOT NULL,
+        id          INT                 NOT NULL AUTO_INCREMENT,
+        full_name   VARCHAR(100)        NOT NULL,
+        password    VARCHAR(64)         NOT NULL,
+        email       VARCHAR(255) UNIQUE NOT NULL,
+        birthday    DATETIME            NOT NULL,
+        is_admin    BOOLEAN             NOT NULL,
+        is_verified BOOLEAN             NOT NULL,
         PRIMARY KEY (id)
     )
 `;
@@ -36,6 +37,7 @@ const packingListTable = `
 `;
 
 const self = module.exports = {
+    // Allow multiple connections
     pool: mariadb.createPool({
         host: process.env.DBHost,
         user: process.env.DBUser,
@@ -88,8 +90,8 @@ const self = module.exports = {
                     conn.query("SELECT * FROM users LIMIT 1")
                         .then(res => {
                             const isAdmin = !res[0];
-                            conn.query("INSERT INTO users (full_name, password, email, birthday, is_admin) VALUE (?,?,?,?,?)",
-                                [fullName, password, req.body.email, req.body.birthday, isAdmin]
+                            conn.query("INSERT INTO users (full_name, password, email, birthday, is_admin, is_verified) VALUE (?,?,?,?,?,?)",
+                                [fullName, password, req.body.email, req.body.birthday, isAdmin, isAdmin]
                             )
                                 .then(() => {
                                     conn.end();
@@ -118,6 +120,7 @@ const self = module.exports = {
                         if (bCrypt.compareSync(req.body.password, res[0].password)) {
                             req.session.loggedIn = true;
                             req.session.isAdmin = res[0].is_admin;
+                            req.session.isVerified = res[0].is_verified;
                             req.session.email = res[0].email;
                             req.session.uid = res[0].id;
                             resp.json({success: true});
@@ -130,6 +133,11 @@ const self = module.exports = {
                         conn.end();
                     })
             })
+    },
+
+    logout: (req, res) => {
+        req.session = null;
+        res.redirect('/#/login');
     },
 
     /**
@@ -178,7 +186,10 @@ const self = module.exports = {
                                                 })
                                                 .catch(err => {
                                                     console.error(err);
-                                                    res.status(400).json({success: false, message: "User does not exist"});
+                                                    res.status(400).json({
+                                                        success: false,
+                                                        message: "User does not exist"
+                                                    });
                                                     conn.end();
                                                 })
                                         } else res.status(400).json({success: false, message: "Last admin user left"});
