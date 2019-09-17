@@ -11,5 +11,6 @@ user.post('/login', dbController.login);
 user.get('/logout', dbController.logout); // debugging
 user.put('/updateAdmin', dbController.updateAdmin);
 user.put('/update', dbController.updateUserDetails);
+user.put('/verify', dbController.verifyUser);
 
 module.exports = user;

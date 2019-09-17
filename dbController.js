@@ -149,6 +149,7 @@ const self = module.exports = {
         const userStatus = {
             loggedIn: req.session.loggedIn,
             isAdmin: req.session.isAdmin,
+            isVerified: req.session.isVerified,
         };
         res.json(userStatus);
     },
@@ -206,6 +207,28 @@ const self = module.exports = {
     },
 
     /**
+     * Verifies a user
+     * @param req
+     * @param res
+     */
+    verifyUser: (req, res) => {
+        if (req.session.isAdmin) {
+            self.connect(res).then(conn => {
+                conn.query("UPDATE users SET is_verified = true WHERE email = ?", [req.body.email])
+                    .then(_ => {
+                        res.json({success: true});
+                        conn.end();
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        res.status(400).json({success: false, message: "User does not exist"});
+                        conn.end();
+                    })
+            })
+        } else res.status(403).json({success: false, message: "Operation not allowed"});
+    },
+
+    /**
      * Returns all user from db
      * @param req
      * @param resp
@@ -214,7 +237,7 @@ const self = module.exports = {
         if (req.session.isAdmin) {
             self.connect()
                 .then(conn => {
-                    conn.query("SELECT email, full_name, is_admin, birthday FROM users")
+                    conn.query("SELECT email, full_name, is_admin, is_verified, birthday FROM users")
                         .then(res => {
                             resp.json(res);
                             conn.end();
