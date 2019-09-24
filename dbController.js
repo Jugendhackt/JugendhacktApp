@@ -82,16 +82,18 @@ const self = module.exports = {
      * @param resp
      */
     addUser: (req, resp) => {
+	const body = req.body;
+	if (body.password && body.fullName && body.email && body.birthday) {
         self.connect(resp)
             .then(conn => {
                 bCrypt.hash(req.body.password, 12, (err, password) => {
                     if (err) throw err;
-                    const fullName = req.body.fullName.length <= 100 ? req.body.fullName : req.body.fullName.slice(0, 101);
+                    const fullName = body.fullName.length <= 100 ? body.fullName : body.fullName.slice(0, 101);
                     conn.query("SELECT * FROM users LIMIT 1")
                         .then(res => {
                             const isAdmin = !res[0];
                             conn.query("INSERT INTO users (full_name, password, email, birthday, is_admin, is_verified) VALUE (?,?,?,?,?,?)",
-                                [fullName, password, req.body.email, req.body.birthday, isAdmin, isAdmin]
+                                [fullName, password, body.email, body.birthday, isAdmin, isAdmin]
                             )
                                 .then(() => {
                                     conn.end();
@@ -105,6 +107,7 @@ const self = module.exports = {
                         });
                 })
             })
+	} else resp.status(400).json({success: false, message: "Wrong number of parameters"})
     },
 
     /**
@@ -113,6 +116,7 @@ const self = module.exports = {
      * @param resp
      */
     login: (req, resp) => {
+	if (req.body.email && req.body.password) {
         self.connect(resp)
             .then(conn => {
                 conn.query("SELECT * FROM users WHERE email = ?", [req.body.email])
@@ -133,6 +137,8 @@ const self = module.exports = {
                         conn.end();
                     })
             })
+
+	} else resp.status(400).json({success: false, message: "Wrong number of parameters"})
     },
 
     logout: (req, res) => {
@@ -160,6 +166,7 @@ const self = module.exports = {
      * @param res
      */
     updateAdmin: (req, res) => {
+	if (req.body.email) {
         if (req.session.isAdmin) {
             self.connect(res)
                 .then(conn => {
@@ -203,7 +210,10 @@ const self = module.exports = {
                             conn.end();
                         })
                 })
+
         } else res.status(403).json({success: false, message: "Operation not allowed"});
+
+	} else resp.status(400).json({success: false, message: "Wrong number of parameters"})
     },
 
     /**
