@@ -50,7 +50,7 @@ api.get("/twitter", cache(600),
     async (_, res) => res.send(await twitter.get()));
 api.get("/zulip", cache(20),
     async (req, res) => {
-        if (req.session.loggedIn) res.send(await zulip.get());
+        if (req.session.loggedIn && req.session.isVerified) res.send(await zulip.get());
         else res.send({});
     });
 api.get("*", (_, res) => res.send(apiUrls));
