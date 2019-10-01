@@ -1,4 +1,4 @@
-# JugendhacktApp ![](https://travis-ci.com/Jugendhackt/JugendhacktApp.svg?branch=master) ![](https://nschroetler.de/jhbadge/?evt=hh&year=2019)
+# JugendhacktApp ![](https://travis-ci.com/Jugendhackt/JugendhacktApp.svg?branch=master) ![](https://jhbadge.com/?year=2019&event=hh)
 
 We love Jugendhackt!
 Therefore we want to contribute to it with this App - The Jugendhackt App!
