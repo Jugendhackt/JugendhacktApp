@@ -5,6 +5,7 @@
     <div ID="messageInput">
     <label for="TextBox">Message:</label>
     <input name="TextBox" type="text"/>
+    <button for="TextBox">Send</button>
   </div>
 
   </div>
