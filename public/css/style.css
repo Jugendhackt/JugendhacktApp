@@ -10,6 +10,7 @@ body {
     margin: 5px 5px 24px 5px;
 }
 
+
 .navigation .branding {
     z-index: 5;
     font-size: 1.5em;
@@ -29,20 +30,34 @@ body {
     position: fixed;
     left: 0;
     right: 0;
-    top: 53px;
+    top: 122px;
     bottom: 0;
     overflow: auto;
-    background: url("/assets/images/default-background.png") repeat;
+}
+
+body {
+  background: url("/assets/images/default-background.png") repeat;
 }
 
 .navigation .nav {
     padding: 5px;
     display: flex;
+    position: fixed;
     font-family: sans-serif;
     background: #f2f2f2;
     margin-top: 0;
     box-shadow: 0 0 4px #cecece;
     z-index: 5;
+  }
+
+@media screen and (min-width: 900px) {
+
+.navigation .nav {
+    top: 53px;
+    left: 0;
+    right: 0;
+}
+
 }
 
 .btn-back {
@@ -71,7 +86,7 @@ body {
 }
 
 /**
-  
+
 */
 @media screen and (max-width: 900px) {
     #component_view {
