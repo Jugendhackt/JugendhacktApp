@@ -1,7 +1,9 @@
 <template>
     <div>
-        <div class="card" v-if="isAdmin">
+        <div class="card">
             <h2 class="name">Lost and Found</h2>
+        </div>
+        <div class="card" v-if="isAdmin">
             <form @submit="submitLostItem()" enctype="multipart/form-data" id="lnf-form">
                 <label for="lnf_what">Item found:</label>
                 <input type="text" id="lnf_what" v-model="lnf.what" required>

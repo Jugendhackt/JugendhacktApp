@@ -1,5 +1,8 @@
 <template>
     <div>
+        <div class="card">
+            <h2 class="name">Packing list</h2>
+        </div>
         <div class="card" v-if="isAdmin">
             <h2 class="name">Packing list</h2>
             <form @submit="updatePackingList()">
