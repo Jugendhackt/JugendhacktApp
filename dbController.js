@@ -109,7 +109,7 @@ const self = module.exports = {
                         conn.query("SELECT * FROM users LIMIT 1")
                             .then(res => {
                                 const isAdmin = !res[0];
-                                if (verifyEmail(body.email)) {
+                                if (self.verifyEmail(body.email)) {
                                     conn.query("INSERT INTO users (full_name, password, email, birthday, is_admin, is_verified) VALUE (?,?,?,?,?,?)",
                                         [fullName, password, body.email, body.birthday, isAdmin, isAdmin]
                                     )
