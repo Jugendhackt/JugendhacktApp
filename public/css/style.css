@@ -25,7 +25,7 @@ body {
     border: none;
 }
 
-#app {
+#component_view {
     position: fixed;
     left: 0;
     right: 0;
@@ -70,8 +70,11 @@ body {
     border-radius: 50%;
 }
 
+/**
+  
+*/
 @media screen and (max-width: 900px) {
-    #app {
+    #component_view {
         top: 53px;
         bottom: 66px;
         background-size: 100%;

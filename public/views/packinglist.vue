@@ -1,20 +1,22 @@
 <template>
     <div>
-        <div class="card" v-if="isAdmin">
-            <h2 class="name">Packing list</h2>
-            <form @submit="updatePackingList()">
-                <label for="packing_list_item">Item:</label>
-                <input type="text" id="packing_list_item" v-model="pl.item" required>
-                <button type="submit" class="button primary">Add item to list</button>
-            </form>
-        </div>
         <div class="card">
-            <ul id="dpl_list">
-                <li v-for="item in items" class="packing-list-items">
-                    <span>{{ item.item }}</span>
-                    <button class="remove-pl-btn" v-if="isAdmin" v-on:click="removePl(item)">Delete</button>
-                </li>
-            </ul>
+            <h2 class="name">Packing list</h2>
+            <div v-if="isAdmin">
+                <form @submit="updatePackingList()">
+                    <label for="packing_list_item">Item:</label>
+                    <input type="text" id="packing_list_item" v-model="pl.item" required>
+                    <button type="submit" class="button primary">Add item to list</button>
+                </form>
+            </div>
+            <div>
+                <ul id="dpl_list">
+                    <li v-for="item in items" class="packing-list-items">
+                        <span>{{ item.item }}</span>
+                        <button class="remove-pl-btn" v-if="isAdmin" v-on:click="removePl(item)">Delete</button>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
 </template>

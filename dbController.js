@@ -1,6 +1,7 @@
 const mariadb = require('mariadb');
 const bCrypt = require('bcrypt');
 const fs = require('fs');
+const dns = require('dns');
 
 const userTable = `
     CREATE TABLE IF NOT EXISTS users
@@ -8,7 +9,7 @@ const userTable = `
         id          INT                 NOT NULL AUTO_INCREMENT,
         full_name   VARCHAR(100)        NOT NULL,
         password    VARCHAR(64)         NOT NULL,
-        email       VARCHAR(255) UNIQUE NOT NULL,
+        email       VARCHAR(150) UNIQUE NOT NULL,
         birthday    DATETIME            NOT NULL,
         is_admin    BOOLEAN             NOT NULL,
         is_verified BOOLEAN             NOT NULL,
@@ -20,8 +21,8 @@ const lostItemsTable = `
     CREATE TABLE IF NOT EXISTS lost_items
     (
         id       INT          NOT NULL AUTO_INCREMENT,
-        location VARCHAR(255) NOT NULL,
-        what     VARCHAR(255) NOT NULL,
+        location VARCHAR(150) NOT NULL,
+        what     VARCHAR(150) NOT NULL,
         img_name VARCHAR(20)  NOT NULL,
         PRIMARY KEY (id)
     )
@@ -32,6 +33,69 @@ const packingListTable = `
     (
         id   INT          NOT NULL AUTO_INCREMENT,
         item VARCHAR(100) NOT NULL,
+        PRIMARY KEY (id)
+    )
+`;
+
+// "Hackdash" databases
+const hackdashEvent = `
+    CREATE TABLE IF NOT EXISTS hackdash_event
+    (
+        id   INT         NOT NULL AUTO_INCREMENT,
+        name VARCHAR(30) NOT NULL,
+        year INT         NOT NULL,
+        PRIMARY KEY (id)
+    )
+`;
+
+const hackdashProject = `
+    CREATE TABLE IF NOT EXISTS hackdash_project
+    (
+        id          INT         NOT NULL AUTO_INCREMENT,
+        event_id    INT         NOT NULL,
+        title       VARCHAR(40) NOT NULL,
+        img_name    VARCHAR(50) NOT NULL,
+        description TEXT        NOT NULL,
+        FOREIGN KEY (event_id) REFERENCES hackdash_event (id),
+        PRIMARY KEY (id)
+    )
+`;
+
+const hackdashUsers = `
+    CREATE TABLE IF NOT EXISTS hackdash_users
+    (
+        id         INT NOT NULL AUTO_INCREMENT,
+        user_id    INT NOT NULL,
+        project_id INT NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES users (id),
+        FOREIGN KEY (project_id) REFERENCES hackdash_project (id),
+        PRIMARY KEY (id)
+    )
+`;
+
+const questions = `
+    CREATE TABLE IF NOT EXISTS questions
+    (
+        id         INT NOT NULL AUTO_INCREMENT,
+        user_id    INT NOT NULL,
+        title      VARCHAR(50)  NOT NULL,
+        text       TEXT         NOT NULL,
+        topic      VARCHAR(24)  NOT NULL,
+
+        FOREIGN KEY (user_id) REFERENCES users (id),
+        PRIMARY KEY (id)
+    )
+`;
+
+const answers = `
+    CREATE TABLE IF NOT EXISTS answers
+    (
+        id         INT NOT NULL AUTO_INCREMENT,
+        user_id    INT NOT NULL,
+        question_id INT NOT NULL,
+        text       TEXT         NOT NULL,
+        FOREIGN KEY (question_id) REFERENCES questions (id),
+        FOREIGN KEY (user_id) REFERENCES users (id),
         PRIMARY KEY (id)
     )
 `;
@@ -65,7 +129,7 @@ const self = module.exports = {
         self.connect()
             .then(conn => {
                 console.log(`Connected to database: ${process.env.DBName}`);
-                for (const table of [userTable, lostItemsTable, packingListTable]) {
+                for (const table of [userTable, lostItemsTable, packingListTable, hackdashEvent, hackdashProject, hackdashUsers, questions, answers]) {
                     conn.query(table)
                         .catch(err => {
                             console.error('Could not create table', err);
@@ -74,6 +138,17 @@ const self = module.exports = {
                 }
                 conn.end();
             })
+    },
+
+    /**
+     * Verifies email by MX DNS record
+     */
+    verifyEmail: (email) => {
+        const domain = email.split("@")[1];
+        dns.resolve(domain, "MX", (err, addresses) => {
+            if (err) return false;
+            else return addresses && addresses.length > 0;
+        });
     },
 
     /**
@@ -92,19 +167,30 @@ const self = module.exports = {
                         conn.query("SELECT * FROM users LIMIT 1")
                             .then(res => {
                                 const isAdmin = !res[0];
-                                conn.query("INSERT INTO users (full_name, password, email, birthday, is_admin, is_verified) VALUE (?,?,?,?,?,?)",
-                                    [fullName, password, body.email, body.birthday, isAdmin, isAdmin]
-                                )
-                                    .then(() => {
+                                const domain = body.email.split("@")[1];
+                                dns.resolve(domain, "MX", (err, addresses) => {
+                                    if (err) {
+                                        resp.status(400).json({success: false, message: "Email couldn't get verified"});
                                         conn.end();
-                                        self.login(req, resp);
-                                    })
-                                    .catch(err => {
-                                        console.error('Could not create user', err);
-                                        resp.status(400).json({success: false, message: "User already exists"});
+                                    } else if (addresses && addresses.length > 0) {
+                                        conn.query("INSERT INTO users (full_name, password, email, birthday, is_admin, is_verified) VALUE (?,?,?,?,?,?)",
+                                            [fullName, password, body.email, body.birthday, isAdmin, isAdmin]
+                                        )
+                                            .then(() => {
+                                                conn.end();
+                                                self.login(req, resp);
+                                            })
+                                            .catch(err => {
+                                                console.error('Could not create user', err);
+                                                resp.status(400).json({success: false, message: "User already exists"});
+                                                conn.end();
+                                            });
+                                    } else {
+                                        resp.status(400).json({success: false, message: "Email couldn't get verified"});
                                         conn.end();
-                                    })
-                            });
+                                    }
+                                });
+                            })
                     })
                 })
         } else resp.status(400).json({success: false, message: "Wrong number of parameters"})
@@ -297,7 +383,7 @@ const self = module.exports = {
      */
     updateUserDetails: (req, resp) => {
         const body = req.body;
-        if (body.email &&  body.full_name && body.birthday) {
+        if (body.email && body.full_name && body.birthday) {
             if (req.session.loggedIn) {
                 self.connect()
                     .then(conn => {
@@ -479,12 +565,212 @@ const self = module.exports = {
                             })
                             .catch(err => {
                                 console.error(err);
-                                res.status(400).json({success: true, message: "Item not found"});
+                                res.status(400).json({success: false, message: "Item not found"});
                                 conn.end();
                             })
                     })
             } else res.status(403).json({success: false, message: "Operation not allowed"});
         } else res.status(400).json({success: false, message: "Wrong number of parameters"});
     },
-};
 
+    //
+    // Hackdash
+    //
+    /**
+     * Adds new hackdash event
+     * @param req
+     * @param res
+     */
+    addHackdashEvent: (req, res) => {
+        self.connect(res)
+            .then(conn => {
+                conn.query("INSERT INTO hackdash_event (name, year) VALUES (?, ?)", [req.body.name, req.body.year])
+                    .then(_ => {
+                        res.json({success: true});
+                        conn.end();
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        res.status(400).json({success: false, message: "An error occurred!"});
+                        conn.end();
+                    })
+            })
+    },
+
+    /**
+     * Get all hackdash events
+     * @param req
+     * @param resp
+     */
+    getHackdashEvents: (req, resp) => {
+        self.connect(resp)
+            .then(conn => {
+                conn.query("SELECT * FROM hackdash_event")
+                    .then(res => {
+                        resp.json(res);
+                        conn.end();
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        resp.status(400).json({success: false, message: "An error occurred!"});
+                        conn.end();
+                    })
+            })
+    },
+
+    /**
+     * Adds new hackdash project
+     * @param req
+     * @param res
+     */
+    addHackdashProject: (req, res) => {
+        const body = req.body;
+        // TODO: File upload
+        self.connect(res)
+            .then(conn => {
+                conn.query("INSERT INTO hackdash_project (event_id, title, img_name, `description`) VALUES (?,?,?,?)",
+                    [body.event_id, body.title, body.img_name, body.description]
+                )
+                    .then(_ => {
+                        res.json({success: true});
+                        conn.end();
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        res.status(400).json({success: false, message: "An error occurred!"});
+                        conn.end();
+                    })
+            })
+    },
+
+    /**
+     * Get all projects
+     * @param req
+     * @param resp
+     */
+    getHackdashProjects: (req, resp) => {
+        self.connect(resp)
+            .then(conn => {
+                conn.query("SELECT * FROM hackdash_projects")
+                    .then(res => {
+                        resp.json(res);
+                        conn.end();
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        resp.status(400).json({success: false, message: "An error occurred!"});
+                        conn.end();
+                    })
+            })
+    },
+
+    /**
+     * Get all projects of event
+     * @param req
+     * @param resp
+     */
+    getHackdashEventProjects: (req, resp) => {
+        self.connect(resp)
+            .then(conn => {
+                conn.query("SELECT * FROM hackdash_projects WHERE event_id = ?", [req.query.event_id])
+                    .then(res => {
+                        resp.json(res);
+                        conn.end();
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        resp.status(400).json({success: false, message: "An error occurred!"});
+                        conn.end();
+                    })
+            })
+    },
+
+    /**
+     * Adds user to hackdash project
+     * @param req
+     * @param res
+     */
+    addHackdashUser: (req, res) => {
+        self.connect(res)
+            .then(conn => {
+                conn.query("INSERT INTO hackdash_users (user_id, project_id) VALUES (?,?)",
+                    [req.body.user_id, req.body.project_id]
+                )
+                    .then(_ => {
+                        res.json({success: true});
+                        conn.end();
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        res.status(400).json({success: false, message: "An error occurred!"});
+                        conn.end();
+                    })
+            })
+    },
+
+    /**
+     * Get all projects of event
+     * @param req
+     * @param resp
+     */
+    getHackdashProjectUser: (req, resp) => {
+        self.connect(resp)
+            .then(conn => {
+                conn.query("SELECT * FROM hackdash_users WHERE project_id = ?", [req.query.project_id])
+                    .then(res => {
+                        resp.json(res);
+                        conn.end();
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        resp.status(400).json({success: false, message: "An error occurred!"});
+                        conn.end();
+                    })
+            })
+    },
+
+    /**
+     * Adds new question
+     * @param req
+     * @param res
+     */
+    addQuestion: (req, res) => {
+        const body = req.body;
+        self.connect(res)
+            .then(conn => {
+                conn.query("INSERT INTO questions (user_id, title, text, topic) VALUES (?,?,?,?)",
+                [req.body.user_id, req.body.title, req.body.text, req.body.topic]
+            )
+                    .then(_ => {
+                        res.json({success: true});
+                        conn.end();
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        res.status(400).json({success: false, message: "An error occurred!"});
+                        conn.end();
+                    })
+            })
+    },
+
+    /**
+     * Get all questions
+     * @param req
+     * @param resp
+     */
+    getQuestions: (req, resp) => {
+        self.connect(resp)
+            .then(conn => {
+                conn.query("SELECT * FROM questions")
+                    .then(res => {
+                        resp.json(res);
+                        conn.end();
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        resp.status(400).json({success: false, message: "An error occurred!"});
+                        conn.end();
+                    })
+            })
+    },
+};
