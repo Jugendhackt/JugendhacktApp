@@ -2,11 +2,14 @@
     <div class="focuser">
         <Board class="board-view" v-if="this.boardOpen" :board="this.boards[this.current_board]"></Board>
         <div :class="{ hide: boardOpen}" class="board-navigation">
-            <div v-for="(board, i) in boards" @click="setActive(i)" class="board card" :title="board.title" :key="board._id" v-if="board.projectsCount">
+            <div v-show="this.boards.length" v-for="(board, i) in boards" @click="setActive(i)" class="board card" :title="board.title" :key="board._id" v-if="board.projectsCount">
                 {{board.title || board.domain}}
                 <img class="cover" v-if="board.covers[0]"
                      :src="board.covers[0].startsWith('http') ? board.covers[0] : 'https://hackdash.s3-us-west-2.amazonaws.com' + board.covers[0]">
                 <img class="cover" v-else>
+            </div>
+            <div class="card" v-show="!this.boards.length">
+              Hackdash is offline (again...)
             </div>
         </div>
         <span :class="{ hide : !boardOpen}" class="back">
@@ -31,8 +34,12 @@
                 xhr.addEventListener("load", () => {
                     console.log(xhr.response);
                     this.$root.loading = false;
-                    this.boards = xhr.response;
-                    this.boards.reverse();
+                    if(xhr.response == null)
+                      this.boards = {}
+                    else {
+                      this.boards = xhr.response;
+                      this.boards.reverse();
+                    }
                 });
                 xhr.open("GET", "/api/hackdash");
                 xhr.responseType = "json";
