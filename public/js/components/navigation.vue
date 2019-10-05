@@ -3,8 +3,6 @@
         <div class="branding">
             Jugend hackt App
             <router-link to="/login" v-if="!isLoggedIn"><img class="icon" src="assets/icons/key.svg" alt="Login"></router-link>
-
-          
             <router-link to="/user" v-if="isLoggedIn"><img class="icon" src="assets/icons/user.svg" alt="User"></router-link>
         </div>
         <div class="nav">
@@ -15,6 +13,7 @@
             <router-link to="/lostitems"><img class="icon" src="assets/icons/briefcase.svg" alt="Lost and Found"></router-link>
             <router-link to="/admin" v-if="isAdmin"><img class="icon" src="assets/icons/command.svg" alt="Admin"></router-link>
             <router-link to="/info"><img class="icon" src="assets/icons/clipboard.svg" alt="Informations"></router-link>
+            <router-link to="/nachhilfe"><img class="icon" src="assets/icons/clipboard.svg" alt="Nachhilfe"></router-link>
         </div>
     </nav>
 </template>
