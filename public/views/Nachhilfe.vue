@@ -4,7 +4,9 @@
 
 
 
-    <label for="Message">Message:</label>
+    <label for="TextBox">Message:</label>
+    <input name="TextBox" type="text"/>
+    
   </div>
 
 </template>
