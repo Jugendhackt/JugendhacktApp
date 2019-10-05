@@ -82,14 +82,9 @@ const self = module.exports = {
      */
     verifyEmail: (email) => {
         const domain = email.split("@")[1];
-        return dns.resolve(domain, "MX", (err, addresses) => {
-            if (err) {
-                return false;
-            } else if (addresses && addresses.length > 0) {
-                return true;
-            } else {
-                return false;
-            }
+        dns.resolve(domain, "MX", (err, addresses) => {
+            if (err) return false;
+            else return addresses && addresses.length > 0;
         });
     },
 
@@ -109,24 +104,30 @@ const self = module.exports = {
                         conn.query("SELECT * FROM users LIMIT 1")
                             .then(res => {
                                 const isAdmin = !res[0];
-                                if (self.verifyEmail(body.email)) {
-                                    conn.query("INSERT INTO users (full_name, password, email, birthday, is_admin, is_verified) VALUE (?,?,?,?,?,?)",
-                                        [fullName, password, body.email, body.birthday, isAdmin, isAdmin]
-                                    )
-                                    .then(() => {
+                                const domain = body.email.split("@")[1];
+                                dns.resolve(domain, "MX", (err, addresses) => {
+                                    if (err) {
+                                        resp.status(400).json({success: false, message: "Email couldn't get verified"});
                                         conn.end();
-                                        self.login(req, resp);
-                                    })
-                                    .catch(err => {
-                                        console.error('Could not create user', err);
-                                        resp.status(400).json({success: false, message: "User already exists"});
+                                    } else if (addresses && addresses.length > 0) {
+                                        conn.query("INSERT INTO users (full_name, password, email, birthday, is_admin, is_verified) VALUE (?,?,?,?,?,?)",
+                                            [fullName, password, body.email, body.birthday, isAdmin, isAdmin]
+                                        )
+                                            .then(() => {
+                                                conn.end();
+                                                self.login(req, resp);
+                                            })
+                                            .catch(err => {
+                                                console.error('Could not create user', err);
+                                                resp.status(400).json({success: false, message: "User already exists"});
+                                                conn.end();
+                                            });
+                                    } else {
+                                        resp.status(400).json({success: false, message: "Email couldn't get verified"});
                                         conn.end();
-                                    })
-                                } else {
-                                    resp.status(400).json({success: false, message: "Email couldn't get verified"});
-                                    conn.end();
-                                }
-                            });
+                                    }
+                                });
+                            })
                     })
                 })
         } else resp.status(400).json({success: false, message: "Wrong number of parameters"})

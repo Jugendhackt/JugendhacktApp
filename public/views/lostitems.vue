@@ -2,26 +2,26 @@
     <div>
         <div class="card">
             <h2 class="name">Lost and Found</h2>
-        </div>
-        <div class="card" v-if="isAdmin">
-            <form @submit="submitLostItem()" enctype="multipart/form-data" id="lnf-form">
-                <label for="lnf_what">Item found:</label>
-                <input type="text" id="lnf_what" v-model="lnf.what" required>
-                <label for="lnf_location">Item found where:</label>
-                <input type="text" id="lnf_location" v-model="lnf.location" required>
-                <label for="lnf_img">Image of lost item</label>
-                <input type="file" id="lnf_img" v-model=lnf.img required>
-                <button type="submit" class="button primary">Add item to list</button>
-            </form>
-        </div>
-        <div class="card">
-            <div v-for="item in items" class="lost-item">
-                <v-image :src="'/lostitems/images/' + item.img_name" alt="Image of the item" class="image"></v-image>
-                <div class="desc">
-                    <h1>{{item.what}}</h1>
-                    <p>{{item.location}}</p>
+            <div v-if="isAdmin">
+                <form @submit="submitLostItem()" enctype="multipart/form-data" id="lnf-form">
+                    <label for="lnf_what">Item found:</label>
+                    <input type="text" id="lnf_what" v-model="lnf.what" required>
+                    <label for="lnf_location">Item found where:</label>
+                    <input type="text" id="lnf_location" v-model="lnf.location" required>
+                    <label for="lnf_img">Image of lost item</label>
+                    <input type="file" id="lnf_img" v-model=lnf.img required>
+                    <button type="submit" class="button primary">Add item to list</button>
+                </form>
+            </div>
+            <div class="card">
+                <div v-for="item in items" class="lost-item">
+                    <v-image :src="'/lostitems/images/' + item.img_name" alt="Image of the item" class="image"></v-image>
+                    <div class="desc">
+                        <h1>{{item.what}}</h1>
+                        <p>{{item.location}}</p>
+                    </div>
+                    <button class="remove-lnf-btn" v-if="isAdmin" v-on:click="removeLnF(item)">Delete</button>
                 </div>
-                <button class="remove-lnf-btn" v-if="isAdmin" v-on:click="removeLnF(item)">Delete</button>
             </div>
         </div>
     </div>
