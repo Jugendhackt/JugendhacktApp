@@ -13,6 +13,7 @@
                     <input type="date" id="update_birthday" v-model="user.birthday" required>
                 </div>
                 <button type="submit" class="button primary">Update</button>
+                <!--<button type="Logout" class="button primary">Logout</button>-->
             </form>
         </div>
     </div>
