@@ -1,0 +1,15 @@
+body, html {
+  height: 100%
+}
+.bg {position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  overflow: auto;
+  background: url("default-background.png") repeat;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+}
+a {font-size: 50px; background-color: lightgreen; color: white;}

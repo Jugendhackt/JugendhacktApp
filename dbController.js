@@ -73,6 +73,33 @@ const hackdashUsers = `
     )
 `;
 
+const questions = `
+    CREATE TABLE IF NOT EXISTS questions
+    (
+        id         INT NOT NULL AUTO_INCREMENT,
+        user_id    INT NOT NULL,
+        title      VARCHAR(50)  NOT NULL,
+        text       TEXT         NOT NULL,
+        topic      VARCHAR(24)  NOT NULL,
+
+        FOREIGN KEY (user_id) REFERENCES users (id),
+        PRIMARY KEY (id)
+    )
+`;
+
+const answers = `
+    CREATE TABLE IF NOT EXISTS answers
+    (
+        id         INT NOT NULL AUTO_INCREMENT,
+        user_id    INT NOT NULL,
+        question_id INT NOT NULL,
+        text       TEXT         NOT NULL,
+        FOREIGN KEY (question_id) REFERENCES questions (id),
+        FOREIGN KEY (user_id) REFERENCES users (id),
+        PRIMARY KEY (id)
+    )
+`;
+
 const self = module.exports = {
     // Allow multiple connections
     pool: mariadb.createPool({
@@ -102,7 +129,7 @@ const self = module.exports = {
         self.connect()
             .then(conn => {
                 console.log(`Connected to database: ${process.env.DBName}`);
-                for (const table of [userTable, lostItemsTable, packingListTable, hackdashEvent, hackdashProject, hackdashUsers]) {
+                for (const table of [userTable, lostItemsTable, packingListTable, hackdashEvent, hackdashProject, hackdashUsers, questions, answers]) {
                     conn.query(table)
                         .catch(err => {
                             console.error('Could not create table', err);
@@ -690,6 +717,51 @@ const self = module.exports = {
         self.connect(resp)
             .then(conn => {
                 conn.query("SELECT * FROM hackdash_users WHERE project_id = ?", [req.query.project_id])
+                    .then(res => {
+                        resp.json(res);
+                        conn.end();
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        resp.status(400).json({success: false, message: "An error occurred!"});
+                        conn.end();
+                    })
+            })
+    },
+
+    /**
+     * Adds new question
+     * @param req
+     * @param res
+     */
+    addQuestion: (req, res) => {
+        const body = req.body;
+        self.connect(res)
+            .then(conn => {
+                conn.query("INSERT INTO questions (user_id, title, text, topic) VALUES (?,?,?,?)",
+                [req.body.user_id, req.body.title, req.body.text, req.body.topic]
+            )
+                    .then(_ => {
+                        res.json({success: true});
+                        conn.end();
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        res.status(400).json({success: false, message: "An error occurred!"});
+                        conn.end();
+                    })
+            })
+    },
+
+    /**
+     * Get all questions
+     * @param req
+     * @param resp
+     */
+    getQuestions: (req, resp) => {
+        self.connect(resp)
+            .then(conn => {
+                conn.query("SELECT * FROM questions")
                     .then(res => {
                         resp.json(res);
                         conn.end();
