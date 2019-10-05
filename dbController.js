@@ -361,7 +361,7 @@ const self = module.exports = {
      * @param resp
      */
     addLostItem: (req, resp) => {
-        if (req.body.what && req.body.location && req.files.length > 0) {
+        if (req.body.what && req.body.location) {
             if (req.session.isAdmin) {
                 self.connect(resp)
                     .then(conn => {
