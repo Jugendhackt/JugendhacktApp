@@ -773,4 +773,50 @@ const self = module.exports = {
                     })
             })
     },
+
+/**
+     * Adds new answer
+     * @param req
+     * @param res
+     */
+    addAnswer: (req, res) => {
+        const body = req.body;
+        self.connect(res)
+            .then(conn => {
+                conn.query("INSERT INTO questions (user_id, question_id, text) VALUES (?,?,?)",
+                [req.body.user_id, req.body.question_id, req.body.text]
+            )
+                    .then(_ => {
+                        res.json({success: true});
+                        conn.end();
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        res.status(400).json({success: false, message: "An error occurred!"});
+                        conn.end();
+                    })
+            })
+    },
+
+    /**
+     * Get all questions
+     * @param req
+     * @param resp
+     */
+    getAnswers: (req, resp) => {
+        self.connect(resp)
+            .then(conn => {
+                conn.query("SELECT * FROM answers WHERE question_id = ?", [req.body.question_id])
+                    .then(res => {
+                        resp.json(res);
+                        conn.end();
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        resp.status(400).json({success: false, message: "An error occurred!"});
+                        conn.end();
+                    })
+            })
+    },
+
 };

@@ -1,5 +1,11 @@
-hackdash.get('/questions', dbController.getQuestions);
-hackdash.post('/questions', dbController.addQuestion);
+const express = require('express');
+const dbController = require('../dbController');
+const coach = express.Router();
 
-hackdash.get('/answers', dbController.getQuestions);
-hackdash.post('/answers', dbController.addQuestion);
+coach.get('/questions', dbController.getQuestions);
+coach.post('/questions', dbController.addQuestion);
+
+coach.get('/answers', dbController.getQuestions);
+coach.post('/answers', dbController.addQuestion);
+
+module.exports = coach;

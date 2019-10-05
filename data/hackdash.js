@@ -1,4 +1,4 @@
-const request = require("./request.js");
+const request = require("./request");
 
 module.exports.listBoards = async () => {
     try {

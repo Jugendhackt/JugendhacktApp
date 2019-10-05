@@ -5,12 +5,14 @@ const bodyParser = require("body-parser");
 const cookieSession = require("cookie-session");
 const dbController = require("./dbController");
 
-const api = require("./router/api.js");
+const api = require("./router/api");
 const user = require("./router/userHandler");
 const lostItems = require("./router/lostItems");
 const packingList = require("./router/packingList");
 const push = require("./router/push");
 const badges = require("./router/badges");
+const hackdash = require("./router/hackdash");
+const coach = require("./router/coach");
 
 const app = express();
 const PORT = process.env.PORT || 80;
@@ -38,6 +40,8 @@ app.use("/lostitems", lostItems);
 app.use("/packinglist", packingList);
 app.use("/push", push);
 app.use("/badges", badges);
+app.use("/hackdash", hackdash);
+app.use("/coach", coach);
 
 app.get('*', (req, res) => {
     res.status(404).redirect("/#/404");
