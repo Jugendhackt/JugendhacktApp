@@ -37,6 +37,40 @@ const packingListTable = `
     )
 `;
 
+// "Hackdash" databases
+const hackdashEvent = `
+    CREATE TABLE IF NOT EXISTS hackdash_event
+    (
+        id   INT         NOT NULL AUTO_INCREMENT,
+        name VARCHAR(30) NOT NULL,
+        year INT         NOT NULL,
+        PRIMARY KEY (id)
+    )
+`;
+
+const hackdashProject = `
+    CREATE TABLE IF NOT EXISTS hackdash_project
+    (
+        id          INT         NOT NULL AUTO_INCREMENT,
+        event_id    INT         NOT NULL,
+        title       VARCHAR(40) NOT NULL,
+        img_name    VARCHAR(50) NOT NULL,
+        description TEXT        NOT NULL,
+        FOREIGN KEY (event_id) REFERENCES hackdash_event (id),
+        PRIMARY KEY (id)
+    )
+`;
+
+const hackdashUsers = `
+    CREATE TABLE IF NOT EXISTS hackdash_users
+    (
+        id         INT NOT NULL AUTO_INCREMENT,
+        project_id INT NOT NULL,
+        FOREIGN KEY (project_id) REFERENCES hackdash_project (id),
+        PRIMARY KEY (id)
+    )
+`;
+
 const self = module.exports = {
     // Allow multiple connections
     pool: mariadb.createPool({
@@ -66,7 +100,7 @@ const self = module.exports = {
         self.connect()
             .then(conn => {
                 console.log(`Connected to database: ${process.env.DBName}`);
-                for (const table of [userTable, lostItemsTable, packingListTable]) {
+                for (const table of [userTable, lostItemsTable, packingListTable, hackdashEvent, hackdashProject, hackdashUsers]) {
                     conn.query(table)
                         .catch(err => {
                             console.error('Could not create table', err);
@@ -320,7 +354,7 @@ const self = module.exports = {
      */
     updateUserDetails: (req, resp) => {
         const body = req.body;
-        if (body.email &&  body.full_name && body.birthday) {
+        if (body.email && body.full_name && body.birthday) {
             if (req.session.loggedIn) {
                 self.connect()
                     .then(conn => {
