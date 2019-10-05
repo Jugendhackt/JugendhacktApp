@@ -5,7 +5,7 @@ module.exports.listBoards = async () => {
         const boards = await request.start("https://hackdash.org/api/v2/profiles/557323e279ef5d384ac04aeb");
         let dashboards = boards["dashboards"];
         return dashboards;
-    } catch {
+    } catch (e) {
         return [];
     }
 };
@@ -15,7 +15,7 @@ module.exports.getBoardInfo = async board => {
         let data = await request.start("https://hackdash.org/api/v2/dashboards/" + board);
         data["projects"] = await request.start("https://hackdash.org/api/v2/" + board + "/projects");
         return data;
-    } catch {
+    } catch (e) {
         return {};
     }
 };
@@ -23,7 +23,7 @@ module.exports.getBoardInfo = async board => {
 module.exports.getProjectInfo = async project_id => {
     try {
         return await request.start("https://hackdash.org/api/v2/projects/" + project_id);
-    } catch {
+    } catch (e) {
         return {}
     }
 };
