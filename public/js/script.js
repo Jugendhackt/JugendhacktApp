@@ -16,6 +16,7 @@ const routes = [
     {path: "/test", component: httpVueLoader("views/testing.vue")},
     {path: "/info", component: httpVueLoader("views/infos.vue")},
     {path: "/404", component: httpVueLoader("views/404.vue")},
+    {path: "*", component: httpVueLoader("views/404.vue")}
 ];
 
 const router = new VueRouter({
