@@ -4,6 +4,6 @@
       <i>Page not found!<i>
       <br>
       <i>Go to <u><b>https://www.alpaca.ml/<u><b>
-
+      
 </div>
 </template>
