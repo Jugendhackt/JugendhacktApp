@@ -18,19 +18,3 @@
 
 
 </style>
-
-
-<script>
-module.exports = {
-  data: function () {
-    return {
-      message: {
-        sender:
-        message: 
-      }
-    }
-  }
-
-
-}
-</script>
