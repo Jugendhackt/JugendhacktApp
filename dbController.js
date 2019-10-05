@@ -1,6 +1,7 @@
 const mariadb = require('mariadb');
 const bCrypt = require('bcrypt');
 const fs = require('fs');
+const dns = require('dns');
 
 const userTable = `
     CREATE TABLE IF NOT EXISTS users
@@ -77,6 +78,22 @@ const self = module.exports = {
     },
 
     /**
+     * Verifies email by MX DNS record
+     */
+    verifyEmail: (email) => {
+        const domain = email.split("@")[1];
+        return dns.resolve(domain, "MX", (err, addresses) => {
+            if (err) {
+                return false;
+            } else if (addresses && addresses.length > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        });
+    },
+
+    /**
      * Creates a new user
      * @param req
      * @param resp
@@ -92,9 +109,10 @@ const self = module.exports = {
                         conn.query("SELECT * FROM users LIMIT 1")
                             .then(res => {
                                 const isAdmin = !res[0];
-                                conn.query("INSERT INTO users (full_name, password, email, birthday, is_admin, is_verified) VALUE (?,?,?,?,?,?)",
-                                    [fullName, password, body.email, body.birthday, isAdmin, isAdmin]
-                                )
+                                if (verifyEmail(body.email)) {
+                                    conn.query("INSERT INTO users (full_name, password, email, birthday, is_admin, is_verified) VALUE (?,?,?,?,?,?)",
+                                        [fullName, password, body.email, body.birthday, isAdmin, isAdmin]
+                                    )
                                     .then(() => {
                                         conn.end();
                                         self.login(req, resp);
@@ -104,6 +122,10 @@ const self = module.exports = {
                                         resp.status(400).json({success: false, message: "User already exists"});
                                         conn.end();
                                     })
+                                } else {
+                                    resp.status(400).json({success: false, message: "Email couldn't get verified"});
+                                    conn.end();
+                                }
                             });
                     })
                 })
