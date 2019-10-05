@@ -13,7 +13,8 @@ const routes = [
     {path: "/admin", component: httpVueLoader("views/admin.vue")},
     {path: "/user", component: httpVueLoader("views/user.vue")},
     {path: "/badges", component: httpVueLoader("views/badges.vue")},
-    {path: "/test", component: httpVueLoader("views/testing.vue")}
+    {path: "/test", component: httpVueLoader("views/testing.vue")},
+    {path: "/info", component: httpVueLoader("views/infos.vue")},
 ];
 
 const router = new VueRouter({
