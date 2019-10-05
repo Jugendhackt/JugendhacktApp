@@ -1,8 +1,9 @@
 <template>
   <div class="card">
-      <h2 class="name">Register</h2>
-      <b> Hallo Welt! <b>
+      <h2 class="name">Informationen</h2>
+      <i> Posts: <i>
   </div>
+
 
 
 </template>
