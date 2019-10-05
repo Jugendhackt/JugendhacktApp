@@ -3,7 +3,6 @@
         <div class="card">
             <h2 class="name">Packing list</h2>
             <div v-if="isAdmin">
-                <h2 class="name">Packing list</h2>
                 <form @submit="updatePackingList()">
                     <label for="packing_list_item">Item:</label>
                     <input type="text" id="packing_list_item" v-model="pl.item" required>
