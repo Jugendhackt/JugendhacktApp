@@ -582,6 +582,10 @@ const self = module.exports = {
      * @param res
      */
     addHackdashEvent: (req, res) => {
+        if (!req.session.loggedIn || !req.session.isVerified) {
+            res.status(400).json({"success": false, "message": "Not allowed!"});
+            return;
+        }
         self.connect(res)
             .then(conn => {
                 conn.query("INSERT INTO hackdash_event (name, year) VALUES (?, ?)", [req.body.name, req.body.year])
@@ -624,6 +628,10 @@ const self = module.exports = {
      * @param res
      */
     addHackdashProject: (req, res) => {
+        if (!req.session.loggedIn || !req.session.isVerified) {
+            res.status(400).json({"success": false, "message": "Not allowed!"});
+            return;
+        }
         const body = req.body;
         // TODO: File upload
         self.connect(res)
@@ -691,10 +699,14 @@ const self = module.exports = {
      * @param res
      */
     addHackdashUser: (req, res) => {
+        if (!req.session.loggedIn || !req.session.isVerified) {
+            res.status(400).json({"success": false, "message": "Not allowed!"});
+            return;
+        }
         self.connect(res)
             .then(conn => {
                 conn.query("INSERT INTO hackdash_users (user_id, project_id) VALUES (?,?)",
-                    [req.body.user_id, req.body.project_id]
+                    [req.session.uid, req.body.project_id]
                 )
                     .then(_ => {
                         res.json({success: true});
@@ -735,11 +747,14 @@ const self = module.exports = {
      * @param res
      */
     addQuestion: (req, res) => {
-        const body = req.body;
+        if (!req.session.loggedIn || !req.session.isVerified) {
+            res.status(400).json({"success": false, "message": "Not allowed!"});
+            return;
+        }
         self.connect(res)
             .then(conn => {
                 conn.query("INSERT INTO questions (user_id, title, text, topic) VALUES (?,?,?,?)",
-                [req.body.user_id, req.body.title, req.body.text, req.body.topic]
+                [req.session.uid, req.body.title, req.body.text, req.body.topic]
             )
                     .then(_ => {
                         res.json({success: true});
@@ -780,11 +795,14 @@ const self = module.exports = {
      * @param res
      */
     addAnswer: (req, res) => {
-        const body = req.body;
+        if (!req.session.loggedIn || !req.session.isVerified) {
+            res.status(400).json({"success": false, "message": "Not allowed!"});
+            return;
+        }
         self.connect(res)
             .then(conn => {
                 conn.query("INSERT INTO questions (user_id, question_id, text) VALUES (?,?,?)",
-                [req.body.user_id, req.body.question_id, req.body.text]
+                [req.session.uid, req.body.question_id, req.body.text]
             )
                     .then(_ => {
                         res.json({success: true});
