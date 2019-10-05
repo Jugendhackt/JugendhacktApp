@@ -39,4 +39,8 @@ app.use("/packinglist", packingList);
 app.use("/push", push);
 app.use("/badges", badges);
 
+app.get('*', (req, res) => {
+    res.status(404).redirect("/#/404");
+});
+
 app.listen(PORT, () => console.log(`Listening on http://localhost:${PORT}`));
