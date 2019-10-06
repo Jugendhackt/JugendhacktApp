@@ -28,6 +28,6 @@ Icons from [https://feathericons.com/](https://feathericons.com/)
 
 [Google Presentation (German)](https://docs.google.com/presentation/d/1PPoLmnE9aVviCshcAMaX2ZMAdrH4FzFpZJJvj-4iyFc/edit?usp=sharing)
 
-[View this Project on HackDash](https://hackdash.org/projects/5d6a4242c587e70bcdacccc6)
+[View this Project on HackDash](https://dashhack.org/projects/5d6a4242c587e70bcdacccc6)
 
 [The Etherpad Entry (used for API Documentation)](https://pad.okfn.de/p/JugendhacktApp)

@@ -51,11 +51,12 @@ const hackdashEvent = `
 const hackdashProject = `
     CREATE TABLE IF NOT EXISTS hackdash_project
     (
-        id          INT         NOT NULL AUTO_INCREMENT,
-        event_id    INT         NOT NULL,
-        title       VARCHAR(40) NOT NULL,
-        img_name    VARCHAR(50) NOT NULL,
-        description TEXT        NOT NULL,
+        id          INT          NOT NULL AUTO_INCREMENT,
+        event_id    INT          NOT NULL,
+        title       VARCHAR(40)  NOT NULL,
+        img_name    VARCHAR(50)  NOT NULL,
+        description TEXT         NOT NULL,
+        link        VARCHAR(100) NOT NULL,
         FOREIGN KEY (event_id) REFERENCES hackdash_event (id),
         PRIMARY KEY (id)
     )
@@ -76,11 +77,11 @@ const hackdashUsers = `
 const questions = `
     CREATE TABLE IF NOT EXISTS questions
     (
-        id         INT NOT NULL AUTO_INCREMENT,
-        user_id    INT NOT NULL,
-        title      VARCHAR(50)  NOT NULL,
-        text       TEXT         NOT NULL,
-        topic      VARCHAR(24)  NOT NULL,
+        id      INT         NOT NULL AUTO_INCREMENT,
+        user_id INT         NOT NULL,
+        title   VARCHAR(50) NOT NULL,
+        text    TEXT        NOT NULL,
+        topic   VARCHAR(24) NOT NULL,
 
         FOREIGN KEY (user_id) REFERENCES users (id),
         PRIMARY KEY (id)
@@ -90,10 +91,10 @@ const questions = `
 const answers = `
     CREATE TABLE IF NOT EXISTS answers
     (
-        id         INT NOT NULL AUTO_INCREMENT,
-        user_id    INT NOT NULL,
-        question_id INT NOT NULL,
-        text       TEXT         NOT NULL,
+        id          INT  NOT NULL AUTO_INCREMENT,
+        user_id     INT  NOT NULL,
+        question_id INT  NOT NULL,
+        text        TEXT NOT NULL,
         FOREIGN KEY (question_id) REFERENCES questions (id),
         FOREIGN KEY (user_id) REFERENCES users (id),
         PRIMARY KEY (id)
@@ -138,17 +139,6 @@ const self = module.exports = {
                 }
                 conn.end();
             })
-    },
-
-    /**
-     * Verifies email by MX DNS record
-     */
-    verifyEmail: (email) => {
-        const domain = email.split("@")[1];
-        dns.resolve(domain, "MX", (err, addresses) => {
-            if (err) return false;
-            else return addresses && addresses.length > 0;
-        });
     },
 
     /**
@@ -574,7 +564,7 @@ const self = module.exports = {
     },
 
     //
-    // Hackdash
+    // Dashhack
     //
     /**
      * Adds new hackdash event
@@ -636,8 +626,8 @@ const self = module.exports = {
         // TODO: File upload
         self.connect(res)
             .then(conn => {
-                conn.query("INSERT INTO hackdash_project (event_id, title, img_name, `description`) VALUES (?,?,?,?)",
-                    [body.event_id, body.title, body.img_name, body.description]
+                conn.query("INSERT INTO hackdash_project (event_id, title, img_name, `description`, link) VALUES (?,?,?,?,?)",
+                    [body.event_id, body.title, body.img_name, body.description, body.link]
                 )
                     .then(_ => {
                         res.json({success: true});
@@ -659,7 +649,7 @@ const self = module.exports = {
     getHackdashProjects: (req, resp) => {
         self.connect(resp)
             .then(conn => {
-                conn.query("SELECT * FROM hackdash_projects")
+                conn.query("SELECT * FROM hackdash_project")
                     .then(res => {
                         resp.json(res);
                         conn.end();
@@ -680,7 +670,7 @@ const self = module.exports = {
     getHackdashEventProjects: (req, resp) => {
         self.connect(resp)
             .then(conn => {
-                conn.query("SELECT * FROM hackdash_projects WHERE event_id = ?", [req.query.event_id])
+                conn.query("SELECT * FROM hackdash_project WHERE event_id = ?", [req.query.event_id])
                     .then(res => {
                         resp.json(res);
                         conn.end();
@@ -754,8 +744,8 @@ const self = module.exports = {
         self.connect(res)
             .then(conn => {
                 conn.query("INSERT INTO questions (user_id, title, text, topic) VALUES (?,?,?,?)",
-                [req.session.uid, req.body.title, req.body.text, req.body.topic]
-            )
+                    [req.session.uid, req.body.title, req.body.text, req.body.topic]
+                )
                     .then(_ => {
                         res.json({success: true});
                         conn.end();
@@ -802,8 +792,8 @@ const self = module.exports = {
         self.connect(res)
             .then(conn => {
                 conn.query("INSERT INTO questions (user_id, question_id, text) VALUES (?,?,?)",
-                [req.session.uid, req.body.question_id, req.body.text]
-            )
+                    [req.session.uid, req.body.question_id, req.body.text]
+                )
                     .then(_ => {
                         res.json({success: true});
                         conn.end();
