@@ -13,7 +13,7 @@
             <router-link to="/lostitems"><img class="icon" src="assets/icons/briefcase.svg" alt="Lost and Found"></router-link>
             <router-link to="/admin" v-if="isAdmin"><img class="icon" src="assets/icons/command.svg" alt="Admin"></router-link>
             <router-link to="/info"><img class="icon" src="assets/icons/clipboard.svg" alt="Informations"></router-link>
-            <router-link to="/nachhilfe"><img class="icon" src="assets/icons/clipboard.svg" alt="Nachhilfe"></router-link>
+            <router-link to="/nachhilfe" v-if="isLoggedIn"><img class="icon" src="assets/icons/clipboard.svg" alt="Nachhilfe"></router-link>
         </div>
     </nav>
 </template>
@@ -23,7 +23,8 @@
         data: function () {
             return {
                 isAdmin: false,
-                isLoggedIn: false
+                isLoggedIn: false,
+                //isVerified: false
             }
         },
         methods: {
@@ -32,6 +33,7 @@
                 xhr.onload = () => {
                     this.isAdmin = xhr.response.isAdmin;
                     this.isLoggedIn = xhr.response.loggedIn;
+                    //this.isVerified = xhr.response.verified;
                 };
                 xhr.open("GET", "/user/status");
                 xhr.responseType = "json";

@@ -8,6 +8,7 @@
                 <label for="login_password">Password:</label>
                 <input type="password" id="login_password" v-model="login_data.password" required>
                 <button type="submit" class="button primary">Login</button>
+                <label type="info" v-if="!isVerified"><b>Your account needs to be verified!</label>
             </form>
         </div>
         <div class="card">

@@ -99,7 +99,15 @@ const answers = `
         PRIMARY KEY (id)
     )
 `;
-
+const chat = `
+    CREATE TABLE IF NOT EXISTS answers
+    (
+      username   TEXT   NOT NULL,
+      text       TEXT   NOT NULL,
+      timestamp  DATETIME  NOT NULL,
+      title      TEXT      NOT NULL,
+    )
+  `;
 const self = module.exports = {
     // Allow multiple connections
     pool: mariadb.createPool({
