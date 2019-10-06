@@ -757,7 +757,8 @@ const self = module.exports = {
                 [req.session.uid, req.body.title, req.body.text, req.body.topic]
             )
                     .then(_ => {
-                        res.json({success: true});
+                        res.redirect("/nachhilfe/start/");
+                        //res.json({success: true});
                         conn.end();
                     })
                     .catch(err => {
@@ -805,7 +806,8 @@ const self = module.exports = {
                 [req.session.uid, req.body.question_id, req.body.text]
             )
                     .then(_ => {
-                        res.json({success: true});
+                        resp.redirect("/nachhilfe/start/");
+                        //res.json({success: true});
                         conn.end();
                     })
                     .catch(err => {
