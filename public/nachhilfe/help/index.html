@@ -28,14 +28,13 @@
     request.addEventListener('load', function(event) {
       if (request.status >= 200 && request.status < 300) {
           const json = JSON.parse(request.responseText);
-          const questions = document.querySelector("#questions");
           json.forEach(element => {
-            const e = questions.createElement();
-            const title = e.createElement("h3");
+            const e = document.createElement("div");
+            const title = document.createElement("h3");
             title.innerText = element["text"];
-            const topic = e.createElement("small");
+            const topic = document.createElement("small");
             topic.innerText = element["topic"];
-            const text = e.createElement("p");
+            const text = document.createElement("p");
             text.innerText = element["text"];
             e.appendChild(title).appendChild(topic).appendChild(text);
             document.querySelector("#questions").appendChild(e);
