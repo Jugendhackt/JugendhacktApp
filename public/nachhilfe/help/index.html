@@ -28,8 +28,9 @@
     request.addEventListener('load', function(event) {
       if (request.status >= 200 && request.status < 300) {
           const json = JSON.parse(request.responseText);
+          const questions = document.querySelector("#questions");
           json.forEach(element => {
-            const e = document.querySelector("#questions").createElement();
+            const e = questions.createElement();
             const title = e.createElement("h3");
             title.innerText = element["text"];
             const topic = e.createElement("small");
