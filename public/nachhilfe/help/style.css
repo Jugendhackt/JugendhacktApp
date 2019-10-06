@@ -1,4 +1,5 @@
 body, html {
+  font-family: sans-serif;
   height: 100%
 }
 .bg {position: fixed;

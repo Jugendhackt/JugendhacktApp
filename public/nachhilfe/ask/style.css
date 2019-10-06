@@ -1,5 +1,6 @@
 body, html {
-  height: 100%
+  height: 100%;
+  font-family: sans-serif;
 }
 .bg {position: fixed;
   left: 0;
