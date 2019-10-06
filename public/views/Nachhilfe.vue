@@ -6,12 +6,16 @@
     <label for="TextBox">Message:</label>
     <input name="TextBox" type="text"/>
     <button type="sendMSG" for="TextBox"><b>Send</button>
+    </form>
   </div>
 
   </div>
 
 </template>
-<style>
+<style scoped>
+
+
+
 #messageInput{
   margin-top: 8em;
 }
