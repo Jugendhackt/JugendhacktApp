@@ -1,5 +1,5 @@
 <template>
-    <iframe src="/nachhilfe/start/index.html" sandbox="allow-forms"></iframe>
+    <iframe src="/nachhilfe/start/index.html" sandbox="allow-forms allow-scripts allow-same-origin"></iframe>
 </template>
 
 <style scoped>
