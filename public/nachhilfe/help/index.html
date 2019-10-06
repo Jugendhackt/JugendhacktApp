@@ -31,12 +31,14 @@
           json.forEach(element => {
             const e = document.createElement("div");
             const title = document.createElement("h3");
-            title.innerText = element["text"];
+            title.innerText = element["title"];
+            e.appendChild(title)
             const topic = document.createElement("small");
             topic.innerText = element["topic"];
+            e.appendChild(topic)
             const text = document.createElement("p");
             text.innerText = element["text"];
-            e.appendChild(title).appendChild(topic).appendChild(text);
+            e.appendChild(text);
             document.querySelector("#questions").appendChild(e);
           });
       } else {
