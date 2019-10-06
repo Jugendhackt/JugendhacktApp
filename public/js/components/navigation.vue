@@ -13,7 +13,7 @@
             <router-link to="/lostitems"><img class="icon" src="assets/icons/list.svg" alt="Lost and Found"></router-link>
             <router-link to="/admin" v-if="isAdmin"><img class="icon" src="assets/icons/command.svg" alt="Admin"></router-link>
             <router-link to="/badges" v-if="isAdmin"><img class="icon" src="assets/icons/award.svg" alt="Badges"></router-link>
-            <a href="/nachhilfe/start/"><img class="icon" src="assets/icons/book-open.svg" alt="Nachhilfe"></a>
+            <router-link to="/helping"><img class="icon" src="assets/icons/book-open.svg" alt="Nachhilfe"></router-link>
         </div>
     </nav>
 </template>
