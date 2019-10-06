@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="de" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Nachhilfe</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <div class="bg">
+      <div class="bg-text">
+        <h1>Ich möchte helfen!</h1>
+        <!--<form>
+          <input type="text" placeholder="Titel"></input>
+          <br>
+          <input type="text" placeholder="Text"></input>
+          <br>
+          <input type="text" placeholder="Name"></input>
+          <br>
+          <input type="submit" placeholder="Absenden"></input>
+        </form>-->
+        <div id="questions"></div>
+      </div>
+    </div>
+
+    <script>
+    var request = new XMLHttpRequest();
+    request.open("GET","/coach/questions");
+    request.addEventListener('load', function(event) {
+      if (request.status >= 200 && request.status < 300) {
+          const json = JSON.parse(request.responseText);
+          json.forEach(element => {
+            document.querySelector("#questions").append(element["text"] + "<br>");
+          });
+      } else {
+          console.warn(request.statusText, request.responseText);
+      }
+    });
+    request.send();
+    </script>
+  </body>
+</html>

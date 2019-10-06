@@ -8,13 +8,13 @@
   <body>
     <div class="bg">
       <div class="bg-text">
-        <h1>ich möchte helfen</h1>
-        <form>
-          <input type="text" placeholder="Titel"></input>
+        <h1>Ich brauche Hilfe</h1>
+        <form method="POST" action="/coach/questions">
+          <input type="text" name="title" placeholder="Titel"></input>
           <br>
-          <input type="text" placeholder="Text"></input>
+          <input type="text" name="topic" placeholder="Thema"></input>
           <br>
-          <input type="text" placeholder="Name"></input>
+          <input type="text" name="text" placeholder="Text..."></input>
           <br>
           <input type="submit" placeholder="Absenden"></input>
         </form>

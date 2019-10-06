@@ -789,7 +789,7 @@ const self = module.exports = {
             })
     },
 
-/**
+    /**
      * Adds new answer
      * @param req
      * @param res
