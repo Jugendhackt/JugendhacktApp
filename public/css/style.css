@@ -27,6 +27,7 @@ body {
 }
 
 #component_view {
+    text-wrap: wrap;
     position: fixed;
     left: 0;
     right: 0;

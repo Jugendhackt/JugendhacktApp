@@ -14,9 +14,10 @@ const routes = [
     {path: "/user", component: httpVueLoader("views/user.vue")},
     {path: "/badges", component: httpVueLoader("views/badges.vue")},
     {path: "/test", component: httpVueLoader("views/testing.vue")},
+    {path: "/helping", component: httpVueLoader("views/helping.vue")},
     {path: "/info", component: httpVueLoader("views/infos.vue")},
     {path: "/404", component: httpVueLoader("views/404.vue")},
-    {path: "*", component: httpVueLoader("views/404.vue")}
+    {path: "*", component: httpVueLoader("views/404.vue")},
 ];
 
 const router = new VueRouter({
