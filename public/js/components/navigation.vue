@@ -2,7 +2,7 @@
     <nav class="navigation">
         <div class="branding">
             Jugend hackt App
-            <router-link to="/login" v-if="!isLoggedIn"><img class="icon" src="assets/icons/key.svg" alt="Login"></router-link>
+            <router-link to="/login" v-if="!isLoggedIn"><img class="icon invert" src="assets/icons/key.svg" alt="Login"></router-link>
             <router-link to="/user" v-if="isLoggedIn"><img class="icon" src="assets/icons/user.svg" alt="User"></router-link>
         </div>
         <div class="nav">
@@ -51,7 +51,10 @@
 
 .branding .icon {
     align-self: center;
-    filter: invert(1);
     height: 100%;
+}
+
+.invert {
+  filter: invert(1);
 }
 </style>
