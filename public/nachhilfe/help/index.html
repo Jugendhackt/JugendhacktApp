@@ -39,6 +39,8 @@
             const text = document.createElement("p");
             text.innerText = element["text"];
             e.appendChild(text);
+            const line = document.createElement("hr");
+            e.appendChild(line);
             document.querySelector("#questions").appendChild(e);
           });
       } else {
