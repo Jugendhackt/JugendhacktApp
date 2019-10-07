@@ -96,7 +96,7 @@
         },
 
         methods: {
-            addEvent: function () {
+            addEvent() {
                 const xhr = new XMLHttpRequest();
                 const formData = new FormData();
                 formData.append('name', this.event.name);
@@ -107,7 +107,7 @@
                 xhr.send(formData);
                 this.getEvents();
             },
-            addProject: function () {
+            addProject() {
                 const xhr = new XMLHttpRequest();
                 const formData = new FormData();
                 formData.append('event_id', this.project.eventId);
@@ -121,7 +121,7 @@
                 xhr.send(formData);
                 this.getProjects();
             },
-            addUser: function () {
+            addUser() {
                 const xhr = new XMLHttpRequest();
                 const formData = new FormData();
                 formData.append('project_id', this.user.projectId);
@@ -132,21 +132,21 @@
                 xhr.send(formData);
                 this.getProjects();
             },
-            getEvents: function () {
+            getEvents() {
                 const xhr = new XMLHttpRequest();
                 xhr.onload = () => this.events = xhr.response;
                 xhr.open('GET', '/dashhack/');
                 xhr.responseType = "json";
                 xhr.send();
             },
-            getProjects: function () {
+            getProjects() {
                 const xhr = new XMLHttpRequest();
                 xhr.onload = () => this.projects = xhr.response;
                 xhr.open('GET', '/dashhack/projects/all');
                 xhr.responseType = "json";
                 xhr.send();
             },
-            getUsers: function () {
+            getUsers() {
                 const xhr = new XMLHttpRequest();
                 xhr.onload = () => this.users = xhr.response;
                 xhr.open('GET', '/user/getAll');
