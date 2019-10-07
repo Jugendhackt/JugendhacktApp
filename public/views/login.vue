@@ -48,7 +48,7 @@
             }
         },
         methods: {
-            login: function () {
+            login() {
                 const data = JSON.stringify(this.login_data);
                 const xhr = new XMLHttpRequest();
                 xhr.onload = () => {
@@ -59,7 +59,7 @@
                 xhr.responseType = "json";
                 xhr.send(data);
             },
-            register: function () {
+            register() {
                 const data = JSON.stringify(this.register_data);
                 const xhr = new XMLHttpRequest();
                 xhr.onload = () => {

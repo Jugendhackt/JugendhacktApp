@@ -15,6 +15,7 @@ const routes = [
     {path: "/badges", component: httpVueLoader("views/badges.vue")},
     {path: "/test", component: httpVueLoader("views/testing.vue")},
     {path: "/info", component: httpVueLoader("views/infos.vue")},
+    {path: "/dashhack", component: httpVueLoader("views/dashhack.vue")},
     {path: "/dashhack-debug", component: httpVueLoader("views/dashhack-debug.vue")},
     {path: "/404", component: httpVueLoader("views/404.vue")},
     {path: "*", component: httpVueLoader("views/404.vue")}

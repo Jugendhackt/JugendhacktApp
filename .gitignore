@@ -2,6 +2,7 @@ node_modules
 .idea/
 
 uploads/lostItems/*
+uploads/dashhack/*
 
 package-lock.json
 yarn.lock

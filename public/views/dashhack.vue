@@ -2,7 +2,7 @@
     <div>
         <div class="card" v-for="event in events">
             <h2>Jugend hackt {{event.name}} {{event.year}}</h2>
-            <img :src="this.getBadge(event.name, event.year)" alt="A great badge" class="badge-img">
+            <img :src="getBadge(event.name, event.year)" alt="A great badge" class="badge-img">
         </div>
     </div>
 </template>
