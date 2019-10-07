@@ -16,6 +16,8 @@ The App will have plenty of features for Jugendhackt - even some which don't exi
 - [Mondanzo](https://github.com/mondanzo)
 - [LarsVomMars](https://github.com/larsvommars)
 - [AuspiciousLynx](https://github.com/auspiciouslynx)
+- [CodeUnicorn2000](https://github.com/codeunicorn2000)
+- [SrLennox](https://github.com/sirlennox)
 
 ## Contributing
 To contribute to this project create a pull request which will then be merged only by the main [contributors](#contributors) so that we have at least some control over the current version of the code in this master branch
