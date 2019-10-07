@@ -777,7 +777,7 @@ const self = module.exports = {
     getQuestions: (req, resp) => {
         self.connect(resp)
             .then(conn => {
-                conn.query("SELECT * FROM questions JOIN users ON questions.user_id = users.id")
+                conn.query("SELECT questions.id, user_id, title, text, topic, users.full_name FROM questions JOIN users ON questions.user_id = users.id")
                     .then(res => {
                         resp.json(res);
                         conn.end();
