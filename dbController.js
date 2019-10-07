@@ -329,7 +329,7 @@ const self = module.exports = {
         if (req.session.isAdmin) {
             self.connect()
                 .then(conn => {
-                    conn.query("SELECT email, full_name, is_admin, is_verified, birthday FROM users")
+                    conn.query("SELECT id, email, full_name, is_admin, is_verified, birthday FROM users")
                         .then(res => {
                             resp.json(res);
                             conn.end();
@@ -696,7 +696,7 @@ const self = module.exports = {
         self.connect(res)
             .then(conn => {
                 conn.query("INSERT INTO hackdash_users (user_id, project_id) VALUES (?,?)",
-                    [req.session.uid, req.body.project_id]
+                    [req.body.user_id, req.body.project_id]
                 )
                     .then(_ => {
                         res.json({success: true});
@@ -705,6 +705,27 @@ const self = module.exports = {
                     .catch(err => {
                         console.error(err);
                         res.status(400).json({success: false, message: "An error occurred!"});
+                        conn.end();
+                    })
+            })
+    },
+
+    /**
+     * Get all users
+     * @param req
+     * @param resp
+     */
+    getHackdashUsers: (req, resp) => {
+        self.connect(resp)
+            .then(conn => {
+                conn.query("SELECT * FROM hackdash_users")
+                    .then(res => {
+                        resp.json(res);
+                        conn.end();
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        resp.status(400).json({success: false, message: "An error occurred!"});
                         conn.end();
                     })
             })

@@ -12,10 +12,10 @@
             </form>
         </div>
         <div class="card">
-            <h2 class="name">Add project to Event</h2>
+            <h2 class="name">Add project to event</h2>
             <form @submit="addProject()">
-                <label for="project_id"></label>
-                <select name="project_id" id="project_id" v-model="project.eventId">
+                <label for="event_id">Select project</label>
+                <select id="event_id" v-model="project.eventId">
                     <option v-for="event in events" :value="event.id">{{event.name}}: {{event.year}}</option>
                 </select>
                 <label for="project_title">Title:</label>
@@ -30,7 +30,18 @@
             </form>
         </div>
         <div class="card">
-
+            <h2 class="name">Add user to project</h2>
+            <form @submit="addUser()">
+                <label for="project_id"></label>
+                <select id="project_id" v-model="user.projectId">
+                    <option v-for="project in projects" :value="project.id">{{project.title}}</option>
+                </select>
+                <label for="user_id"></label>
+                <select id="user_id" v-model="user.userId">
+                    <option v-for="user in users" :value="user.id">{{user.email}}</option>
+                </select>
+                <button type="submit" class="button primary">Add user to project</button>
+            </form>
         </div>
         <div class="card">
             <ul>
@@ -40,6 +51,11 @@
         <div class="card">
             <ul>
                 <li v-for="p in projects">{{p}}</li>
+            </ul>
+        </div>
+        <div class="card">
+            <ul>
+                <li v-for="u in users">{{u}}</li>
             </ul>
         </div>
     </div>
@@ -96,6 +112,17 @@
                 xhr.send(formData);
                 this.getProjects();
             },
+            addUser: function () {
+                const xhr = new XMLHttpRequest();
+                const formData = new FormData();
+                formData.append('project_id', this.user.projectId);
+                formData.append('user_id', this.user.userId);
+                xhr.onload = () => console.log(xhr.response);
+                xhr.open("PUT", "/dashhack/users");
+                xhr.responseType = 'json';
+                xhr.send(formData);
+                this.getProjects();
+            },
             getEvents: function () {
                 const xhr = new XMLHttpRequest();
                 xhr.onload = () => this.events = xhr.response;
@@ -109,12 +136,20 @@
                 xhr.open('GET', '/dashhack/projects/all');
                 xhr.responseType = "json";
                 xhr.send();
-            }
+            },
+            getUsers: function () {
+                const xhr = new XMLHttpRequest();
+                xhr.onload = () => this.users = xhr.response;
+                xhr.open('GET', '/user/getAll');
+                xhr.responseType = "json";
+                xhr.send();
+            },
         },
 
         beforeMount() {
             this.getEvents();
             this.getProjects();
+            this.getUsers();
         }
     }
 </script>

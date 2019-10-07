@@ -11,6 +11,7 @@ dashhack.get('/projects/all', dbController.getHackdashProjects);
 dashhack.get('/projects', dbController.getHackdashEventProjects);
 dashhack.put('/projects', dbController.addHackdashProject);
 
+dashhack.get('/users/all', dbController.getHackdashUsers);
 dashhack.get('/users', dbController.getHackdashProjectUser);
 dashhack.put('/users', dbController.addHackdashUser);
 
