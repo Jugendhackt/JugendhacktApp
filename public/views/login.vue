@@ -84,17 +84,6 @@
         width: auto;
     }
 
-    input {
-        background: #fff;
-        border: 3px solid #000;
-        display: block;
-        padding: 0.3em;
-        box-sizing: border-box;
-        width: 100%;
-        margin-bottom: 25px;
-        margin-top: 5px;
-    }
-
     .button {
         display: inline-block;
     }
