@@ -1,7 +1,7 @@
 {
 	"name": "Jugend hackt App",
 	"short_name": "JH-App",
-	"description": "Shows jugendhackt information",
+	"description": "Shows Jugend hackt information",
 	"start_url": "/",
 	"display": "standalone",
 	"theme_color": "#2aabe1",
