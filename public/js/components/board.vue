@@ -6,7 +6,7 @@
         </div>
         <div class="card" v-for="project in boardData.projects">
             <h4>{{ project.title }}</h4>
-            <v-image :src="project.cover.startsWith('http') ? project.cover : 'https://dashhack.s3-us-west-2.amazonaws.com' + project.cover"
+            <v-image :src="project.cover.startsWith('http') ? project.cover : 'https://hackdash.s3-us-west-2.amazonaws.com' + project.cover"
                  v-if="project.cover"></v-image>
             <p>{{ project.description }}</p>
         </div>
@@ -31,7 +31,7 @@
                     this.$root.loading = false;
                     this.boardData = xhr.response;
                 });
-                xhr.open("GET", "/api/dashhack/board/" + this.board.domain);
+                xhr.open("GET", "/api/hackdash/board/" + this.board.domain);
                 xhr.responseType = "json";
                 xhr.send();
             }

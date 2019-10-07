@@ -19,7 +19,7 @@
 </template>
 
 <script>
-    const Board = httpVueLoader("/js/components/board.vue");
+    const Board = httpVueLoader("/js/components/newBoard.vue");
     module.exports = {
         data: function () {
             return {
@@ -35,7 +35,7 @@
                     console.log(xhr.response);
                     this.$root.loading = false;
                     if(xhr.response == null)
-                      this.boards = {}
+                      this.boards = {};
                     else {
                       this.boards = xhr.response;
                       this.boards.reverse();

@@ -5,41 +5,50 @@
             <h2 class="name">Add event:</h2>
             <form @submit="addEvent()">
                 <label for="event_name">Name:</label>
-                <input type="text" id="event_name" v-model="dh_event.name" required>
+                <input type="text" id="event_name" v-model="event.name" required>
                 <label for="event_year">Year:</label>
-                <input type="number" id="event_year" v-model="dh_event.year" required>
-                <button type="submit" class="button primary">Add Event</button>
+                <input type="number" id="event_year" v-model="event.year" required>
+                <button type="submit" class="button primary">Add event</button>
             </form>
         </div>
         <div class="card">
             <h2 class="name">Add project to event</h2>
             <form @submit="addProject()">
-                <label for="event_id">Select project</label>
-                <select id="event_id" v-model="project.eventId">
-                    <option v-for="event in events" :value="event.id">{{event.name}}: {{event.year}}</option>
-                </select>
+                <div>
+                    <label for="event_id">Event: </label>
+                    <select id="event_id" v-model="project.eventId">
+                        <option v-for="event in events" :value="event.id">{{event.name}}: {{event.year}}</option>
+                    </select>
+                </div>
                 <label for="project_title">Title:</label>
                 <input type="text" id="project_title" v-model="project.title" required>
                 <label for="project_image">Image: <!-- Image upload--></label>
                 <input type="text" id="project_image" v-model="project.img_name" required>
-                <label for="project_desc">Description:</label>
-                <textarea id="project_desc" v-model="project.description" required> </textarea>
+                <div>
+                    <label for="project_desc">Description:</label> <br>
+                    <textarea id="project_desc" v-model="project.description" required> </textarea>
+                </div>
+                <br>
                 <label for="project_link">Link:</label>
                 <input type="text" id="project_link" v-model="project.link" required>
-                <button type="submit" class="button primary">Add Project</button>
+                <button type="submit" class="button primary">Add project</button>
             </form>
         </div>
         <div class="card">
             <h2 class="name">Add user to project</h2>
             <form @submit="addUser()">
-                <label for="project_id"></label>
-                <select id="project_id" v-model="user.projectId">
-                    <option v-for="project in projects" :value="project.id">{{project.title}}</option>
-                </select>
-                <label for="user_id"></label>
-                <select id="user_id" v-model="user.userId">
-                    <option v-for="user in users" :value="user.id">{{user.email}}</option>
-                </select>
+                <div>
+                    <label for="project_id">Project: </label>
+                    <select id="project_id" v-model="user.projectId">
+                        <option v-for="project in projects" :value="project.id">{{project.title}}</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="user_id">User: </label>
+                    <select id="user_id" v-model="user.userId">
+                        <option v-for="user in users" :value="user.id">{{user.email}}</option>
+                    </select>
+                </div>
                 <button type="submit" class="button primary">Add user to project</button>
             </form>
         </div>
@@ -65,9 +74,9 @@
     module.exports = {
         data: function () {
             return {
-                dh_event: {
+                event: {
                     name: "",
-                    year: -1
+                    year: (new Date()).getFullYear()
                 },
                 events: [],
                 project: {
@@ -90,8 +99,8 @@
             addEvent: function () {
                 const xhr = new XMLHttpRequest();
                 const formData = new FormData();
-                formData.append('name', this.dh_event.name);
-                formData.append('year', this.dh_event.year);
+                formData.append('name', this.event.name);
+                formData.append('year', this.event.year);
                 xhr.onload = () => console.log(xhr.response);
                 xhr.open("PUT", "/dashhack/");
                 xhr.responseType = 'json';
@@ -155,5 +164,30 @@
 </script>
 
 <style scoped>
+
+    .name {
+        font-size: 1.4em;
+    }
+
+    input {
+        background: #fff;
+        border: 3px solid #000;
+        display: block;
+        padding: 0.3em;
+        box-sizing: border-box;
+        width: 100%;
+        margin-bottom: 25px;
+        margin-top: 5px;
+    }
+
+    .button {
+        display: inline-block;
+    }
+
+    .image img {
+        height: 100px;
+        max-width: 100%;
+        width: auto;
+    }
 
 </style>
