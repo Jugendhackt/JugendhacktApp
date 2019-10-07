@@ -17,7 +17,8 @@ The App will have plenty of features for Jugend hackt - even some which don't ex
 - [LarsVomMars](https://github.com/larsvommars)
 - [AuspiciousLynx](https://github.com/auspiciouslynx)
 - [CodeUnicorn2000](https://github.com/codeunicorn2000)
-- [SrLennox](https://github.com/sirlennox)
+- [SirLennox](https://github.com/sirlennox)
+- [DeathStalker3000XPROblackedition](https://github.com/DeathStalker3000XPROblackedition) (lovely and mental support)
 
 ## Contributing
 To contribute to this project create a pull request which will then be merged only by the main [contributors](#contributors) so that we have at least some control over the current version of the code in this master branch
