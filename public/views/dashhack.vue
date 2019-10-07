@@ -1,20 +1,24 @@
 <template>
     <div>
-        <div class="card" v-for="event in events">
-            <h2>Jugend hackt {{event.name}} {{event.year}}</h2>
-            <img :src="getBadge(event.name, event.year)" alt="A great badge" class="badge-img">
+        <div class="card" v-for="(event, i) in events" @click="showEvent(i)">
+            <div class="event-header">
+                <h2>Jugend hackt {{event.name}} {{event.year}}</h2>
+                <img :src="getBadge(event.name, event.year)" alt="A great badge" class="badge-img">
+            </div>
+            <div class="event-projects" v-for="project in projects">
+                <span>{{project}}</span>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
-    const Board = httpVueLoader("/js/components/newBoard.vue");
     module.exports = {
         data: function () {
             return {
-                events: {},
-                projects: {},
-                users: {}
+                events: [],
+                projects: [],
+                users: []
             }
         },
 
@@ -26,35 +30,35 @@
                 xhr.responseType = "json";
                 xhr.send();
             },
-            getProjects() {
+            getProjects(i) {
                 const xhr = new XMLHttpRequest();
-                xhr.onload = () => this.projects = xhr.response;
-                xhr.open('GET', '/dashhack/projects?');
-                xhr.responseType = "json";
-                xhr.send();
-            },
-            getUsers() {
-                const xhr = new XMLHttpRequest();
-                xhr.onload = () => this.users = xhr.response;
-                xhr.open('GET', '/user/getAll');
+                xhr.onload = () => this.projects[i] = xhr.response;
+                xhr.open('GET', `/dashhack/projects?event_id=${i + 1}`);
                 xhr.responseType = "json";
                 xhr.send();
             },
             getBadge(name, year) {
                 return `https://jhbadge.de/?evt=${name}&year=${year}`;
+            },
+            showEvent(i) {
+                this.getProjects(i);
             }
         },
 
         beforeMount() {
             this.getEvents();
-        },
-
-        components: {
-            Board
         }
     }
 </script>
 
 <style scoped>
+    .card {
+        position: relative;
+    }
 
+    .badge-img {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+    }
 </style>
