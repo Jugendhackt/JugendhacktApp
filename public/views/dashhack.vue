@@ -5,8 +5,8 @@
                 <h2>Jugend hackt {{event.name}} {{event.year}}</h2>
                 <img :src="getBadge(event.name, event.year)" alt="A great badge" class="badge-img">
             </div>
-            <div class="event-projects" v-for="project in projects[i]">
-                <span>{{project}}</span>
+            <div class="event-projects" v-show="projects.length">
+                <span v-for="project in projects">{{project}}</span>
             </div>
         </div>
     </div>
@@ -32,7 +32,7 @@
             },
             getProjects(i) {
                 const xhr = new XMLHttpRequest();
-                xhr.onload = () => this.projects[i] = xhr.response;
+                xhr.onload = () => this.projects = xhr.response;
                 xhr.open('GET', `/dashhack/projects?event_id=${i + 1}`);
                 xhr.responseType = "json";
                 xhr.send();
