@@ -5,7 +5,7 @@
                 <h2>Jugend hackt {{event.name}} {{event.year}}</h2>
                 <img :src="getBadge(event.name, event.year)" alt="A great badge" class="badge-img">
             </div>
-            <div class="event-projects" v-for="project in projects">
+            <div class="event-projects" v-for="project in projects[i]">
                 <span>{{project}}</span>
             </div>
         </div>
