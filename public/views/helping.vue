@@ -5,14 +5,14 @@
             <h2 class="card" @click="selected = 2" :class="{ highlight : selected == 2}" v-show="questions.length">Ich möchte helfen</h2>
         </div>
         <transition name="fade">
-            <form method="POST" action="/coach/questions" v-show="selected == 1" class="card">
+            <form @submit.prevent="submitForm" v-show="selected == 1" class="card">
                 <label for="f_title">Titel</label>
-                <input type="text" name="title" id="f_title"></input>
+                <input v-model="question.title" type="text" name="title" id="f_title"></input>
                 <label for="f_topic">Topic</label>
-                <input type="text" name="topic" id="f_topic"></input>
-                <label for="f_text">Text</label>
-                <textarea type="text" name="text" id="f_text"></textarea>
-                <button type="submit" class="button primary">Absenden</button>
+                <input v-model="question.topic" type="text" name="topic" id="f_topic"></input>
+                <label for="f_text">Beschreibung</label>
+                <textarea v-model="question.text" type="text" name="text" id="f_text" @input="autoScroll($event)" style="height: 100px"></textarea>
+                <button class="button primary" @click.prevent="submitForm">Absenden</button>
             </form>
         </transition>
         <div class="questions-container">
@@ -30,23 +30,49 @@ module.exports = {
     data: function(){
         return {
             selected: 1,
-            questions: []
-        }
-    },
-    beforeMount() {
-        var request = new XMLHttpRequest();
-        request.open("GET","/coach/questions");
-        request.responseType = "json";
-        request.onload = () => {
-            if (request.status >= 200 && request.status < 300) {
-                this.questions = request.response;
-                console.log(this.questions);
-            } else {
-                console.warn(request.statusText, request.response);
+            questions: [],
+            question: {
+                title: "",
+                topic: "",
+                text: ""
             }
         }
-        request.send();
-    }
+    },
+    methods: {
+        submitForm(){
+            let xhr = new XMLHttpRequest();
+            xhr.open("GET", "/coach/questions");
+            xhr.responseType = "json";
+            xhr.onload = () => {
+                if(xhr.status == 200){
+                    alert("Success");
+                    this.loadQuestions();
+                } else {
+                    alert(xhr.response.message);
+                }
+            }
+            xhr.send(this.question);
+        },
+        loadQuestions(){
+            let xhr = new XMLHttpRequest();
+            xhr.open("GET", "/coach/questions");
+            xhr.responseType = "json";
+            xhr.onload = () => {
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    this.questions = xhr.response;
+                    console.log(this.questions);
+                } else {
+                    console.warn(xhr.statusText, xhr.response);
+                }
+            }
+            xhr.send();
+        },
+        autoScroll(e){
+            let minimumScroll = 100;
+            e.srcElement.style.height = Math.max(e.srcElement.scrollHeight, minimumScroll) + "px";
+        }
+    },
+    beforeMount(){this.loadQuestions()}
 }
 </script>
 
