@@ -2,13 +2,13 @@
     <div class="focuser">
         <Board class="board-view" v-if="this.boardOpen" :board="this.boards[this.current_board]"></Board>
         <div :class="{ hide: boardOpen}" class="board-navigation">
-            <div v-show="this.boards.length" v-for="(board, i) in boards" @click="setActive(i)" class="board card" :title="board.title" :key="board._id" v-if="board.projectsCount">
+            <div v-show="boards.length" v-for="(board, i) in boards" @click="setActive(i)" class="board card" :title="board.title" :key="board._id" v-if="board.projectsCount">
                 {{board.title || board.domain}}
                 <img class="cover" v-if="board.covers[0]"
                      :src="board.covers[0].startsWith('http') ? board.covers[0] : 'https://hackdash.s3-us-west-2.amazonaws.com' + board.covers[0]">
                 <img class="cover" v-else>
             </div>
-            <div class="card" v-show="!this.boards.length">
+            <div class="card" v-show="!boards.length">
               Hackdash is offline (again...)
             </div>
         </div>
