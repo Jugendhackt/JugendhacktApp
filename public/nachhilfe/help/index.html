@@ -23,31 +23,7 @@
     </div>
 
     <script>
-    var request = new XMLHttpRequest();
-    request.open("GET","/coach/questions");
-    request.addEventListener('load', function(event) {
-      if (request.status >= 200 && request.status < 300) {
-          const json = JSON.parse(request.responseText);
-          json.forEach(element => {
-            const e = document.createElement("div");
-            const title = document.createElement("h3");
-            title.innerText = element["title"];
-            e.appendChild(title)
-            const topic = document.createElement("small");
-            topic.innerText = element["topic"];
-            e.appendChild(topic)
-            const text = document.createElement("p");
-            text.innerText = element["text"];
-            e.appendChild(text);
-            const line = document.createElement("hr");
-            e.appendChild(line);
-            document.querySelector("#questions").appendChild(e);
-          });
-      } else {
-          console.warn(request.statusText, request.responseText);
-      }
-    });
-    request.send();
+
     </script>
   </body>
 </html>
