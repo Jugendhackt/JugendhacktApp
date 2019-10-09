@@ -17,4 +17,4 @@ In order to set this project up make sure you got
 ## MariaDB setup
 - Create new database `CREATE DATABASE <DBName>;`
 - Create new user `CREATE USER '<DBUser>'@'<DBHost>' IDENTIFIED BY '<DBPassword>';`
-- Grant privileges of the user to the database `GRANT ALL ON '<DBName>'.* TO '<DBUser>'@'<DBHost>';`
+- Grant privileges of the user to the database `GRANT ALL ON <DBName>.* TO '<DBUser>'@'<DBHost>';`
