@@ -670,10 +670,18 @@ const self = module.exports = {
     getHackdashEventProjects: (req, resp) => {
         self.connect(resp)
             .then(conn => {
-                conn.query("SELECT * FROM hackdash_project WHERE event_id = ?", [req.query.event_id])
-                    .then(res => {
-                        resp.json(res);
-                        conn.end();
+                conn.query("SELECT id FROM hackdash_event WHERE name LIKE ? AND year = ? LIMIT 1", [req.query.name, req.query.year])
+                    .then(evt_id => {
+                        conn.query("SELECT * FROM hackdash_project WHERE event_id = ?", [evt_id[0].id])
+                            .then(res => {
+                                resp.json(res);
+                                conn.end();
+                            })
+                            .catch(err => {
+                                console.error(err);
+                                resp.status(400).json({success: false, message: "An error occurred!"});
+                                conn.end();
+                            })
                     })
                     .catch(err => {
                         console.error(err);
