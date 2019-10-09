@@ -4,7 +4,8 @@ httpVueLoader.register(Vue, "js/components/v-image.vue");
 let app;
 
 const routes = [
-    {path: "/", component: httpVueLoader("views/events.vue")},
+    {path: "/", redirect: "/events"},
+    {path: "/events", component: httpVueLoader("views/events.vue")},
     {path: "/login", component: httpVueLoader("views/login.vue")},
     {path: "/hackdash", component: httpVueLoader("views/hackdash.vue")},
     {path: "/feed", component: httpVueLoader("views/feed.vue")},
@@ -14,10 +15,26 @@ const routes = [
     {path: "/user", component: httpVueLoader("views/user.vue")},
     {path: "/badges", component: httpVueLoader("views/badges.vue")},
     {path: "/test", component: httpVueLoader("views/testing.vue")},
-    {path: "/helping", component: httpVueLoader("views/helping.vue")},
     {path: "/info", component: httpVueLoader("views/infos.vue")},
     {path: "/404", component: httpVueLoader("views/404.vue")},
     {path: "*", component: httpVueLoader("views/404.vue")},
+    {
+        path: "/coaching", component: httpVueLoader("views/coaching/index.vue"),
+        children: [
+            {
+                path: "",
+                redirect: "helping"
+            },
+            {
+                path: "asking",
+                component: httpVueLoader("views/coaching/asking.vue")
+            },
+            {
+                path: "helping",
+                component: httpVueLoader("views/coaching/helping.vue")
+            }
+        ]
+    },
 ];
 
 const router = new VueRouter({
