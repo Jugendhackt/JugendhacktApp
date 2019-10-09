@@ -34,3 +34,6 @@ Icons from [https://feathericons.com/](https://feathericons.com/)
 [View this Project on HackDash](https://hackdash.org/projects/5d6a4242c587e70bcdacccc6)
 
 [The Etherpad Entry (used for API Documentation)](https://pad.okfn.de/p/JugendhacktApp)
+
+### Presentations (German)
+[Hamburg 2019](https://media.ccc.de/v/jhhh19-5-jugend-hackt-app)
