@@ -8,7 +8,7 @@
                      :src="board.covers[0].startsWith('http') ? board.covers[0] : 'https://hackdash.s3-us-west-2.amazonaws.com' + board.covers[0]">
                 <img class="cover" v-else>
             </div>
-            <div class="card" v-show="!boards.length">
+            <div class="card" v-show="!boards.length && !$root.loading">
               Hackdash is offline (again...)
             </div>
         </div>
