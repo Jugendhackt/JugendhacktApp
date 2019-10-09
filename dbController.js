@@ -679,7 +679,7 @@ const self = module.exports = {
                             })
                             .catch(err => {
                                 console.error(err);
-                                resp.status(400).json({success: false, message: "An error occurred!"});
+                                resp.status(400).json({success: false, message: "Unknown event"});
                                 conn.end();
                             })
                     })
