@@ -1,0 +1,37 @@
+{
+    "type": "object",
+    "properties": {
+        "_id": {
+            "type": "string",
+            "examples": {
+                "_id": {
+                    "value": {"5569aa0920fd92a2266570e7", "55707a7079ef5d384ac04a1a"}
+                }
+            }
+        },
+        "description": {
+            "type": "string"
+        },
+        "domain": {
+            "type": "string"
+        },
+        "link": {
+            "type": "string"
+        },
+        "owner": {
+            "type": "string"
+        },
+        "projectsCount": {
+            "type": "integer"
+        },
+        "title": {
+            "type": "string"
+        },
+        "covers": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        }
+    }
+}

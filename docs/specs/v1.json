@@ -1,0 +1,84 @@
+{
+    "openapi": "3.0",
+    "info": {
+        "title": "Jugend hackt App",
+        "description": "The docs for the endpoints we make",
+        "version": "1.0"
+    },
+    "servers": [
+        {
+            "url": "https://alpaca.ml/api",
+            "description": "Production Server"
+        }
+    ],
+    "paths": {
+        "/": {
+            "get": {
+                "description": "Returns a json object with all kind of endpoints.",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "Documentation": {
+                                            "type": "string"
+                                        },
+                                        "Github": {
+                                            "type": "string"
+                                        },
+                                        "HackDash": {
+                                            "type": "object",
+                                            "properties": {
+                                                "List dashboards": {
+                                                    "type": "string"
+                                                },
+                                                "Dashboards": {
+                                                    "type": "string"
+                                                },
+                                                "Single project": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        },
+                                        "Twitter": {
+                                            "type": "string"
+                                        },
+                                        "Zulip": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "additionalProperties": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/hackdash": {
+            "get": {
+                "description": "Get a list of all boards",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "v1/objects/board.json"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
