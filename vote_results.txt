@@ -1,0 +1,16 @@
+<<<< Vote Results >>>>
+
+Alpacrash: 21
+Codedash: 17
+HackDeck: 13
+AlpaDash: 3
+PakaDash: 2
+Um:Welt: 2
+Ulm:Welt: 2
+Alpahack: 1
+Dashpaka: 1
+DeckHack: 0
+PakaList: 0
+AlpaList: 0
+
+<<<< End:Vote Results >>>
