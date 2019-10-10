@@ -79,7 +79,7 @@ body {
     cursor: pointer;
 }
 
-.nav .router-link-exact-active {
+.nav .router-link-active {
     transition: background-color linear 200ms, filter linear 200ms;
     background-color: #D5531D;
     filter: invert(1);
