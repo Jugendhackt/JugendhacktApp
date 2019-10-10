@@ -79,7 +79,7 @@ body {
     cursor: pointer;
 }
 
-.nav .router-link-exact-active {
+.nav .router-link-active {
     transition: background-color linear 200ms, filter linear 200ms;
     background-color: #D5531D;
     filter: invert(1);
@@ -169,6 +169,29 @@ body {
     transition: background-color 300ms linear;
     background: transparent;
     pointer-events: none;
+}
+
+input {
+    background: #fff;
+    border: 3px solid #000;
+    display: block;
+    padding: 0.3em;
+    box-sizing: border-box;
+    width: 100%;
+    margin-bottom: 25px;
+    margin-top: 5px;
+}
+
+textarea {
+    background: #fff;
+    border: 3px solid #000;
+    display: block;
+    padding: 0.3em;
+    box-sizing: border-box;
+    width: 100%;
+    margin-bottom: 25px;
+    margin-top: 5px;
+    resize: vertical;
 }
 
 @keyframes spin {
