@@ -24,7 +24,8 @@ module.exports = {
     methods: {
         submitForm(){
             let xhr = new XMLHttpRequest();
-            xhr.open("GET", "/coach/questions");
+            xhr.open("POST", "/coach/questions");
+            xhr.setRequestHeader("Content-Type", "application/json");
             xhr.responseType = "json";
             xhr.onload = () => {
                 if(xhr.status == 200){
@@ -33,7 +34,7 @@ module.exports = {
                     alert(xhr.response.message);
                 }
             }
-            xhr.send(this.question);
+            xhr.send(JSON.stringify(this.question));
         },
         autoScroll(e){
             let minimumScroll = 100;
