@@ -2,7 +2,7 @@
     <div>
         <div class="card" v-for="ev in events" @click="openEvent(ev)">
             <h2>Jugend hackt {{ev.name}}</h2>
-            <img :src="getBadge(ev.name, ev.year)" alt="A great badge" class="badge-img">
+            <img :src="getBadge(ev.name)" alt="A great badge" class="badge-img">
         </div>
     </div>
 </template>
@@ -23,15 +23,18 @@
                     this.events = xhr.response;
                     this.$root.loading = false;
                 };
-                xhr.open('GET', '/dashhack/');
+                xhr.open('GET', '/dashhack/all');
                 xhr.responseType = "json";
                 xhr.send();
             },
-            getBadge(name, year) {
+            getBadge(name) {
                 return `https://jhbadge.de/?evt=${name}&type=started-at`;
             },
             openEvent(ev) {
                 this.$router.push(`/dashhack/${ev.name}`);
+            },
+            capitalizeFirstLetter(s) {
+                return s.charAt(0).toUpperCase() + s.slice(1);
             }
         },
 

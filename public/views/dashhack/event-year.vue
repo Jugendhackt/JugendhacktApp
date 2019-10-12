@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="card">
-            <h1 class="name">{{$route.params.event}} {{$route.params.year}}</h1>
+            <h1 class="name">{{capitalizeFirstLetter($route.params.event)}} {{$route.params.year}}</h1>
         </div>
         <div class="card" v-for="project of projects">
             <h2 class="name">{{project.title}}</h2>
@@ -13,7 +13,7 @@
             </p>
         </div>
         <span class="back">
-            <img alt="Back" src="/assets/icons/arrow-down.svg" @click="$router.push('/dashhack')">
+            <img alt="Back" src="/assets/icons/arrow-down.svg" @click="$router.push(`/dashhack/${$route.params.event}`)">
         </span>
     </div>
 </template>
@@ -36,9 +36,12 @@
                     else this.projects = xhr.response;
                     this.$root.loading = false;
                 };
-                xhr.open('GET', `/dashhack/projects?name=${this.$route.params.event}&year=${this.$route.params.year}`);
                 xhr.responseType = "json";
+                xhr.open('GET', `/dashhack/projects?name=${this.$route.params.event}&year=${this.$route.params.year}`);
                 xhr.send();
+            },
+            capitalizeFirstLetter(s) {
+                return s.charAt(0).toUpperCase() + s.slice(1);
             }
         },
 

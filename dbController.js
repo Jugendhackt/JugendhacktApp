@@ -613,6 +613,27 @@ const self = module.exports = {
     },
 
     /**
+     * Get all years in which the event took place
+     * @param req
+     * @param resp
+     */
+    getHackdashEventYears: (req, resp) => {
+        self.connect(resp)
+            .then(conn => {
+                conn.query("SELECT * FROM hackdash_event WHERE name LIKE ?", [req.query.event])
+                    .then(res => {
+                        resp.json(res);
+                        conn.end();
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        resp.status(400).json({success: false, message: "An error occurred!"});
+                        conn.end();
+                    })
+            })
+    },
+
+    /**
      * Adds new hackdash project
      * @param req
      * @param res
@@ -667,7 +688,7 @@ const self = module.exports = {
      * @param req
      * @param resp
      */
-    getHackdashEventProjects: (req, resp) => {
+    getHackdashEventYearProjects: (req, resp) => {
         self.connect(resp)
             .then(conn => {
                 conn.query("SELECT id FROM hackdash_event WHERE name LIKE ? AND year = ? LIMIT 1", [req.query.name, req.query.year])
