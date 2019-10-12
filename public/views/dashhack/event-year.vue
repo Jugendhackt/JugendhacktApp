@@ -13,7 +13,7 @@
             </p>
         </div>
         <span class="back">
-            <img alt="Back" src="/assets/icons/arrow-down.svg" @click="$router.replace('/dashhack')">
+            <img alt="Back" src="/assets/icons/arrow-down.svg" @click="$router.push('/dashhack')">
         </span>
     </div>
 </template>

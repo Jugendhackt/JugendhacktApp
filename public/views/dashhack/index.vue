@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="card" v-for="ev in events" @click="openEvent(ev)">
-            <h2>Jugend hackt {{ev.name}} {{ev.year}}</h2>
+            <h2>Jugend hackt {{ev.name}}</h2>
             <img :src="getBadge(ev.name, ev.year)" alt="A great badge" class="badge-img">
         </div>
     </div>
@@ -28,10 +28,10 @@
                 xhr.send();
             },
             getBadge(name, year) {
-                return `https://jhbadge.de/?evt=${name}&year=${year}`;
+                return `https://jhbadge.de/?evt=${name}&type=started-at`;
             },
             openEvent(ev) {
-                this.$router.replace(`/dashhack/${ev.name}/${ev.year}`);
+                this.$router.push(`/dashhack/${ev.name}`);
             }
         },
 

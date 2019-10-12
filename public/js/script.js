@@ -16,9 +16,23 @@ const routes = [
     {path: "/test", component: httpVueLoader("views/testing.vue")},
     {path: "/helping", component: httpVueLoader("views/helping.vue")},
     {path: "/info", component: httpVueLoader("views/infos.vue")},
-    {path: "/dashhack", component: httpVueLoader("views/dashhack.vue")},
-    {path: "/dashhack/:event/:year", component: httpVueLoader("views/dashhack-event.vue")},
-    {path: "/dashhack-debug", component: httpVueLoader("views/dashhack-debug.vue")},
+    {
+        path: "/dashhack/", component: httpVueLoader("views/dashhack/index.vue"),
+        children: [
+            {
+                path: ":evt",
+                component: httpVueLoader("views/dashhack/event.vue")
+            },
+            {
+                path: ":evt/:year",
+                component: httpVueLoader("views/dashhack/event-year.vue")
+            },
+            {
+                path: "debug",
+                component: httpVueLoader("views/dashhack/debug.vue")
+            }
+        ]
+    },
     {path: "/404", component: httpVueLoader("views/404.vue")},
     {path: "*", component: httpVueLoader("views/404.vue")},
 ];
