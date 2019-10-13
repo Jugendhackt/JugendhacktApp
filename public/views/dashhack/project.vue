@@ -6,8 +6,12 @@
             <p>
                 {{project.description}}
             </p>
-            <a :href="project.link.startsWith('http') ? project.link : 'http://' + project.link" target="_blank">View code</a>
+            <a :href="project.link.startsWith('http') ? project.link : 'http://' + project.link" target="_blank"
+               class="project-link">View code</a>
         </div>
+
+        <img class="back" alt="Back" src="/assets/icons/arrow-down.svg"
+             @click="$router.push(`/dashhack/${$route.params.event}`)">
     </div>
 </template>
 
@@ -51,8 +55,18 @@
         max-width: 1600px;
         margin: 0 auto;
     }
+
     .project-title {
         text-decoration: #f86d14 underline;
         text-align: center;
+    }
+
+    .project-link {
+        text-decoration: none;
+        color: #f86d14;
+    }
+
+    .project-link:active {
+        color: #f86d14;
     }
 </style>

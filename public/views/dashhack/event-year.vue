@@ -6,10 +6,8 @@
         <div class="card project" v-for="project of projects" @click="openProject(project)">
             <h2 class="name">{{project.title}}</h2>
         </div>
-        <span class="back">
-            <img alt="Back" src="/assets/icons/arrow-down.svg"
-                 @click="$router.push(`/dashhack/${$route.params.event}`)">
-        </span>
+        <img class="back" alt="Back" src="/assets/icons/arrow-down.svg"
+             @click="$router.push(`/dashhack/${$route.params.event}`)">
     </div>
 </template>
 
@@ -51,28 +49,6 @@
 </script>
 
 <style scoped>
-    .back {
-        position: fixed;
-        bottom: 66px;
-        display: inline;
-        text-align: center;
-        transition: bottom ease 200ms;
-        left: 0;
-        right: 0;
-        cursor: pointer;
-        z-index: 1;
-    }
-
-    .back img {
-        background: #00a5dc;
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        fill: #fff;
-        transform: rotateZ(90deg);
-        box-shadow: 0 0 12px #cecece;
-        transition: transform 300ms ease;
-    }
     .project {
         cursor: pointer;
     }
