@@ -135,7 +135,7 @@
             getEvents() {
                 const xhr = new XMLHttpRequest();
                 xhr.onload = () => this.events = xhr.response;
-                xhr.open('GET', '/dashhack/');
+                xhr.open('GET', '/dashhack/all');
                 xhr.responseType = "json";
                 xhr.send();
             },

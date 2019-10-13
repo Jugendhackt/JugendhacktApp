@@ -9,6 +9,7 @@ dashhack.put('/', dbController.addHackdashEvent);
 
 // Project links
 dashhack.get('/projects/all', dbController.getHackdashProjects);
+dashhack.get('/project', dbController.getHackdashProject);
 dashhack.get('/projects', dbController.getHackdashEventYearProjects);
 dashhack.put('/projects', dbController.addHackdashProject);
 

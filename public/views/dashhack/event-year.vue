@@ -3,17 +3,12 @@
         <div class="card">
             <h1 class="name">{{capitalizeFirstLetter($route.params.event)}} {{$route.params.year}}</h1>
         </div>
-        <div class="card" v-for="project of projects">
+        <div class="card project" v-for="project of projects" @click="openProject(project)">
             <h2 class="name">{{project.title}}</h2>
-            <p>
-                {{project.description}}
-            </p>
-            <p>
-                <a :href="project.link.startsWith('http') ? project.link : 'http://' + project.link" target="_blank">View code</a>
-            </p>
         </div>
         <span class="back">
-            <img alt="Back" src="/assets/icons/arrow-down.svg" @click="$router.push(`/dashhack/${$route.params.event}`)">
+            <img alt="Back" src="/assets/icons/arrow-down.svg"
+                 @click="$router.push(`/dashhack/${$route.params.event}`)">
         </span>
     </div>
 </template>
@@ -34,11 +29,15 @@
                     const res = xhr.response;
                     if (res.success === false) console.log(res.message);
                     else this.projects = xhr.response;
+                    if (!this.projects.length) this.$router.replace(window.history.back());
                     this.$root.loading = false;
                 };
                 xhr.responseType = "json";
                 xhr.open('GET', `/dashhack/projects?name=${this.$route.params.event}&year=${this.$route.params.year}`);
                 xhr.send();
+            },
+            openProject(p) {
+                this.$router.push(`/dashhack/${this.$route.params.event}/${this.$route.params.year}/${p.title}`);
             },
             capitalizeFirstLetter(s) {
                 return s.charAt(0).toUpperCase() + s.slice(1);
@@ -74,13 +73,7 @@
         box-shadow: 0 0 12px #cecece;
         transition: transform 300ms ease;
     }
-
-    .back.hide img {
-        transform: rotateZ(-90deg);
+    .project {
+        cursor: pointer;
     }
-
-    .back.hide {
-        bottom: -80px;
-    }
-
 </style>

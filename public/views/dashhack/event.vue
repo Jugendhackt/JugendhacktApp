@@ -3,7 +3,7 @@
         <div class="card">
             <h1>Jugend hackt {{capitalizeFirstLetter($route.params.event)}}</h1>
         </div>
-        <div class="card" v-for="ev in years" @click="openYear(ev)">
+        <div class="card event" v-for="ev in years" @click="openYear(ev)">
             <h2>Jugend hackt {{ev.name}} {{ev.year}}</h2>
             <img :src="getBadge(ev.name, ev.year)" alt="A great badge" class="badge-img">
         </div>
@@ -28,6 +28,7 @@
                 const xhr = new XMLHttpRequest();
                 xhr.onload = () => {
                     this.years = xhr.response;
+                    if (!this.years.length) this.$router.replace(window.history.back());  // Event doesn't exist
                     this.$root.loading = false;
                 };
                 xhr.responseType = "json";
@@ -52,7 +53,7 @@
 </script>
 
 <style scoped>
-    .card {
+    .event {
         position: relative;
         cursor: pointer;
     }
@@ -84,13 +85,5 @@
         transform: rotateZ(90deg);
         box-shadow: 0 0 12px #cecece;
         transition: transform 300ms ease;
-    }
-
-    .back.hide img {
-        transform: rotateZ(-90deg);
-    }
-
-    .back.hide {
-        bottom: -80px;
     }
 </style>

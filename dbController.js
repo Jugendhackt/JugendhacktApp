@@ -713,6 +713,35 @@ const self = module.exports = {
     },
 
     /**
+     * Get specific project
+     * @param req
+     * @param resp
+     */
+    getHackdashProject: (req, resp) => {
+        self.connect(resp)
+            .then(conn => {
+                conn.query("SELECT id FROM hackdash_event WHERE name LIKE ? AND year = ? LIMIT 1", [req.query.name, req.query.year])
+                    .then(evt_id => {
+                        conn.query("SELECT * FROM hackdash_project WHERE event_id = ? AND title = ? LIMIT 1", [evt_id[0].id, req.query.title])
+                            .then(res => {
+                                resp.json(res);
+                                conn.end();
+                            })
+                            .catch(err => {
+                                console.error(err);
+                                resp.status(400).json({success: false, message: "Unknown project"});
+                                conn.end();
+                            })
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        resp.status(400).json({success: false, message: "An error occurred!"});
+                        conn.end();
+                    })
+            })
+    },
+
+    /**
      * Adds user to hackdash project
      * @param req
      * @param res
