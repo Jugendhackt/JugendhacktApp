@@ -13,7 +13,7 @@
         </div>
         <div class="card">
             <h2 class="name">Add project to event</h2>
-            <form @submit="addProject()">
+            <form @submit="addProject()" enctype="multipart/form-data" id="project-upload-form">
                 <div>
                     <label for="event_id">Event: </label>
                     <select id="event_id" v-model="project.eventId">
@@ -23,7 +23,7 @@
                 <label for="project_title">Title:</label>
                 <input type="text" id="project_title" v-model="project.title" required>
                 <label for="project_image">Image: <!-- Image upload--></label>
-                <input type="text" id="project_image" v-model="project.img_name" required>
+                <input type="file" id="project_image" v-model="project.img_name" required>
                 <div>
                     <label for="project_desc">Description:</label> <br>
                     <textarea id="project_desc" v-model="project.description" required> </textarea>
@@ -112,7 +112,7 @@
                 const formData = new FormData();
                 formData.append('event_id', this.project.eventId);
                 formData.append('title', this.project.title);
-                formData.append('img_name', this.project.img_name);
+                formData.append("img", document.getElementById("project_image").files[0]);
                 formData.append('description', this.project.description);
                 formData.append('link', this.project.link);
                 xhr.onload = () => console.log(xhr.response);

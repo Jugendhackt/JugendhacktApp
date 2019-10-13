@@ -644,22 +644,27 @@ const self = module.exports = {
             return;
         }
         const body = req.body;
-        // TODO: File upload
-        self.connect(res)
-            .then(conn => {
-                conn.query("INSERT INTO hackdash_project (event_id, title, img_name, `description`, link) VALUES (?,?,?,?,?)",
-                    [body.event_id, body.title, body.img_name, body.description, body.link]
-                )
-                    .then(_ => {
-                        res.json({success: true});
-                        conn.end();
-                    })
-                    .catch(err => {
-                        console.error(err);
-                        res.status(400).json({success: false, message: "An error occurred!"});
-                        conn.end();
-                    })
-            })
+        const allowedTypes = ['jpg', 'jpeg', 'png', 'webm'];
+        const image = req.files.img;
+        const imageType = image.name.split('.').reverse()[0];
+        if (allowedTypes.includes(imageType.toLowerCase())) {
+            self.connect(res)
+                .then(conn => {
+                    conn.query("INSERT INTO hackdash_project (event_id, title, img_name, `description`, link) VALUES (?,?,?,?,?)",
+                        [body.event_id, body.title, image.name, body.description, body.link]
+                    )
+                        .then(_ => {
+                            image.mv(`./uploads/dashhack/${image.name}`);
+                            res.json({success: true});
+                            conn.end();
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            res.status(400).json({success: false, message: "An error occurred!"});
+                            conn.end();
+                        })
+                })
+        }
     },
 
     /**

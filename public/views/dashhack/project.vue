@@ -1,8 +1,8 @@
 <template>
     <div>
         <div class="card">
-            <img :src="getImage()" alt="">
-            <h1 class="name">{{project.title}}</h1>
+            <h1 class="name project-title">{{project.title}}</h1>
+            <img :src="getImage()" alt="Project image" class="project-image">
             <p>
                 {{project.description}}
             </p>
@@ -45,5 +45,14 @@
 </script>
 
 <style scoped>
-
+    .project-image {
+        display: block;
+        max-height: 600px;
+        max-width: 1600px;
+        margin: 0 auto;
+    }
+    .project-title {
+        text-decoration: #f86d14 underline;
+        text-align: center;
+    }
 </style>
