@@ -3,13 +3,12 @@
         <div class="card">
             <h1 class="name project-title">{{project.title}}</h1>
             <img :src="getImage()" alt="Project image" class="project-image">
-            <p>
+            <p class="project-desc">
                 {{project.description}}
             </p>
             <a :href="project.link.startsWith('http') ? project.link : 'http://' + project.link" target="_blank"
                class="project-link">View code</a>
         </div>
-
         <img class="back" alt="Back" src="/assets/icons/arrow-down.svg"
              @click="$router.push(`/dashhack/${$route.params.event}`)">
     </div>
@@ -68,5 +67,14 @@
 
     .project-link:active {
         color: #f86d14;
+    }
+
+    .project-desc {
+        background: #f8f8f8;
+        border: 2px solid black;
+        padding: 10px;
+        width: 60%;
+        display: block;
+        margin: 20px auto;
     }
 </style>
