@@ -8,7 +8,13 @@
             <img :src="getBadge(ev.name, ev.year)" alt="A great badge" class="badge-img">
         </div>
 
-        <img class="back" alt="Back" src="/assets/icons/arrow-down.svg" @click="$router.push('/dashhack')">
+        <div class="alpacrash-nav-btn">
+            <img class="prev" alt="Prev" src="/assets/icons/arrow-down.svg" :class="{ notAct : eventI === 0}"
+                 @click="prevEvent()">
+            <img class="back" alt="Back" src="/assets/icons/arrow-down.svg" @click="$router.push('/dashhack')">
+            <img class="next" alt="Next" src="/assets/icons/arrow-down.svg"
+                 :class="{ notAct : eventI >= events.length - 1}" @click="nextEvent()">
+        </div>
     </div>
 </template>
 
@@ -16,7 +22,9 @@
     module.exports = {
         data: function () {
             return {
-                years: []
+                years: [],
+                events: [],
+                eventI: -1
             }
         },
 
@@ -33,6 +41,18 @@
                 xhr.open("GET", `/dashhack/?event=${this.$route.params.event}`);
                 xhr.send();
             },
+            getEvents() {
+                this.$root.loading = true;
+                const xhr = new XMLHttpRequest();
+                xhr.onload = () => {
+                    this.events = xhr.response;
+                    this.eventI = this.events.indexOf(this.capitalizeFirstLetter(this.$route.params.event.toLowerCase()));
+                    this.$root.loading = false;
+                };
+                xhr.open('GET', '/dashhack/all');
+                xhr.responseType = "json";
+                xhr.send();
+            },
             getBadge(name, year) {
                 return `https://jhbadge.de/?evt=${name}&year=${year}`;
             },
@@ -41,11 +61,24 @@
             },
             capitalizeFirstLetter(s) {
                 return s.charAt(0).toUpperCase() + s.slice(1);
+            },
+            prevEvent() {
+                if (this.eventI - 1 >= 0) {
+                    this.$router.push(`/dashhack/${this.events[this.eventI - 1]}`);
+                    this.$router.go();
+                }
+            },
+            nextEvent() {
+                if (this.eventI + 1 < this.events.length) {
+                    this.$router.push(`/dashhack/${this.events[this.eventI + 1]}`);
+                    this.$router.go();
+                }
             }
         },
 
         beforeMount() {
             this.getYears();
+            this.getEvents();
         }
     }
 </script>
@@ -60,5 +93,39 @@
         position: absolute;
         right: 10px;
         top: 10px;
+    }
+
+
+    /* Back button */
+    .alpacrash-nav-btn {
+        position: fixed;
+        bottom: 10px;
+        z-index: 1;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .alpacrash-nav-btn img {
+        cursor: pointer;
+        display: block;
+        background: #00a5dc;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        margin: 5px;
+    }
+
+    .prev {
+        transform: rotate(90deg);
+    }
+
+    .next {
+        transform: rotate(270deg);
+    }
+
+    .notAct {
+        background: #444 !important;
+        cursor: default !important;
     }
 </style>

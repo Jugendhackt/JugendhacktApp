@@ -601,7 +601,11 @@ const self = module.exports = {
             .then(conn => {
                 conn.query("SELECT * FROM hackdash_event")
                     .then(res => {
-                        resp.json(res);
+                        const rr = [];
+                        for (const evt of res)
+                            if (!rr.includes(evt.name)) rr.push(evt.name);
+
+                        resp.json(rr);
                         conn.end();
                     })
                     .catch(err => {
@@ -620,7 +624,7 @@ const self = module.exports = {
     getHackdashEventYears: (req, resp) => {
         self.connect(resp)
             .then(conn => {
-                conn.query("SELECT * FROM hackdash_event WHERE name LIKE ?", [req.query.event])
+                conn.query("SELECT * FROM hackdash_event WHERE name LIKE ? ORDER BY year DESC", [req.query.event])
                     .then(res => {
                         resp.json(res);
                         conn.end();

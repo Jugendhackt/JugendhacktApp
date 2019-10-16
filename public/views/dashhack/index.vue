@@ -1,8 +1,8 @@
 <template>
     <div>
         <div class="card" v-for="ev in events" @click="openEvent(ev)">
-            <h2>Jugend hackt {{ev.name}}</h2>
-            <img :src="getBadge(ev.name)" alt="A great badge" class="badge-img">
+            <h2>Jugend hackt {{ev}}</h2>
+            <img :src="getBadge(ev)" alt="A great badge" class="badge-img">
         </div>
     </div>
 </template>
@@ -31,7 +31,7 @@
                 return `https://jhbadge.de/?evt=${name}&type=started-at`;
             },
             openEvent(ev) {
-                this.$router.push(`/dashhack/${ev.name}`);
+                this.$router.push(`/dashhack/${ev}`);
             },
             capitalizeFirstLetter(s) {
                 return s.charAt(0).toUpperCase() + s.slice(1);
