@@ -596,7 +596,7 @@ const self = module.exports = {
      * @param req
      * @param resp
      */
-    getHackdashEvents: (req, resp) => {
+    getHackdashEventNames: (req, resp) => {
         self.connect(resp)
             .then(conn => {
                 conn.query("SELECT * FROM hackdash_event")
@@ -606,6 +606,27 @@ const self = module.exports = {
                             if (!rr.includes(evt.name)) rr.push(evt.name);
 
                         resp.json(rr);
+                        conn.end();
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        resp.status(400).json({success: false, message: "An error occurred!"});
+                        conn.end();
+                    })
+            })
+    },
+
+    /**
+     * Get all events
+     * @param req
+     * @param resp
+     */
+    getHackdashEvents: (req, resp) => {
+        self.connect(resp)
+            .then(conn => {
+                conn.query("SELECT * FROM hackdash_event")
+                    .then(res => {
+                        resp.json(res);
                         conn.end();
                     })
                     .catch(err => {
@@ -649,16 +670,20 @@ const self = module.exports = {
         }
         const body = req.body;
         const allowedTypes = ['jpg', 'jpeg', 'png', 'webm'];
-        const image = req.files.img;
-        const imageType = image.name.split('.').reverse()[0];
+        let hasImage = req.files.length > 0;
+        let image, imageType;
+        if (hasImage) {
+            image = req.files.img;
+            imageType = image.name.split('.').reverse()[0];
+        }
         if (allowedTypes.includes(imageType.toLowerCase())) {
             self.connect(res)
                 .then(conn => {
                     conn.query("INSERT INTO hackdash_project (event_id, title, img_name, `description`, link) VALUES (?,?,?,?,?)",
-                        [body.event_id, body.title, image.name, body.description, body.link]
+                        [body.event_id, body.title, hasImage ? image.name : 'standardImage.jpg', body.description, body.link]
                     )
                         .then(_ => {
-                            image.mv(`./uploads/dashhack/${image.name}`);
+                            if (hasImage) image.mv(`./uploads/dashhack/${image.name}`);
                             res.json({success: true});
                             conn.end();
                         })

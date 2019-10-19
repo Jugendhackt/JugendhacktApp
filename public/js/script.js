@@ -18,6 +18,7 @@ const routes = [
     {path: "/info", component: httpVueLoader("views/infos.vue")},
     {path: "/dashhack", component: httpVueLoader("views/dashhack/index.vue")},
     {path: "/dashhack/debug", component: httpVueLoader("views/dashhack/debug.vue")},
+    {path: "/dashhack/:event/creator", component: httpVueLoader("views/dashhack/creator.vue")},
     {path: "/dashhack/:event", component: httpVueLoader("views/dashhack/event.vue")},
     {path: "/dashhack/:event/:year", component: httpVueLoader("views/dashhack/event-year.vue")},
     {path: "/dashhack/:event/:year/:project", component: httpVueLoader("views/dashhack/project.vue")},

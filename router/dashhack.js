@@ -4,6 +4,7 @@ const dashhack = express.Router();
 
 // Events like: HH19, BER19, ...
 dashhack.get('/all', dbController.getHackdashEvents);
+dashhack.get('/all/names', dbController.getHackdashEventNames);
 dashhack.get('/', dbController.getHackdashEventYears);
 dashhack.put('/', dbController.addHackdashEvent);
 

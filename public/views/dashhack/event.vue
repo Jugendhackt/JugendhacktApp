@@ -49,7 +49,7 @@
                     this.eventI = this.events.indexOf(this.capitalizeFirstLetter(this.$route.params.event.toLowerCase()));
                     this.$root.loading = false;
                 };
-                xhr.open('GET', '/dashhack/all');
+                xhr.open('GET', '/dashhack/all/names');
                 xhr.responseType = "json";
                 xhr.send();
             },

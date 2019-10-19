@@ -35,7 +35,7 @@
                     const res = xhr.response;
                     if (res.success === false) console.log(res.message);
                     else this.projects = xhr.response;
-                    //if (!this.projects.length) this.$router.replace(window.history.back());
+                    if (!this.projects.length) this.$router.replace(window.history.back());
                     this.$root.loading = false;
                 };
                 xhr.responseType = "json";
