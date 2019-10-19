@@ -12,7 +12,7 @@
                 <label for="project_title">Title:</label>
                 <input type="text" id="project_title" v-model="creatorForm.title" required>
                 <label for="project_image">Image:</label>
-                <input type="file" id="project_image" v-model="creatorForm.img_name" required>
+                <input type="file" id="project_image" v-model="creatorForm.img_name">
                 <div>
                     <label for="project_desc">Description:</label> <br>
                     <textarea id="project_desc" v-model="creatorForm.description" required> </textarea>
@@ -44,10 +44,7 @@
         methods: {
             getEvents() {
                 const xhr = new XMLHttpRequest();
-                xhr.onload = () => {
-                    this.events = xhr.response;
-                    console.log(this.events, xhr.response);
-                };
+                xhr.onload = () => this.events = xhr.response;
                 xhr.open('GET', `/dashhack/?event=${this.$route.params.event}`);
                 xhr.responseType = "json";
                 xhr.send();
@@ -55,21 +52,31 @@
             addProject() {
                 const xhr = new XMLHttpRequest();
                 const formData = new FormData();
-                formData.append('event_id', this.project.eventId);
-                formData.append('title', this.project.title);
+                formData.append('event_id', this.creatorForm.eventId);
+                formData.append('title', this.creatorForm.title);
                 formData.append("img", document.getElementById("project_image").files[0]);
-                formData.append('description', this.project.description);
-                formData.append('link', this.project.link);
+                formData.append('description', this.creatorForm.description);
+                formData.append('link', this.creatorForm.link);
                 xhr.onload = () => console.log(xhr.response);
                 xhr.open("PUT", "/dashhack/projects");
                 xhr.responseType = 'json';
                 xhr.send(formData);
-                this.getProjects();
+            },
+            getUserInfo() {
+                const xhr = new XMLHttpRequest();
+                xhr.onload = () => {
+                    this.user = xhr.response;
+                    if (!this.user.isVerified) this.$router.replace('/');
+                };
+                xhr.open("GET", "/user/status");
+                xhr.responseType = "json";
+                xhr.send();
             },
         },
 
         beforeMount() {
             this.getEvents();
+            this.getUserInfo();
         },
     }
 </script>

@@ -153,12 +153,23 @@
                 xhr.responseType = "json";
                 xhr.send();
             },
+            checkAdmin() {
+                const xhr = new XMLHttpRequest();
+                xhr.onload = () => {
+                    this.isAdmin = xhr.response.isAdmin;
+                    if (!this.isAdmin) this.$router.replace('/');
+                };
+                xhr.open("GET", "/user/status");
+                xhr.responseType = "json";
+                xhr.send();
+            },
         },
 
         beforeMount() {
             this.getEvents();
             this.getProjects();
             this.getUsers();
+            this.checkAdmin();
         }
     }
 </script>

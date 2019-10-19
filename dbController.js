@@ -670,30 +670,32 @@ const self = module.exports = {
         }
         const body = req.body;
         const allowedTypes = ['jpg', 'jpeg', 'png', 'webm'];
-        let hasImage = req.files.length > 0;
+        let hasImage = Boolean(req.files);
         let image, imageType;
         if (hasImage) {
             image = req.files.img;
             imageType = image.name.split('.').reverse()[0];
         }
-        if (allowedTypes.includes(imageType.toLowerCase())) {
-            self.connect(res)
-                .then(conn => {
-                    conn.query("INSERT INTO hackdash_project (event_id, title, img_name, `description`, link) VALUES (?,?,?,?,?)",
-                        [body.event_id, body.title, hasImage ? image.name : 'standardImage.jpg', body.description, body.link]
-                    )
-                        .then(_ => {
-                            if (hasImage) image.mv(`./uploads/dashhack/${image.name}`);
-                            res.json({success: true});
-                            conn.end();
-                        })
-                        .catch(err => {
-                            console.error(err);
-                            res.status(400).json({success: false, message: "An error occurred!"});
-                            conn.end();
-                        })
-                })
+        if (hasImage && !allowedTypes.includes(imageType.toLowerCase())) {
+            res.status(400).json({success: false, message: "File type not allowed!"});
+            return;
         }
+        self.connect(res)
+            .then(conn => {
+                conn.query("INSERT INTO hackdash_project (event_id, title, img_name, `description`, link) VALUES (?,?,?,?,?)",
+                    [body.event_id, body.title, hasImage ? image.name : 'placeholder.jpg', body.description, body.link]
+                )
+                    .then(_ => {
+                        if (hasImage) image.mv(`./uploads/dashhack/${image.name}`);
+                        res.json({success: true});
+                        conn.end();
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        res.status(400).json({success: false, message: "An error occurred!"});
+                        conn.end();
+                    })
+            })
     },
 
     /**

@@ -3,6 +3,11 @@
         <div class="card">
             <h1>Jugend hackt {{capitalizeFirstLetter($route.params.event)}}</h1>
         </div>
+
+        <div class="card creator-btn" v-if="user.isVerified">
+            <img src="assets/icons/plus.svg" alt="Add project" @click="openCreator()">
+        </div>
+
         <div class="card event" v-for="ev in years" @click="openYear(ev)">
             <h2>Jugend hackt {{ev.name}} {{ev.year}}</h2>
             <img :src="getBadge(ev.name, ev.year)" alt="A great badge" class="badge-img">
@@ -22,6 +27,7 @@
     module.exports = {
         data: function () {
             return {
+                user: {},
                 years: [],
                 events: [],
                 eventI: -1
@@ -73,12 +79,24 @@
                     this.$router.push(`/dashhack/${this.events[this.eventI + 1]}`);
                     this.$router.go();
                 }
-            }
+            },
+            openCreator() {
+                const route = `/dashhack/${this.$route.params.event}/creator`;
+                this.$router.push(route);
+            },
+            getUserInfo() {
+                const xhr = new XMLHttpRequest();
+                xhr.onload = () => this.user = xhr.response;
+                xhr.open("GET", "/user/status");
+                xhr.responseType = "json";
+                xhr.send();
+            },
         },
 
         beforeMount() {
             this.getYears();
             this.getEvents();
+            this.getUserInfo();
         }
     }
 </script>
@@ -127,5 +145,19 @@
     .notAct {
         background: #444 !important;
         cursor: default !important;
+    }
+
+    .creator-btn {
+        display: flex;
+        justify-content: space-around;
+    }
+
+    .creator-btn img {
+        cursor: pointer;
+        display: block;
+        background: #00a5dc;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
     }
 </style>
