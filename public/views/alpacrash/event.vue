@@ -16,7 +16,7 @@
         <div class="alpacrash-nav-btn">
             <img class="prev" alt="Prev" src="/assets/icons/arrow-down.svg" :class="{ notAct : eventI === 0}"
                  @click="prevEvent()">
-            <img class="back" alt="Back" src="/assets/icons/arrow-down.svg" @click="$router.push('/dashhack')">
+            <img class="back" alt="Back" src="/assets/icons/arrow-down.svg" @click="$router.push('/alpacrash')">
             <img class="next" alt="Next" src="/assets/icons/arrow-down.svg"
                  :class="{ notAct : eventI >= events.length - 1}" @click="nextEvent()">
         </div>
@@ -44,7 +44,7 @@
                     this.$root.loading = false;
                 };
                 xhr.responseType = "json";
-                xhr.open("GET", `/dashhack/?event=${this.$route.params.event}`);
+                xhr.open("GET", `/alpacrash/?event=${this.$route.params.event}`);
                 xhr.send();
             },
             getEvents() {
@@ -55,7 +55,7 @@
                     this.eventI = this.events.indexOf(this.capitalizeFirstLetter(this.$route.params.event.toLowerCase()));
                     this.$root.loading = false;
                 };
-                xhr.open('GET', '/dashhack/all/names');
+                xhr.open('GET', '/alpacrash/all/names');
                 xhr.responseType = "json";
                 xhr.send();
             },
@@ -63,25 +63,25 @@
                 return `https://jhbadge.de/?evt=${name}&year=${year}`;
             },
             openYear(ev) {
-                this.$router.push(`/dashhack/${ev.name}/${ev.year}`);
+                this.$router.push(`/alpacrash/${ev.name}/${ev.year}`);
             },
             capitalizeFirstLetter(s) {
                 return s.charAt(0).toUpperCase() + s.slice(1);
             },
             prevEvent() {
                 if (this.eventI - 1 >= 0) {
-                    this.$router.push(`/dashhack/${this.events[this.eventI - 1]}`);
+                    this.$router.push(`/alpacrash/${this.events[this.eventI - 1]}`);
                     this.$router.go();
                 }
             },
             nextEvent() {
                 if (this.eventI + 1 < this.events.length) {
-                    this.$router.push(`/dashhack/${this.events[this.eventI + 1]}`);
+                    this.$router.push(`/alpacrash/${this.events[this.eventI + 1]}`);
                     this.$router.go();
                 }
             },
             openCreator() {
-                const route = `/dashhack/${this.$route.params.event}/creator`;
+                const route = `/alpacrash/${this.$route.params.event}/creator`;
                 this.$router.push(route);
             },
             getUserInfo() {

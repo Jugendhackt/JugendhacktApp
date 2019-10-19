@@ -45,7 +45,7 @@
             getEvents() {
                 const xhr = new XMLHttpRequest();
                 xhr.onload = () => this.events = xhr.response;
-                xhr.open('GET', `/dashhack/?event=${this.$route.params.event}`);
+                xhr.open('GET', `/alpacrash/?event=${this.$route.params.event}`);
                 xhr.responseType = "json";
                 xhr.send();
             },
@@ -58,7 +58,7 @@
                 formData.append('description', this.creatorForm.description);
                 formData.append('link', this.creatorForm.link);
                 xhr.onload = () => console.log(xhr.response);
-                xhr.open("PUT", "/dashhack/projects");
+                xhr.open("PUT", "/alpacrash/projects");
                 xhr.responseType = 'json';
                 xhr.send(formData);
             },

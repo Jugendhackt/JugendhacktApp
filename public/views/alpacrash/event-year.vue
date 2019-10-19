@@ -3,9 +3,6 @@
         <div class="card">
             <h1 class="name">{{capitalizeFirstLetter($route.params.event)}} {{$route.params.year}}</h1>
         </div>
-        <div class="creator-btn">
-            <img src="assets/icons/plus.svg" alt="Add project" @click="openCreator()">
-        </div>
         <div class="card project" v-for="project of projects" @click="openProject(project)">
             <h2 class="name">{{project.title}}</h2>
         </div>
@@ -13,7 +10,7 @@
             <img class="prev" alt="Prev" src="/assets/icons/arrow-down.svg" :class="{ notAct : yearI === 0}"
                  @click="prevEvent()">
             <img class="back" alt="Back" src="/assets/icons/arrow-down.svg"
-                 @click="$router.push(`/dashhack/${$route.params.event}`)">
+                 @click="$router.push(`/alpacrash/${$route.params.event}`)">
             <img class="next" alt="Next" src="/assets/icons/arrow-down.svg"
                  :class="{ notAct : yearI >= years.length - 1}" @click="nextEvent()">
         </div>
@@ -32,7 +29,6 @@
 
         methods: {
             getProjects() {
-                console.log(this.$router);
                 this.$root.loading = true;
                 const xhr = new XMLHttpRequest();
                 xhr.onload = () => {
@@ -43,7 +39,7 @@
                     this.$root.loading = false;
                 };
                 xhr.responseType = "json";
-                xhr.open('GET', `/dashhack/projects?name=${this.$route.params.event}&year=${this.$route.params.year}`);
+                xhr.open('GET', `/alpacrash/projects?name=${this.$route.params.event}&year=${this.$route.params.year}`);
                 xhr.send();
             },
             getYears() {
@@ -58,29 +54,26 @@
                     this.$root.loading = false;
                 };
                 xhr.responseType = "json";
-                xhr.open("GET", `/dashhack/?event=${this.$route.params.event}`);
+                xhr.open("GET", `/alpacrash/?event=${this.$route.params.event}`);
                 xhr.send();
             },
             openProject(p) {
-                this.$router.push(`/dashhack/${this.$route.params.event}/${this.$route.params.year}/${p.title}`);
+                this.$router.push(`/alpacrash/${this.$route.params.event}/${this.$route.params.year}/${p.title}`);
             },
             capitalizeFirstLetter(s) {
                 return s.charAt(0).toUpperCase() + s.slice(1);
             },
             prevEvent() {
                 if (this.yearI - 1 >= 0) {
-                    this.$router.push(`/dashhack/${this.$route.params.event}/${this.years[this.yearI - 1]}`);
+                    this.$router.push(`/alpacrash/${this.$route.params.event}/${this.years[this.yearI - 1]}`);
                     this.$router.go();
                 }
             },
             nextEvent() {
                 if (this.yearI + 1 < this.years.length) {
-                    this.$router.push(`/dashhack/${this.$route.params.event}/${this.years[this.yearI + 1]}`);
+                    this.$router.push(`/alpacrash/${this.$route.params.event}/${this.years[this.yearI + 1]}`);
                     this.$router.go();
                 }
-            },
-            openCreator() {
-                const route = `/dashhack/${this.$route.params.event}/creator`
             }
         },
 

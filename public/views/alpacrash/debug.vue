@@ -102,7 +102,7 @@
                 formData.append('name', this.event.name);
                 formData.append('year', this.event.year);
                 xhr.onload = () => console.log(xhr.response);
-                xhr.open("PUT", "/dashhack/");
+                xhr.open("PUT", "/alpacrash/");
                 xhr.responseType = 'json';
                 xhr.send(formData);
                 this.getEvents();
@@ -116,7 +116,7 @@
                 formData.append('description', this.project.description);
                 formData.append('link', this.project.link);
                 xhr.onload = () => console.log(xhr.response);
-                xhr.open("PUT", "/dashhack/projects");
+                xhr.open("PUT", "/alpacrash/projects");
                 xhr.responseType = 'json';
                 xhr.send(formData);
                 this.getProjects();
@@ -127,7 +127,7 @@
                 formData.append('project_id', this.user.projectId);
                 formData.append('user_id', this.user.userId);
                 xhr.onload = () => console.log(xhr.response);
-                xhr.open("PUT", "/dashhack/users");
+                xhr.open("PUT", "/alpacrash/users");
                 xhr.responseType = 'json';
                 xhr.send(formData);
                 this.getProjects();
@@ -135,14 +135,14 @@
             getEvents() {
                 const xhr = new XMLHttpRequest();
                 xhr.onload = () => this.events = xhr.response;
-                xhr.open('GET', '/dashhack/all');
+                xhr.open('GET', '/alpacrash/all');
                 xhr.responseType = "json";
                 xhr.send();
             },
             getProjects() {
                 const xhr = new XMLHttpRequest();
                 xhr.onload = () => this.projects = xhr.response;
-                xhr.open('GET', '/dashhack/projects/all');
+                xhr.open('GET', '/alpacrash/projects/all');
                 xhr.responseType = "json";
                 xhr.send();
             },

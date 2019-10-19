@@ -7,7 +7,7 @@
         </div>
         <div class="nav">
             <router-link to="/"><img class="icon" src="assets/icons/calendar.svg" alt="Events"></router-link>
-            <router-link to="/dashhack"><img class="icon" src="assets/icons/clipboard.svg" alt="Hackdash"></router-link>
+            <router-link to="/alpacrash"><img class="icon" src="assets/icons/clipboard.svg" alt="Alpacrash"></router-link>
             <router-link to="/feed"><img alt="Feed" class="icon" src="assets/icons/feed.svg"></router-link>
             <router-link to="/packingList"><img class="icon" src="assets/icons/briefcase.svg" alt="Packing List"></router-link>
             <router-link to="/lostitems"><img class="icon" src="assets/icons/list.svg" alt="Lost and Found"></router-link>

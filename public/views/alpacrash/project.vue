@@ -10,7 +10,7 @@
                class="project-link">View code</a>
         </div>
         <img class="back" alt="Back" src="/assets/icons/arrow-down.svg"
-             @click="$router.push(`/dashhack/${$route.params.event}`)">
+             @click="$router.push(`/alpacrash/${$route.params.event}`)">
     </div>
 </template>
 
@@ -34,11 +34,11 @@
                     this.project = this.project[0];
                 };
                 xhr.responseType = 'json';
-                xhr.open("GET", `/dashhack/project?name=${this.$route.params.event}&year=${this.$route.params.year}&title=${this.$route.params.project}`);
+                xhr.open("GET", `/alpacrash/project?name=${this.$route.params.event}&year=${this.$route.params.year}&title=${this.$route.params.project}`);
                 xhr.send();
             },
             getImage() {
-                return `/dashhack/images/${this.project.img_name}`;
+                return `/alpacrash/images/${this.project.img_name}`;
             }
         },
         beforeMount() {

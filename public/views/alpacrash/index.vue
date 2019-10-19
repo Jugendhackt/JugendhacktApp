@@ -23,7 +23,7 @@
                     this.events = xhr.response;
                     this.$root.loading = false;
                 };
-                xhr.open('GET', '/dashhack/all');
+                xhr.open('GET', '/alpacrash/all');
                 xhr.responseType = "json";
                 xhr.send();
             },
@@ -31,7 +31,7 @@
                 return `https://jhbadge.de/?evt=${name}&type=started-at`;
             },
             openEvent(ev) {
-                this.$router.push(`/dashhack/${ev}`);
+                this.$router.push(`/alpacrash/${ev}`);
             },
             capitalizeFirstLetter(s) {
                 return s.charAt(0).toUpperCase() + s.slice(1);

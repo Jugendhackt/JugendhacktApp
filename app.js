@@ -11,7 +11,7 @@ const lostItems = require("./router/lostItems");
 const packingList = require("./router/packingList");
 const push = require("./router/push");
 const badges = require("./router/badges");
-const dashhack = require("./router/dashhack");
+const alpacrash = require("./router/alpacrash");
 const coach = require("./router/coach");
 
 const app = express();
@@ -20,7 +20,7 @@ const PORT = process.env.PORT || 80;
 app.use(fileupload({}));
 app.use(express.static("public"));
 app.use("/lostitems/images", express.static("uploads/lostItems/"));
-app.use("/dashhack/images", express.static("uploads/dashhack/"));
+app.use("/alpacrash/images", express.static("uploads/alpacrash/"));
 app.use(bodyParser.urlencoded({extended: false, limit: "50mb"}));
 app.use(bodyParser.json({limit: "50mb"}));
 app.use((_, res, next) => {
@@ -41,7 +41,7 @@ app.use("/lostitems", lostItems);
 app.use("/packinglist", packingList);
 app.use("/push", push);
 app.use("/badges", badges);
-app.use("/dashhack", dashhack);
+app.use("/alpacrash", alpacrash);
 app.use("/coach", coach);
 
 app.get('*', (req, res) => {
