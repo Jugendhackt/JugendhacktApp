@@ -35,7 +35,7 @@
                     console.log(xhr.response);
                     this.$root.loading = false;
                     if(xhr.response == null)
-                      this.boards = {}
+                      this.boards = {};
                     else {
                       this.boards = xhr.response;
                       this.boards.reverse();

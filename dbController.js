@@ -37,9 +37,9 @@ const packingListTable = `
     )
 `;
 
-// "Hackdash" databases
-const hackdashEvent = `
-    CREATE TABLE IF NOT EXISTS hackdash_event
+// "Alpacrash" databases
+const alpacrashEvent = `
+    CREATE TABLE IF NOT EXISTS alpacrash_event
     (
         id   INT         NOT NULL AUTO_INCREMENT,
         name VARCHAR(30) NOT NULL,
@@ -48,27 +48,28 @@ const hackdashEvent = `
     )
 `;
 
-const hackdashProject = `
-    CREATE TABLE IF NOT EXISTS hackdash_project
+const alpacrashProject = `
+    CREATE TABLE IF NOT EXISTS alpacrash_project
     (
-        id          INT         NOT NULL AUTO_INCREMENT,
-        event_id    INT         NOT NULL,
-        title       VARCHAR(40) NOT NULL,
-        img_name    VARCHAR(50) NOT NULL,
-        description TEXT        NOT NULL,
-        FOREIGN KEY (event_id) REFERENCES hackdash_event (id),
+        id          INT          NOT NULL AUTO_INCREMENT,
+        event_id    INT          NOT NULL,
+        title       VARCHAR(40)  NOT NULL,
+        img_name    VARCHAR(50)  NOT NULL,
+        description TEXT         NOT NULL,
+        link        VARCHAR(100) NOT NULL,
+        FOREIGN KEY (event_id) REFERENCES alpacrash_event (id),
         PRIMARY KEY (id)
     )
 `;
 
-const hackdashUsers = `
-    CREATE TABLE IF NOT EXISTS hackdash_users
+const alpacrashUsers = `
+    CREATE TABLE IF NOT EXISTS alpacrash_users
     (
         id         INT NOT NULL AUTO_INCREMENT,
         user_id    INT NOT NULL,
         project_id INT NOT NULL,
         FOREIGN KEY (user_id) REFERENCES users (id),
-        FOREIGN KEY (project_id) REFERENCES hackdash_project (id),
+        FOREIGN KEY (project_id) REFERENCES alpacrash_project (id),
         PRIMARY KEY (id)
     )
 `;
@@ -76,11 +77,11 @@ const hackdashUsers = `
 const questions = `
     CREATE TABLE IF NOT EXISTS questions
     (
-        id         INT NOT NULL AUTO_INCREMENT,
-        user_id    INT NOT NULL,
-        title      VARCHAR(50)  NOT NULL,
-        text       TEXT         NOT NULL,
-        topic      VARCHAR(24)  NOT NULL,
+        id      INT         NOT NULL AUTO_INCREMENT,
+        user_id INT         NOT NULL,
+        title   VARCHAR(50) NOT NULL,
+        text    TEXT        NOT NULL,
+        topic   VARCHAR(24) NOT NULL,
 
         FOREIGN KEY (user_id) REFERENCES users (id),
         PRIMARY KEY (id)
@@ -90,10 +91,10 @@ const questions = `
 const answers = `
     CREATE TABLE IF NOT EXISTS answers
     (
-        id         INT NOT NULL AUTO_INCREMENT,
-        user_id    INT NOT NULL,
-        question_id INT NOT NULL,
-        text       TEXT         NOT NULL,
+        id          INT  NOT NULL AUTO_INCREMENT,
+        user_id     INT  NOT NULL,
+        question_id INT  NOT NULL,
+        text        TEXT NOT NULL,
         FOREIGN KEY (question_id) REFERENCES questions (id),
         FOREIGN KEY (user_id) REFERENCES users (id),
         PRIMARY KEY (id)
@@ -129,7 +130,7 @@ const self = module.exports = {
         self.connect()
             .then(conn => {
                 console.log(`Connected to database: ${process.env.DBName}`);
-                for (const table of [userTable, lostItemsTable, packingListTable, hackdashEvent, hackdashProject, hackdashUsers, questions, answers]) {
+                for (const table of [userTable, lostItemsTable, packingListTable, alpacrashEvent, alpacrashProject, alpacrashUsers, questions, answers]) {
                     conn.query(table)
                         .catch(err => {
                             console.error('Could not create table', err);
@@ -138,17 +139,6 @@ const self = module.exports = {
                 }
                 conn.end();
             })
-    },
-
-    /**
-     * Verifies email by MX DNS record
-     */
-    verifyEmail: (email) => {
-        const domain = email.split("@")[1];
-        dns.resolve(domain, "MX", (err, addresses) => {
-            if (err) return false;
-            else return addresses && addresses.length > 0;
-        });
     },
 
     /**
@@ -339,7 +329,7 @@ const self = module.exports = {
         if (req.session.isAdmin) {
             self.connect()
                 .then(conn => {
-                    conn.query("SELECT email, full_name, is_admin, is_verified, birthday FROM users")
+                    conn.query("SELECT id, email, full_name, is_admin, is_verified, birthday FROM users")
                         .then(res => {
                             resp.json(res);
                             conn.end();
@@ -574,21 +564,21 @@ const self = module.exports = {
     },
 
     //
-    // Hackdash
+    // Alpacrash
     //
     /**
-     * Adds new hackdash event
+     * Adds new alpacrash event
      * @param req
      * @param res
      */
-    addHackdashEvent: (req, res) => {
+    addAlpacrashEvent: (req, res) => {
         if (!req.session.loggedIn || !req.session.isVerified) {
             res.status(400).json({"success": false, "message": "Not allowed!"});
             return;
         }
         self.connect(res)
             .then(conn => {
-                conn.query("INSERT INTO hackdash_event (name, year) VALUES (?, ?)", [req.body.name, req.body.year])
+                conn.query("INSERT INTO alpacrash_event (name, year) VALUES (?, ?)", [req.body.name, req.body.year])
                     .then(_ => {
                         res.json({success: true});
                         conn.end();
@@ -602,14 +592,39 @@ const self = module.exports = {
     },
 
     /**
-     * Get all hackdash events
+     * Get all Alpacrash events
      * @param req
      * @param resp
      */
-    getHackdashEvents: (req, resp) => {
+    getAlpacrashEventNames: (req, resp) => {
         self.connect(resp)
             .then(conn => {
-                conn.query("SELECT * FROM hackdash_event")
+                conn.query("SELECT * FROM alpacrash_event")
+                    .then(res => {
+                        const rr = [];
+                        for (const evt of res)
+                            if (!rr.includes(evt.name)) rr.push(evt.name);
+
+                        resp.json(rr);
+                        conn.end();
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        resp.status(400).json({success: false, message: "An error occurred!"});
+                        conn.end();
+                    })
+            })
+    },
+
+    /**
+     * Get all events
+     * @param req
+     * @param resp
+     */
+    getAlpacrashEvents: (req, resp) => {
+        self.connect(resp)
+            .then(conn => {
+                conn.query("SELECT * FROM alpacrash_event")
                     .then(res => {
                         resp.json(res);
                         conn.end();
@@ -623,23 +638,56 @@ const self = module.exports = {
     },
 
     /**
-     * Adds new hackdash project
+     * Get all years in which the event took place
+     * @param req
+     * @param resp
+     */
+    getAlpacrashEventYears: (req, resp) => {
+        self.connect(resp)
+            .then(conn => {
+                conn.query("SELECT * FROM alpacrash_event WHERE name LIKE ? ORDER BY year DESC", [req.query.event])
+                    .then(res => {
+                        resp.json(res);
+                        conn.end();
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        resp.status(400).json({success: false, message: "An error occurred!"});
+                        conn.end();
+                    })
+            })
+    },
+
+    /**
+     * Adds new Alpacrash project
      * @param req
      * @param res
      */
-    addHackdashProject: (req, res) => {
+    addAlpacrashProject: (req, res) => {
         if (!req.session.loggedIn || !req.session.isVerified) {
             res.status(400).json({"success": false, "message": "Not allowed!"});
             return;
         }
         const body = req.body;
-        // TODO: File upload
+        const allowedTypes = ['jpg', 'jpeg', 'png', 'webm'];
+        let hasImage = Boolean(req.files);
+        let image, imageType;
+        if (hasImage) {
+            image = req.files.img;
+            imageType = image.name.split('.').reverse()[0];
+        }
+        if (hasImage && !allowedTypes.includes(imageType.toLowerCase())) {
+            res.status(400).json({success: false, message: "File type not allowed!"});
+            return;
+        }
         self.connect(res)
             .then(conn => {
-                conn.query("INSERT INTO hackdash_project (event_id, title, img_name, `description`) VALUES (?,?,?,?)",
-                    [body.event_id, body.title, body.img_name, body.description]
+                conn.query("INSERT INTO alpacrash_project (event_id, title, img_name, `description`, link) VALUES (?,?,?,?,?)",
+                    [body.event_id, body.title, hasImage ? image.name : 'placeholder.jpg', body.description, body.link]
                 )
-                    .then(_ => {
+                    .then(r => {
+                        if (hasImage) image.mv(`./uploads/dashhack/${image.name}`);
+                        conn.query("INSERT INTO alpacrash_users (user_id, project_id) VALUE (?,?)", [req.session.uid, r.insertId]);
                         res.json({success: true});
                         conn.end();
                     })
@@ -656,10 +704,10 @@ const self = module.exports = {
      * @param req
      * @param resp
      */
-    getHackdashProjects: (req, resp) => {
+    getAlpacrashProjects: (req, resp) => {
         self.connect(resp)
             .then(conn => {
-                conn.query("SELECT * FROM hackdash_projects")
+                conn.query("SELECT * FROM alpacrash_project")
                     .then(res => {
                         resp.json(res);
                         conn.end();
@@ -677,13 +725,21 @@ const self = module.exports = {
      * @param req
      * @param resp
      */
-    getHackdashEventProjects: (req, resp) => {
+    getAlpacrashEventYearProjects: (req, resp) => {
         self.connect(resp)
             .then(conn => {
-                conn.query("SELECT * FROM hackdash_projects WHERE event_id = ?", [req.query.event_id])
-                    .then(res => {
-                        resp.json(res);
-                        conn.end();
+                conn.query("SELECT id FROM alpacrash_event WHERE name LIKE ? AND year = ? LIMIT 1", [req.query.name, req.query.year])
+                    .then(evt_id => {
+                        conn.query("SELECT * FROM alpacrash_project WHERE event_id = ?", [evt_id[0].id])
+                            .then(res => {
+                                resp.json(res);
+                                conn.end();
+                            })
+                            .catch(err => {
+                                console.error(err);
+                                resp.status(400).json({success: false, message: "Unknown event"});
+                                conn.end();
+                            })
                     })
                     .catch(err => {
                         console.error(err);
@@ -694,19 +750,106 @@ const self = module.exports = {
     },
 
     /**
-     * Adds user to hackdash project
+     * Get specific project
+     * @param req
+     * @param resp
+     */
+    getAlpacrashProject: (req, resp) => {
+        self.connect(resp)
+            .then(conn => {
+                conn.query("SELECT id FROM alpacrash_event WHERE name LIKE ? AND year = ? LIMIT 1", [req.query.name, req.query.year])
+                    .then(evt_id => {
+                        conn.query("SELECT * FROM alpacrash_project WHERE event_id = ? AND title = ? LIMIT 1", [evt_id[0].id, req.query.title])
+                            .then(res => {
+                                resp.json(res);
+                                conn.end();
+                            })
+                            .catch(err => {
+                                console.error(err);
+                                resp.status(400).json({success: false, message: "Unknown project"});
+                                conn.end();
+                            })
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        resp.status(400).json({success: false, message: "An error occurred!"});
+                        conn.end();
+                    })
+            })
+    },
+
+    /**
+     * Update alpacrash project
+     * @param req
+     * @param resp
+     */
+    updateAlpacrashProject: (req, resp) => {
+        if (!req.session.isVerified || !req.session.loggedIn) {
+            resp.status(400).json({success: false, message: "Not allowed!"});
+            return;
+        }
+        const body = req.body;
+        self.connect(resp)
+            .then(conn => {
+                conn.query(`SELECT *
+                            FROM alpacrash_event
+                                     LEFT JOIN alpacrash_project ap on alpacrash_event.id = ap.event_id
+                                     LEFT JOIN alpacrash_users au on ap.id = au.project_id
+                            WHERE year = ?
+                              AND name = ?
+                              AND title = ?
+                              AND user_id = ?`,
+                    [body.year, body.event, body.project, req.session.uid])
+                    .then(res => {
+                        if (!res) return;
+                        let updateString = '';
+                        let updateParams = [];
+                        if (body.title) {
+                            updateString += updateString ? 'AND title = ?' : 'title = ?';
+                            updateParams.push(body.title);
+                        }
+                        if (body.description) {
+                            updateString += updateString ? 'AND description = ?' : 'description = ?';
+                            updateParams.push(body.description);
+                        }
+                        if (body.link) {
+                            updateString += updateString ? 'AND link = ?' : 'link = ?';
+                            updateParams.push(body.link);
+                        }
+                        updateParams.push(res[0].project_id);
+                        conn.query(`UPDATE alpacrash_project SET ${updateString} WHERE id = ?`, updateParams)
+                            .then(_ => {
+                                resp.json({success: true});
+                                conn.end();
+                            })
+                            .catch(err => {
+                                console.error(err);
+                                resp.status(400).json({success: false, message: "An error occurred!"});
+                                conn.end();
+                            })
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        resp.status(400).json({success: false, message: "Wrong parameters!"});
+                        conn.end();
+                    })
+            })
+    },
+
+    /**
+     * Adds user to Alpacrash project
      * @param req
      * @param res
      */
-    addHackdashUser: (req, res) => {
+    addAlpacrashUser: (req, res) => {
         if (!req.session.loggedIn || !req.session.isVerified) {
             res.status(400).json({"success": false, "message": "Not allowed!"});
             return;
         }
         self.connect(res)
             .then(conn => {
-                conn.query("INSERT INTO hackdash_users (user_id, project_id) VALUES (?,?)",
-                    [req.session.uid, req.body.project_id]
+                conn.query("INSERT INTO alpacrash_users (user_id, project_id) VALUES (?,?)",
+                    [req.body.user_id, req.body.project_id]
                 )
                     .then(_ => {
                         res.json({success: true});
@@ -721,16 +864,78 @@ const self = module.exports = {
     },
 
     /**
+     * Get all users
+     * @param req
+     * @param resp
+     */
+    getAlpacrashUsers: (req, resp) => {
+        self.connect(resp)
+            .then(conn => {
+                conn.query("SELECT * FROM alpacrash_users")
+                    .then(res => {
+                        resp.json(res);
+                        conn.end();
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        resp.status(400).json({success: false, message: "An error occurred!"});
+                        conn.end();
+                    })
+            })
+    },
+
+    /**
      * Get all projects of event
      * @param req
      * @param resp
      */
-    getHackdashProjectUser: (req, resp) => {
+    getAlpacrashProjectUser: (req, resp) => {
         self.connect(resp)
             .then(conn => {
-                conn.query("SELECT * FROM hackdash_users WHERE project_id = ?", [req.query.project_id])
+                const body = req.query;
+                conn.query(`SELECT *
+                            FROM alpacrash_event
+                                     LEFT JOIN alpacrash_project ap on alpacrash_event.id = ap.event_id
+                                     LEFT JOIN alpacrash_users au on ap.id = au.project_id
+                                     LEFT JOIN users u on au.user_id = u.id
+                            WHERE year = ?
+                              AND name = ?
+                              AND title = ?`,
+                    [body.year, body.event, body.project]
+                )
                     .then(res => {
                         resp.json(res);
+                        conn.end();
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        resp.status(400).json({success: false, message: "An error occurred!"});
+                        conn.end();
+                    })
+            })
+    },
+
+    /**
+     *
+     * @param req
+     * @param resp
+     */
+    checkAlpacrashUser: (req, resp) => {
+        self.connect(resp)
+            .then(conn => {
+                const body = req.query;
+                conn.query(`SELECT *
+                            FROM alpacrash_event
+                                     LEFT JOIN alpacrash_project ap on alpacrash_event.id = ap.event_id
+                                     LEFT JOIN alpacrash_users au on ap.id = au.project_id
+                            WHERE year = ?
+                              AND name = ?
+                              AND title = ?
+                              AND user_id = ?`,
+                    [body.year, body.event, body.project, req.session.uid]
+                )
+                    .then(res => {
+                        resp.json({isContrib: Boolean(res)});
                         conn.end();
                     })
                     .catch(err => {
@@ -754,8 +959,8 @@ const self = module.exports = {
         self.connect(res)
             .then(conn => {
                 conn.query("INSERT INTO questions (user_id, title, text, topic) VALUES (?,?,?,?)",
-                [req.session.uid, req.body.title, req.body.text, req.body.topic]
-            )
+                    [req.session.uid, req.body.title, req.body.text, req.body.topic]
+                )
                     .then(_ => {
                         res.json({success: true});
                         conn.end();
@@ -802,8 +1007,8 @@ const self = module.exports = {
         self.connect(res)
             .then(conn => {
                 conn.query("INSERT INTO questions (user_id, question_id, text) VALUES (?,?,?)",
-                [req.session.uid, req.body.question_id, req.body.text]
-            )
+                    [req.session.uid, req.body.question_id, req.body.text]
+                )
                     .then(_ => {
                         resp.redirect("/nachhilfe/start/");
                         //res.json({success: true});

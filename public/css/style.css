@@ -37,7 +37,7 @@ body {
 }
 
 body {
-  background: url("/assets/images/default-background.png") repeat;
+    background: url("/assets/images/default-background.png") repeat;
 }
 
 .navigation .nav {
@@ -49,7 +49,7 @@ body {
     margin-top: 0;
     box-shadow: 0 0 4px #cecece;
     z-index: 5;
-  }
+}
 
 @media screen and (min-width: 900px) {
 
@@ -123,8 +123,8 @@ body {
 }
 
 .video-container {
-  max-width: 100%;
-  max-height: 100%;
+    max-width: 100%;
+    max-height: 100%;
 }
 
 .button.primary {

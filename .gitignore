@@ -2,9 +2,11 @@ node_modules
 .idea/
 
 uploads/lostItems/*
+uploads/alpacrash/*
 
 package-lock.json
 yarn.lock
+yarn-error.log
 
 .env
 

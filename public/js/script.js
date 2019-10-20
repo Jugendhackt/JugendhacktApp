@@ -16,6 +16,12 @@ const routes = [
     {path: "/badges", component: httpVueLoader("views/badges.vue")},
     {path: "/test", component: httpVueLoader("views/testing.vue")},
     {path: "/info", component: httpVueLoader("views/infos.vue")},
+    {path: "/alpacrash", component: httpVueLoader("views/alpacrash/index.vue")},
+    {path: "/alpacrash/debug", component: httpVueLoader("views/alpacrash/debug.vue")},
+    {path: "/alpacrash/:event/creator", component: httpVueLoader("views/alpacrash/creator.vue")},
+    {path: "/alpacrash/:event", component: httpVueLoader("views/alpacrash/event.vue")},
+    {path: "/alpacrash/:event/:year", component: httpVueLoader("views/alpacrash/event-year.vue")},
+    {path: "/alpacrash/:event/:year/:project", component: httpVueLoader("views/alpacrash/project.vue")},
     {path: "/404", component: httpVueLoader("views/404.vue")},
     {path: "*", component: httpVueLoader("views/404.vue")},
     {
