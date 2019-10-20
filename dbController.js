@@ -962,8 +962,7 @@ const self = module.exports = {
                     [req.session.uid, req.body.title, req.body.text, req.body.topic]
                 )
                     .then(_ => {
-                        res.redirect("/nachhilfe/start/");
-                        //res.json({success: true});
+                        res.json({success: true});
                         conn.end();
                     })
                     .catch(err => {
