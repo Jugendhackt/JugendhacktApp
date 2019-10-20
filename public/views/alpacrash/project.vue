@@ -42,7 +42,9 @@
                     </form>
                 </div>
             </div>
-
+            <div>
+                Contributors: <i v-for="contrib in contributors" class="project-contrib">{{contrib.full_name}}</i>
+            </div>
         </div>
         <div class="alpacrash-nav-btn">
             <img class="prev" alt="Prev" src="/assets/icons/arrow-down.svg" :class="{ notAct : projectI === 0}"
@@ -52,6 +54,7 @@
             <img class="next" alt="Next" src="/assets/icons/arrow-down.svg"
                  :class="{ notAct : projectI >= projects.length - 1}" @click="nextEvent()">
         </div>
+
     </div>
 </template>
 
@@ -204,9 +207,13 @@
             getProjectUsers() {
                 this.$root.loading = true;
                 const xhr = new XMLHttpRequest();
+                xhr.responseType = 'json';
                 xhr.onload = () => {
-                    // TODO: idk
-                }
+                    if (xhr.response)
+                        this.contributors = xhr.response;
+                };
+                xhr.open("GET", `/alpacrash/users?event=${this.$route.params.event}&year=${this.$route.params.year}&project=${this.$route.params.project}`)
+                xhr.send();
             },
             isProjectContributor() {
                 const xhr = new XMLHttpRequest();
@@ -232,6 +239,7 @@
             this.getProject();
             this.getProjects();
             this.isProjectContributor();
+            this.getProjectUsers();
         },
     }
 </script>
@@ -284,6 +292,10 @@
     .project-desc-display {
         display: flex;
         flex-flow: row wrap;
+    }
+
+    .project-contrib {
+        margin-right: 5px;
     }
 
     .edit-pen {

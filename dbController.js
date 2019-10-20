@@ -892,7 +892,17 @@ const self = module.exports = {
     getAlpacrashProjectUser: (req, resp) => {
         self.connect(resp)
             .then(conn => {
-                conn.query("SELECT * FROM alpacrash_users WHERE project_id = ?", [req.query.project_id])
+                const body = req.query;
+                conn.query(`SELECT *
+                            FROM alpacrash_event
+                                     LEFT JOIN alpacrash_project ap on alpacrash_event.id = ap.event_id
+                                     LEFT JOIN alpacrash_users au on ap.id = au.project_id
+                                     LEFT JOIN users u on au.user_id = u.id
+                            WHERE year = ?
+                              AND name = ?
+                              AND title = ?`,
+                    [body.year, body.event, body.project]
+                )
                     .then(res => {
                         resp.json(res);
                         conn.end();
