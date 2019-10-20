@@ -808,6 +808,14 @@ const self = module.exports = {
                             updateString += updateString ? 'AND title = ?' : 'title = ?';
                             updateParams.push(body.title);
                         }
+                        if (body.description) {
+                            updateString += updateString ? 'AND description = ?' : 'description = ?';
+                            updateParams.push(body.description);
+                        }
+                        if (body.link) {
+                            updateString += updateString ? 'AND link = ?' : 'link = ?';
+                            updateParams.push(body.link);
+                        }
                         updateParams.push(res[0].project_id);
                         conn.query(`UPDATE alpacrash_project SET ${updateString} WHERE id = ?`, updateParams)
                             .then(_ => {
