@@ -685,8 +685,9 @@ const self = module.exports = {
                 conn.query("INSERT INTO alpacrash_project (event_id, title, img_name, `description`, link) VALUES (?,?,?,?,?)",
                     [body.event_id, body.title, hasImage ? image.name : 'placeholder.jpg', body.description, body.link]
                 )
-                    .then(_ => {
+                    .then(r => {
                         if (hasImage) image.mv(`./uploads/dashhack/${image.name}`);
+                        conn.query("INSERT INTO alpacrash_users (user_id, project_id) VALUE (?,?)", [req.session.uid, r.insertId]);
                         res.json({success: true});
                         conn.end();
                     })
@@ -778,6 +779,56 @@ const self = module.exports = {
     },
 
     /**
+     * Update alpacrash project
+     * @param req
+     * @param resp
+     */
+    updateAlpacrashProject: (req, resp) => {
+        if (!req.session.isVerified || !req.session.loggedIn) {
+            resp.status(400).json({success: false, message: "Not allowed!"});
+            return;
+        }
+        const body = req.body;
+        self.connect(resp)
+            .then(conn => {
+                conn.query(`SELECT *
+                            FROM alpacrash_event
+                                     LEFT JOIN alpacrash_project ap on alpacrash_event.id = ap.event_id
+                                     LEFT JOIN alpacrash_users au on ap.id = au.project_id
+                            WHERE year = ?
+                              AND name = ?
+                              AND title = ?
+                              AND user_id = ?`,
+                    [body.year, body.event, body.project, req.session.uid])
+                    .then(res => {
+                        if (!res) return;
+                        let updateString = '';
+                        let updateParams = [];
+                        if (body.title) {
+                            updateString += updateString ? 'AND title = ?' : 'title = ?';
+                            updateParams.push(body.title);
+                        }
+                        updateParams.push(res[0].project_id);
+                        conn.query(`UPDATE alpacrash_project SET ${updateString} WHERE id = ?`, updateParams)
+                            .then(_ => {
+                                resp.json({success: true});
+                                conn.end();
+                            })
+                            .catch(err => {
+                                console.error(err);
+                                resp.status(400).json({success: false, message: "An error occurred!"});
+                                conn.end();
+                            })
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        resp.status(400).json({success: false, message: "Wrong parameters!"});
+                        conn.end();
+                    })
+            })
+    },
+
+    /**
      * Adds user to Alpacrash project
      * @param req
      * @param res
@@ -836,6 +887,37 @@ const self = module.exports = {
                 conn.query("SELECT * FROM alpacrash_users WHERE project_id = ?", [req.query.project_id])
                     .then(res => {
                         resp.json(res);
+                        conn.end();
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        resp.status(400).json({success: false, message: "An error occurred!"});
+                        conn.end();
+                    })
+            })
+    },
+
+    /**
+     *
+     * @param req
+     * @param resp
+     */
+    checkAlpacrashUser: (req, resp) => {
+        self.connect(resp)
+            .then(conn => {
+                const body = req.query;
+                conn.query(`SELECT *
+                            FROM alpacrash_event
+                                     LEFT JOIN alpacrash_project ap on alpacrash_event.id = ap.event_id
+                                     LEFT JOIN alpacrash_users au on ap.id = au.project_id
+                            WHERE year = ?
+                              AND name = ?
+                              AND title = ?
+                              AND user_id = ?`,
+                    [body.year, body.event, body.project, req.session.uid]
+                )
+                    .then(res => {
+                        resp.json({isContrib: Boolean(res)});
                         conn.end();
                     })
                     .catch(err => {
