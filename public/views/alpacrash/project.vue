@@ -44,9 +44,14 @@
             </div>
 
         </div>
-        <!-- TODO: Fix nav -->
-        <img class="back" alt="Back" src="/assets/icons/arrow-down.svg"
-             @click="$router.push(`/alpacrash/${$route.params.event}`)">
+        <div class="alpacrash-nav-btn">
+            <img class="prev" alt="Prev" src="/assets/icons/arrow-down.svg" :class="{ notAct : projectI === 0}"
+                 @click="prevEvent()">
+            <img class="back" alt="Back" src="/assets/icons/arrow-down.svg"
+                 @click="$router.push(`/alpacrash/${$route.params.event}/${$route.params.year}`)">
+            <img class="next" alt="Next" src="/assets/icons/arrow-down.svg"
+                 :class="{ notAct : projectI >= projects.length - 1}" @click="nextEvent()">
+        </div>
     </div>
 </template>
 
@@ -57,7 +62,9 @@
                 project: {},
                 contributors: [],
                 isContrib: false,
-                projectChange: {}
+                projectChange: {},
+                projects: [],
+                projectI: -1,
             }
         },
         methods: {
@@ -176,6 +183,21 @@
                 xhr.open("GET", `/alpacrash/project?name=${this.$route.params.event}&year=${this.$route.params.year}&title=${this.$route.params.project}`);
                 xhr.send();
             },
+            getProjects() {
+                this.$root.loading = true;
+                const xhr = new XMLHttpRequest();
+                xhr.onload = () => {
+                    const resp = xhr.response;
+                    const projects = [];
+                    for (const i in resp) projects.push(resp[i].title);
+                    this.projects = projects;
+                    this.projectI = this.projects.indexOf(this.$route.params.project);
+                    this.$root.loading = false;
+                };
+                xhr.responseType = "json";
+                xhr.open('GET', `/alpacrash/projects?name=${this.$route.params.event}&year=${this.$route.params.year}`);
+                xhr.send();
+            },
             getImagePath() {
                 return `/alpacrash/images/${this.project.img_name}`;
             },
@@ -192,10 +214,23 @@
                 xhr.onload = () => this.isContrib = xhr.response.isContrib;
                 xhr.open("GET", `/alpacrash/user?event=${this.$route.params.event}&year=${this.$route.params.year}&project=${this.$route.params.project}`);
                 xhr.send();
+            },
+            prevEvent() {
+                if (this.projectI - 1 >= 0) {
+                    this.$router.push(`/alpacrash/${this.$route.params.event}/${this.$route.params.year}/${this.projects[this.projectI - 1]}`);
+                    this.$router.go();
+                }
+            },
+            nextEvent() {
+                if (this.projectI + 1 < this.projects.length) {
+                    this.$router.push(`/alpacrash/${this.$route.params.event}/${this.$route.params.year}/${this.projects[this.projectI + 1]}`);
+                    this.$router.go();
+                }
             }
         },
         beforeMount() {
             this.getProject();
+            this.getProjects();
             this.isProjectContributor();
         },
     }
@@ -251,8 +286,40 @@
         flex-flow: row wrap;
     }
 
-
     .edit-pen {
         cursor: pointer;
+    }
+
+    /* Back button */
+    .alpacrash-nav-btn {
+        position: fixed;
+        bottom: 10px;
+        z-index: 1;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .alpacrash-nav-btn img {
+        cursor: pointer;
+        display: block;
+        background: #00a5dc;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        margin: 5px;
+    }
+
+    .prev {
+        transform: rotate(90deg);
+    }
+
+    .next {
+        transform: rotate(270deg);
+    }
+
+    .notAct {
+        background: #444 !important;
+        cursor: default !important;
     }
 </style>
