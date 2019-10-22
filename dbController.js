@@ -392,7 +392,6 @@ const self = module.exports = {
                                     req.session.email = body.email;
                                     req.session.loggedIn = false;
                                     req.session.isAdmin = false;
-                                    // TODO: Investigate wrong response although update succeeds
                                     resp.json({success: true});
                                     conn.end();
                                 })
@@ -403,8 +402,7 @@ const self = module.exports = {
                                 })
                         });
                     })
-            }
-            resp.status(403).json({success: false, message: "Operation not allowed"});
+            } else resp.status(403).json({success: false, message: "Operation not allowed"});
         } else resp.status(400).json({success: false, message: "Wrong number of parameters"});
     },
 
