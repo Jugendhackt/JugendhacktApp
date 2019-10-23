@@ -204,7 +204,8 @@ class userController extends dbController {
         if (this.validateRequest(req, res, ['email', 'full_name', 'birthday'])) {
             if (this.auth(req, res, false)) {
                 this.connect(res, conn => {
-                    bCrypt.hash(req.body.password, 12, (err, pwd) => {
+                    const b = req.body;
+                    bCrypt.hash(b.password, 12, (err, pwd) => {
                         if (err) {
                             console.error(err);
                             conn.end();
@@ -213,12 +214,44 @@ class userController extends dbController {
                         }
                         let updateString = '';
                         let updateParams = [];
-                        if (req.body.password) {
-                            updateString = 'UPDATE users SET '
+                        if (b.password) {
+                            updateString = 'UPDATE users SET email = ? AND password = ? AND full_name = ? AND birthday = ? WHERE email = ? AND id = ?';
+                            updateParams = [b.email, pwd, b.full_name, b.birthday, req.session.email, req.session.uid];
                         } else {
-
+                            updateString = 'UPDATE users SET email = ? AND full_name = ? AND birthday = ? WHERE email = ? AND id = ?';
+                            updateParams = [b.email, b.full_name, b.birthday, req.session.email, req.session.uid];
                         }
+                        conn.query(updateString, updateParams)
+                            .then(_ => {
+                                req.session.email = b.email;
+                                res.json({success: true});
+                                conn.end();
+                            })
+                            .catch(err => {
+                                console.error(err);
+                                res.status(400).json({success: false, message: "Could not update user details"});
+                                conn.end();
+                            })
                     })
+                })
+            }
+        }
+    }
+
+    verifyUser(req, res) {
+        if (this.validateRequest(req, res, ['email'])) {
+            if (this.auth(req, res, true, true)) {
+                this.connect(res, conn => {
+                    conn.query("UPDATE users SET is_verified = true WHERE email = ?")
+                        .then(_ => {
+                            conn.end();
+                            res.json({success: true});
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            res.status(400).json({success: false, message: "User does not exist"});
+                            conn.end();
+                        })
                 })
             }
         }
