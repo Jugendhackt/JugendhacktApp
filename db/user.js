@@ -200,6 +200,11 @@ class userController extends dbController {
         }
     }
 
+    /**
+     * Updates the users credentials
+     * @param req
+     * @param res
+     */
     updateUserCredentials(req, res) {
         if (this.validateRequest(req, res, ['email', 'full_name', 'birthday'])) {
             if (this.auth(req, res, false)) {
@@ -212,6 +217,7 @@ class userController extends dbController {
                             res.json({success: false, message: "Error creating password hash"});
                             return;
                         }
+                        // TODO: Dns MX check
                         let updateString = '';
                         let updateParams = [];
                         if (b.password) {
@@ -224,7 +230,7 @@ class userController extends dbController {
                         conn.query(updateString, updateParams)
                             .then(_ => {
                                 req.session.email = b.email;
-                                res.json({success: true});
+                                res.redirect('/user/logout');
                                 conn.end();
                             })
                             .catch(err => {
@@ -238,6 +244,11 @@ class userController extends dbController {
         }
     }
 
+    /**
+     * Verifies the user
+     * @param req
+     * @param res
+     */
     verifyUser(req, res) {
         if (this.validateRequest(req, res, ['email'])) {
             if (this.auth(req, res, true, true)) {

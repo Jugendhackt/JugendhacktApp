@@ -8,7 +8,7 @@ user.get('/get', dbController.getUser);
 user.get('/getAll', dbController.getUsers);
 user.post('/register', dbController.addUser);
 user.post('/login', dbController.login);
-user.post('/logout', dbController.logout);
+user.get('/logout', dbController.logout);
 user.put('/updateAdmin', dbController.updateAdmin);
 user.put('/update', dbController.updateUserCredentials);
 user.put('/verify', dbController.verifyUser);

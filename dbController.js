@@ -483,7 +483,7 @@ const self = module.exports = {
                             })
                             .catch(err => {
                                 console.error(err);
-                                res.status(400).json({success: false, message: "Item not found", body: req.body});
+                                res.status(400).json({success: false, message: "Item not found"});
                                 conn.end();
                             })
                     })
