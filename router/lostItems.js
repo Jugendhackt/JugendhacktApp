@@ -1,8 +1,9 @@
 const express = require('express');
-const dbController = require('../dbController');
+const dbController = new (require('../db/lostandfound'))();
+
 const lostItems = express.Router();
-lostItems.get('/', dbController.getLostItems);
-lostItems.put('/', dbController.addLostItem);
-lostItems.delete('/', dbController.delLostItem);
+lostItems.get('/', dbController.get);
+lostItems.put('/', dbController.add);
+lostItems.delete('/', dbController.delete);
 
 module.exports = lostItems;

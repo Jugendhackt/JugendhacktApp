@@ -80,7 +80,7 @@ class lostAndFound extends dbController {
                         })
                         .catch(err => {
                             console.error(err);
-                            res.status(400).json({success: false, message: "Image does not exist"});
+                            res.status(400).json({success: false, message: "Item does not exist"});
                             conn.end();
                         })
                 })
@@ -88,3 +88,5 @@ class lostAndFound extends dbController {
         }
     }
 }
+
+module.exports = lostAndFound;
