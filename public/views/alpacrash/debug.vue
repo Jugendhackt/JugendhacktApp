@@ -142,7 +142,7 @@
             getProjects() {
                 const xhr = new XMLHttpRequest();
                 xhr.onload = () => this.projects = xhr.response;
-                xhr.open('GET', '/alpacrash/projects/all');
+                xhr.open('GET', '/alpacrash/projects');
                 xhr.responseType = "json";
                 xhr.send();
             },

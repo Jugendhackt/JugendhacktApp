@@ -1,5 +1,5 @@
 const express = require('express');
-const dbController = require('../dbController');
+const dbController = new (require('../db/coach'))();
 const coach = express.Router();
 
 coach.get('/questions', dbController.getQuestions);

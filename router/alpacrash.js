@@ -1,19 +1,20 @@
 const express = require('express');
-const dbController = require('../dbController');
+const dbController = new (require('../db/alpacrash'))();
 const alpacrash = express.Router();
 
 // Events like: HH19, BER19, ...
-alpacrash.get('/all', dbController.getAlpacrashEvents);
-alpacrash.get('/all/names', dbController.getAlpacrashEventNames);
-alpacrash.get('/', dbController.getAlpacrashEventYears);
-alpacrash.post('/', dbController.addAlpacrashEvent);
+alpacrash.get('/', dbController.getEvents);
+alpacrash.post('/', dbController.addEvent);
+alpacrash.get('/names', dbController.getEventNames);
+alpacrash.get('/:event', dbController.getEventYears);
+
 
 // Project links
-alpacrash.get('/projects/all', dbController.getAlpacrashProjects);
-alpacrash.get('/project', dbController.getAlpacrashProject);
-alpacrash.put('/project', dbController.updateAlpacrashProject);
-alpacrash.get('/projects', dbController.getAlpacrashEventYearProjects);
-alpacrash.post('/projects', dbController.addAlpacrashProject);
+alpacrash.get('/projects', dbController.getProjects);  // Debug view
+alpacrash.get('/:event/:year/', dbController.getEventYearProjects);
+alpacrash.post('/:event/:year/', dbController.addProject);
+alpacrash.get('/:event/:year/:project', dbController.getProject);
+alpacrash.put('/:event/:year/:project', dbController.updateProject);
 
 alpacrash.get('/users/all', dbController.getAlpacrashUsers);
 alpacrash.get('/users', dbController.getAlpacrashProjectUser);

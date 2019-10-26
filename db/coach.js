@@ -5,6 +5,11 @@ class coach extends dbController {
         super();
     }
 
+    /**
+     * Get all questions
+     * @param req
+     * @param res
+     */
     getQuestions(req, res) {
         this.connect(res, conn => {
             conn.query(`SELECT questions.id, user_id, title, text, topic, users.full_name
@@ -22,6 +27,11 @@ class coach extends dbController {
         })
     }
 
+    /**
+     * Get all answers to a question
+     * @param req
+     * @param res
+     */
     getAnswers(req, res) {
         this.connect(res, conn => {
             conn.query("SELECT * FROM answers WHERE question_id = ?", [req.body.question_id])
@@ -37,6 +47,11 @@ class coach extends dbController {
         })
     }
 
+    /**
+     * Add a new question
+     * @param req
+     * @param res
+     */
     addQuestion(req, res) {
         if (this.validateRequest(req, res, ['title', 'text', 'topic'])) {
             if (this.auth(req, res)) {
@@ -57,6 +72,11 @@ class coach extends dbController {
         }
     }
 
+    /**
+     * Add a new answer to a question
+     * @param req
+     * @param res
+     */
     addAnswer(req, res) {
         if (this.validateRequest(req, res, ['question_id', 'text'])) {
             if (this.auth(req, res)) {

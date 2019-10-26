@@ -9,6 +9,8 @@ class dbController {
             password: process.env.DBPassword,
             database: process.env.DBName
         });
+        this.allowedTypes = ['jpg', 'jpeg', 'png', 'webm'];
+        this.uploadFolder = '../uploads/';
     }
 
     /**
@@ -64,6 +66,14 @@ class dbController {
         }
     }
 
+    /**
+     * Check for params in request
+     * @param req
+     * @param res
+     * @param params
+     * @param reqBody
+     * @returns {boolean}
+     */
     validateRequest(req, res, params, reqBody = true) {
         const body = reqBody ? req.body : req.query;
         let isValid = true;

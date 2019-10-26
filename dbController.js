@@ -631,6 +631,7 @@ const self = module.exports = {
                         console.error(err);
                         resp.status(400).json({success: false, message: "An error occurred!"});
                         conn.end();
+
                     })
             })
     },
@@ -684,7 +685,7 @@ const self = module.exports = {
                     [body.event_id, body.title, hasImage ? image.name : 'placeholder.jpg', body.description, body.link]
                 )
                     .then(r => {
-                        if (hasImage) image.mv(`./uploads/dashhack/${image.name}`);
+                        if (hasImage) image.mv(`./uploads/alpacrash/${image.name}`);
                         conn.query("INSERT INTO alpacrash_users (user_id, project_id) VALUE (?,?)", [req.session.uid, r.insertId]);
                         res.json({success: true});
                         conn.end();
@@ -815,6 +816,11 @@ const self = module.exports = {
                             updateParams.push(body.link);
                         }
                         updateParams.push(res[0].project_id);
+                        if (!updateString) {
+                            res.status(400).json({success: false, message: "Nothing to update!"})
+                            conn.end();
+                            return;
+                        }
                         conn.query(`UPDATE alpacrash_project SET ${updateString} WHERE id = ?`, updateParams)
                             .then(_ => {
                                 resp.json({success: true});

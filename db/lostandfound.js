@@ -4,8 +4,6 @@ const fs = require('fs');
 class lostAndFound extends dbController {
     constructor() {
         super();
-        this.uploadFolder = '../uploads/lostItems/';
-        this.allowedTypes = ['jpg', 'jpeg', 'png', 'webm'];
     }
 
     /**
@@ -46,7 +44,7 @@ class lostAndFound extends dbController {
                                 conn.query("INSERT INTO lost_items (location, what, img_name) VALUE (?,?,?)",
                                     [req.body.location, req.body.what, name])
                                     .then(_ => {
-                                        image.mv(this.uploadFolder + name);
+                                        image.mv(this.uploadFolder + 'lostItems/' +  name);
                                         res.json({success: true});
                                         conn.end();
                                     })
