@@ -58,7 +58,7 @@ class packingList extends dbController {
         if (this.validateRequest(req, res, ['id'])) {
             if (this.auth(req, res, true, true)) {
                 this.connect(res, conn => {
-                    conn.query("DELETE FROM packing_list WHERe id = ?", [req.body.id])
+                    conn.query("DELETE FROM packing_list WHERE id = ?", [req.body.id])
                         .then(_ => {
                             res.json({success: true});
                             conn.end();

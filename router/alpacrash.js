@@ -6,18 +6,18 @@ const alpacrash = express.Router();
 alpacrash.get('/all', dbController.getAlpacrashEvents);
 alpacrash.get('/all/names', dbController.getAlpacrashEventNames);
 alpacrash.get('/', dbController.getAlpacrashEventYears);
-alpacrash.put('/', dbController.addAlpacrashEvent);
+alpacrash.post('/', dbController.addAlpacrashEvent);
 
 // Project links
 alpacrash.get('/projects/all', dbController.getAlpacrashProjects);
 alpacrash.get('/project', dbController.getAlpacrashProject);
 alpacrash.put('/project', dbController.updateAlpacrashProject);
 alpacrash.get('/projects', dbController.getAlpacrashEventYearProjects);
-alpacrash.put('/projects', dbController.addAlpacrashProject);
+alpacrash.post('/projects', dbController.addAlpacrashProject);
 
 alpacrash.get('/users/all', dbController.getAlpacrashUsers);
 alpacrash.get('/users', dbController.getAlpacrashProjectUser);
 alpacrash.get('/user', dbController.checkAlpacrashUser);
-alpacrash.put('/users', dbController.addAlpacrashUser);
+alpacrash.post('/users', dbController.addAlpacrashUser);
 
 module.exports = alpacrash;
