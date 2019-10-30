@@ -36,7 +36,9 @@ class alpacrash extends dbController {
         this.connect(res, conn => {
             conn.query("SELECT name FROM alpacrash_event")
                 .then(eventNames => {
-                    res.json(eventNames);
+                    const flattenedEventNames = [];
+                    eventNames.forEach(e => flattenedEventNames.push(e.name));
+                    res.json(flattenedEventNames);
                     conn.end();
                 })
                 .catch(err => {
@@ -52,9 +54,31 @@ class alpacrash extends dbController {
      * @param req
      * @param res
      */
-    getEventYears(req, res) {
+    getEventYearNums(req, res) {
         this.connect(res, conn => {
             conn.query("SELECT year FROM alpacrash_event WHERE name LIKE ? ORDER BY year DESC", [req.params.event])
+                .then(years => {
+                    const flattenedYears = [];
+                    years.forEach(y => flattenedYears.push(y.year));
+                    res.json(flattenedYears);
+                    conn.end();
+                })
+                .catch(err => {
+                    console.error(err);
+                    res.status(400).json({success: false, message: "Could not get event years"});
+                    conn.end();
+                })
+        })
+    }
+
+    /**
+     * Get all event years data
+     * @param req
+     * @param res
+     */
+    getEventYears(req, res) {
+        this.connect(res, conn => {
+            conn.query("SELECT * FROM alpacrash_event WHERE name LIKE ? ORDER BY year DESC", [req.params.event])
                 .then(years => {
                     res.json(years);
                     conn.end();
@@ -251,7 +275,8 @@ class alpacrash extends dbController {
                           AND year = ?`,
                 [req.params.event, req.params.year])
                 .then(projects => {
-                    res.json(projects);
+                    if (projects[0].id !== null) res.json(projects);
+                    else res.json({});
                     conn.end();
                 })
                 .catch(err => {
@@ -284,15 +309,15 @@ class alpacrash extends dbController {
                     return;
                 }
                 this.connect(res, conn => {
-                    conn.query(`SELECT *
+                    conn.query(`SELECT alpacrash_event.id, title
                                 FROM alpacrash_event
                                          LEFT JOIN alpacrash_project ap ON alpacrash_event.id = ap.event_id
                                 WHERE name LIKE ?
                                   AND year = ?`,
-                        [params.name, params.year])
+                        [params.event, params.year])
                         .then(projects => {
-                            for (const i of projects) {
-                                if (projects[i].name === body.name) {
+                            for (const project of projects) {
+                                if (project.title === body.title) {
                                     res.status(400).json({
                                         success: false,
                                         message: "Project already exists in this years event!"
@@ -302,7 +327,7 @@ class alpacrash extends dbController {
                                 }
                             }
                             conn.query("INSERT INTO alpacrash_project (event_id, title, img_name, `description`, link) VALUES (?,?,?,?,?)",
-                                [projects[0].event_id, body.title, hasImage ? image.name : 'placeholder.jpg', body.description, body.link])
+                                [projects[0].id, body.title, hasImage ? image.name : 'placeholder.jpg', body.description, body.link])
                                 .then(r => {
                                     if (hasImage) image.mv(this.uploadFolder + 'alpacrash/' + imageName);
                                     this.addUserToProject(res, req.session.uid, r.insertId, conn);
@@ -313,6 +338,11 @@ class alpacrash extends dbController {
                                     conn.end();
                                 })
 
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            res.status(400).json({success: false, message: "Could not get projects!"});
+                            conn.end();
                         })
                 })
             }

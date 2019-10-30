@@ -6,7 +6,7 @@
                 <div>
                     <label for="event_id">Event: </label>
                     <select id="event_id" v-model="creatorForm.eventId">
-                        <option v-for="event in events" :value="event.id">{{event.name}}: {{event.year}}</option>
+                        <option v-for="event in events" :value="computeEventPath(event)">{{event.name}}: {{event.year}}</option>
                     </select>
                 </div>
                 <label for="project_title">Title:</label>
@@ -45,20 +45,19 @@
             getEvents() {
                 const xhr = new XMLHttpRequest();
                 xhr.onload = () => this.events = xhr.response;
-                xhr.open('GET', `/alpacrash/?event=${this.$route.params.event}`);
+                xhr.open('GET', `/alpacrash/${this.$route.params.event}`);
                 xhr.responseType = "json";
                 xhr.send();
             },
             addProject() {
                 const xhr = new XMLHttpRequest();
                 const formData = new FormData();
-                formData.append('event_id', this.creatorForm.eventId);
                 formData.append('title', this.creatorForm.title);
                 formData.append("img", document.getElementById("project_image").files[0]);
                 formData.append('description', this.creatorForm.description);
                 formData.append('link', this.creatorForm.link);
                 xhr.onload = () => console.log(xhr.response);
-                xhr.open("PUT", "/alpacrash/projects");
+                xhr.open("POST", `/alpacrash/${this.creatorForm.eventId}`);
                 xhr.responseType = 'json';
                 xhr.send(formData);
             },
@@ -71,6 +70,9 @@
                 xhr.open("GET", "/user/status");
                 xhr.responseType = "json";
                 xhr.send();
+            },
+            computeEventPath(event) {
+                return `${event.name}/${event.year}`;
             },
         },
 

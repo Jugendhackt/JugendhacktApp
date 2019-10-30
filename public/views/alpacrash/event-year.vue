@@ -39,22 +39,19 @@
                     this.$root.loading = false;
                 };
                 xhr.responseType = "json";
-                xhr.open('GET', `/alpacrash/projects?name=${this.$route.params.event}&year=${this.$route.params.year}`);
+                xhr.open('GET', `/alpacrash/${this.$route.params.event}/${this.$route.params.year}`);
                 xhr.send();
             },
             getYears() {
                 this.$root.loading = true;
                 const xhr = new XMLHttpRequest();
                 xhr.onload = () => {
-                    const resp = xhr.response;
-                    const years = [];
-                    for (const i in resp) years.push(resp[i].year);
-                    this.years = years.sort();
+                    this.years = xhr.response;
                     this.yearI = this.years.indexOf(parseInt(this.$route.params.year));
                     this.$root.loading = false;
                 };
                 xhr.responseType = "json";
-                xhr.open("GET", `/alpacrash/?event=${this.$route.params.event}`);
+                xhr.open("GET", `/alpacrash/names/${this.$route.params.event}`);
                 xhr.send();
             },
             openProject(p) {

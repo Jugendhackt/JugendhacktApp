@@ -23,7 +23,7 @@
                     this.events = xhr.response;
                     this.$root.loading = false;
                 };
-                xhr.open('GET', '/alpacrash/all');
+                xhr.open('GET', '/alpacrash/');
                 xhr.responseType = "json";
                 xhr.send();
             },
