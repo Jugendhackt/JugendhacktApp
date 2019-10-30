@@ -107,7 +107,7 @@ class alpacrash extends dbController {
      * @param req
      * @param res
      */
-    getProjects(req, res) {
+    getAllProjects(req, res) {
         this.connect(res, conn => {
             conn.query("SELECT * FROM alpacrash_project")
                 .then(projects => {
@@ -140,6 +140,28 @@ class alpacrash extends dbController {
             )
                 .then(projects => {
                     res.json(projects);
+                    conn.end();
+                })
+                .catch(err => {
+                    console.error(err);
+                    res.status(400).json({success: false, message: "Could not get project data!"});
+                    conn.end();
+                })
+        })
+    }
+
+    getProjectNames(req, res) {
+        const params = req.params;
+        this.connect(res, conn => {
+            conn.query(`SELECT ap.title
+                        FROM alpacrash_event
+                                 LEFT JOIN alpacrash_project ap ON alpacrash_event.id = ap.event_id
+                        WHERE year = ?
+                          AND name LIKE ?`,
+                [params.year, params.event]
+            )
+                .then(projectNames => {
+                    res.json(projectNames);
                     conn.end();
                 })
                 .catch(err => {
@@ -220,7 +242,7 @@ class alpacrash extends dbController {
      * @param req
      * @param res
      */
-    getEventYearProjects(req, res) {
+    getProjects(req, res) {
         this.connect(res, conn => {
             conn.query(`SELECT *
                         FROM alpacrash_event
@@ -297,7 +319,101 @@ class alpacrash extends dbController {
         }
     }
 
+    /**
+     * Get all contributors of a project
+     * @param req
+     * @param res
+     */
+    getProjectUsers(req, res) {
+        const params = req.params;
+        this.connect(res, conn => {
+            conn.query(`SELECT *
+                        FROM alpacrash_event
+                                 LEFT JOIN alpacrash_project ap ON alpacrash_event.id = ap.event_id
+                                 LEFT JOIN alpacrash_users au on ap.id = au.project_id
+                        WHERE year = ?
+                          AND name LIKE ?
+                          AND title = ?`,
+                [params.year, params.event, params.project]
+            )
+                .then(users => {
+                    res.json(users);
+                    conn.end();
+                })
+                .catch(err => {
+                    console.error(err);
+                    res.status(400).json({success: false, message: "Could not get project users!"});
+                    conn.end();
+                })
+        })
+    }
 
+    /**
+     * Get all verified users
+     * @param req
+     * @param res
+     */
+    getUsers(req, res) {
+        if (this.auth(req, res)) {
+            this.connect(res, conn => {
+                conn.query("SELECT * FROM users WHERE is_verified = true")
+                    .then(users => {
+                        res.json(users);
+                        conn.end();
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        res.status(400).json({success: false, message: "Could not get users!"});
+                        conn.end();
+                    })
+            });
+        }
+    }
+
+    /**
+     * Checks if user is project contributor
+     * @param req
+     * @param res
+     */
+    checkUser(req, res) {
+        this.connect(res, async conn => {
+            const params = req.params;
+            const isContrib = await this.checkUserIsContributor(params.event, params.year, params.project, req.session.uid, conn);
+            res.json({isContrib});
+            conn.end();
+        })
+    }
+
+    /**
+     * Adds new project contributor
+     * @param req
+     * @param res
+     */
+    addProjectUser(req, res) {
+        if (this.validateRequest(req, res, ['uid', 'pid'])) {
+            this.connect(res, async conn => {
+                const params = req.params;
+                const isContrib = await this.checkUserIsContributor(params.event, params.year, params.project, req.session.uid, conn);
+                if (isContrib) {
+                    this.addUserToProject(res, req.body.uid, req.body.pid, conn);
+                    res.json({success: true});
+                } else
+                    res.status(403).json({
+                        success: false,
+                        message: "Only project contributors are allowed to add new contributors!"
+                    });
+                conn.end();
+            })
+        }
+    }
+
+    /**
+     * Helper function adding an user to a project
+     * @param res
+     * @param uid
+     * @param pid
+     * @param conn
+     */
     addUserToProject(res, uid, pid, conn) {
         conn.query("INSERT INTO alpacrash_users (user_id, project_id) VALUE (?,?)", [uid, pid])
             .then(_ => {
@@ -309,6 +425,32 @@ class alpacrash extends dbController {
                 res.status(400).json({success: false, message: "Could not add user"});
                 conn.end();
             })
+    }
+
+    /**
+     * Helper function checking if user is project contributor
+     * @param event
+     * @param year
+     * @param project
+     * @param uid
+     * @param conn
+     */
+    checkUserIsContributor(event, year, project, uid, conn) {
+        conn.query(`SELECT *
+                    FROM alpacrash_event
+                             LEFT JOIN alpacrash_project ap on alpacrash_event.id = ap.event_id
+                             LEFT JOIN alpacrash_users au on ap.id = au.project_id
+                    WHERE year = ?
+                      AND name = ?
+                      AND title = ?
+                      AND user_id = ?`,
+            [year, event, project, uid])
+            .then(user => Boolean(user))
+            .catch(err => {
+                console.error(err);
+                return false
+            })
+
     }
 }
 
