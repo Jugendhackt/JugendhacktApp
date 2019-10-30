@@ -69,7 +69,7 @@
                 if (resp.success === false) alert(resp.message);
             }
         },
-        beforeMount() {
+        activated() {
             this.fetchPackingList();
             this.checkAdmin()
         }
