@@ -23,7 +23,9 @@
 <div id="app">
     <div class="loading" :class="{ hide: !loading}"><img src="/assets/icons/badges/SuperAlpaka.png" alt="..." width="64" height=74></div>
     <navigation></navigation>
-    <router-view id="component_view"></router-view>
+    <keep-alive>
+        <router-view id="component_view"></router-view>
+    </keep-alive>
 </div>
 <script src="js/script.js"></script>
 </body>
