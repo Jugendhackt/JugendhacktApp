@@ -275,7 +275,7 @@ class alpacrash extends dbController {
                           AND year = ?`,
                 [req.params.event, req.params.year])
                 .then(projects => {
-                    if (projects[0].id !== null) res.json(projects);
+                    if (Boolean(projects[0])) res.json(projects);
                     else res.json({});
                     conn.end();
                 })
@@ -337,7 +337,6 @@ class alpacrash extends dbController {
                                     res.status(400).json({success: false, message: "Could not add new project"});
                                     conn.end();
                                 })
-
                         })
                         .catch(err => {
                             console.error(err);
@@ -361,6 +360,7 @@ class alpacrash extends dbController {
                         FROM alpacrash_event
                                  LEFT JOIN alpacrash_project ap ON alpacrash_event.id = ap.event_id
                                  LEFT JOIN alpacrash_users au on ap.id = au.project_id
+                                 LEFT JOIN users u on au.user_id = u.id
                         WHERE year = ?
                           AND name LIKE ?
                           AND title = ?`,
@@ -405,10 +405,11 @@ class alpacrash extends dbController {
      * @param req
      * @param res
      */
-    checkUser(req, res) {
-        this.connect(res, async conn => {
+    async checkUser(req, res) {
+        await this.connect(res, async conn => {
             const params = req.params;
             const isContrib = await this.checkUserIsContributor(params.event, params.year, params.project, req.session.uid, conn);
+            console.log(isContrib);
             res.json({isContrib});
             conn.end();
         })
@@ -475,7 +476,10 @@ class alpacrash extends dbController {
                       AND title = ?
                       AND user_id = ?`,
             [year, event, project, uid])
-            .then(user => Boolean(user))
+            .then(user => {
+                console.log(Boolean(user));
+                return Boolean(user)
+            })
             .catch(err => {
                 console.error(err);
                 return false

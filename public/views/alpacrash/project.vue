@@ -127,7 +127,7 @@
                         this.$router.go();
                     }
                 };
-                xhr.open("PUT", "/alpacrash/project");
+                xhr.open("PUT", `/alpacrash/${this.$route.params.event}/${this.$route.params.year}/${this.$route.params.project}`);
                 xhr.send(formData);
             },
             submitDescChange() {
@@ -147,7 +147,7 @@
 
                     }
                 };
-                xhr.open("PUT", "/alpacrash/project");
+                xhr.open("PUT", `/alpacrash/${this.$route.params.event}/${this.$route.params.year}/${this.$route.params.project}`);
                 xhr.send(formData);
             },
             submitLinkChange() {
@@ -167,7 +167,7 @@
 
                     }
                 };
-                xhr.open("PUT", "/alpacrash/project");
+                xhr.open("PUT", `/alpacrash/${this.$route.params.event}/${this.$route.params.year}/${this.$route.params.project}`);
                 xhr.send(formData);
             },
             getProject() {
@@ -183,7 +183,7 @@
                     this.projectChange = this.project;
                 };
                 xhr.responseType = 'json';
-                xhr.open("GET", `/alpacrash/project?name=${this.$route.params.event}&year=${this.$route.params.year}&title=${this.$route.params.project}`);
+                xhr.open("GET", `/alpacrash/${this.$route.params.event}/${this.$route.params.year}/${this.$route.params.project}`);
                 xhr.send();
             },
             getProjects() {
@@ -198,7 +198,7 @@
                     this.$root.loading = false;
                 };
                 xhr.responseType = "json";
-                xhr.open('GET', `/alpacrash/projects?name=${this.$route.params.event}&year=${this.$route.params.year}`);
+                xhr.open('GET', `/alpacrash/${this.$route.params.event}/${this.$route.params.year}`);
                 xhr.send();
             },
             getImagePath() {
@@ -212,14 +212,17 @@
                     if (xhr.response)
                         this.contributors = xhr.response;
                 };
-                xhr.open("GET", `/alpacrash/users?event=${this.$route.params.event}&year=${this.$route.params.year}&project=${this.$route.params.project}`)
+                xhr.open("GET", `/alpacrash/${this.$route.params.event}/${this.$route.params.year}/${this.$route.params.project}/users`);
                 xhr.send();
             },
             isProjectContributor() {
                 const xhr = new XMLHttpRequest();
                 xhr.responseType = 'json';
-                xhr.onload = () => this.isContrib = xhr.response.isContrib;
-                xhr.open("GET", `/alpacrash/user?event=${this.$route.params.event}&year=${this.$route.params.year}&project=${this.$route.params.project}`);
+                xhr.onload = () => {
+                    console.log(xhr.response);
+                    this.isContrib = xhr.response.isContrib;
+                };
+                xhr.open("GET", `/alpacrash/${this.$route.params.event}/${this.$route.params.year}/${this.$route.params.project}/user`);
                 xhr.send();
             },
             prevEvent() {
