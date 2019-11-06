@@ -408,10 +408,17 @@ class alpacrash extends dbController {
     async checkUser(req, res) {
         await this.connect(res, async conn => {
             const params = req.params;
-            const isContrib = await this.checkUserIsContributor(params.event, params.year, params.project, req.session.uid, conn);
-            console.log(isContrib);
-            res.json({isContrib});
-            conn.end();
+            // const isContrib = await this.checkUserIsContributor(params.event, params.year, params.project, req.session.uid, conn);
+            this.checkUserIsContributor(params.event, params.year, params.project, req.session.uid, conn)
+                .then(isContrib => {
+                    res.json({isContrib});
+                    conn.end();
+                })
+                .catch(err => {
+                    console.error(err);
+                    res.status(400).json({success: false, message: "Could not get user data!"});
+                    conn.end();
+                });
         })
     }
 
@@ -467,24 +474,23 @@ class alpacrash extends dbController {
      * @param conn
      */
     checkUserIsContributor(event, year, project, uid, conn) {
-        conn.query(`SELECT *
-                    FROM alpacrash_event
-                             LEFT JOIN alpacrash_project ap on alpacrash_event.id = ap.event_id
-                             LEFT JOIN alpacrash_users au on ap.id = au.project_id
-                    WHERE year = ?
-                      AND name = ?
-                      AND title = ?
-                      AND user_id = ?`,
-            [year, event, project, uid])
-            .then(user => {
-                console.log(Boolean(user));
-                return Boolean(user)
-            })
-            .catch(err => {
-                console.error(err);
-                return false
-            })
+        return new Promise(((resolve, reject) => {
+            conn.query(`SELECT *
+                        FROM alpacrash_event
+                                 LEFT JOIN alpacrash_project ap on alpacrash_event.id = ap.event_id
+                                 LEFT JOIN alpacrash_users au on ap.id = au.project_id
+                        WHERE year = ?
+                          AND name = ?
+                          AND title = ?
+                          AND user_id = ?`,
+                [year, event, project, uid])
+                .then(user => resolve(Boolean(user)))
+                .catch(err => {
+                    console.error(err);
+                    reject("Could not get user info!");
+                })
 
+        }));
     }
 }
 
