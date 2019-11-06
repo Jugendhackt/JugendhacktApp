@@ -429,18 +429,20 @@ class alpacrash extends dbController {
      */
     addProjectUser(req, res) {
         if (this.validateRequest(req, res, ['uid', 'pid'])) {
-            this.connect(res, async conn => {
+            this.connect(res, conn => {
                 const params = req.params;
-                const isContrib = await this.checkUserIsContributor(params.event, params.year, params.project, req.session.uid, conn);
-                if (isContrib) {
-                    this.addUserToProject(res, req.body.uid, req.body.pid, conn);
-                    res.json({success: true});
-                } else
-                    res.status(403).json({
-                        success: false,
-                        message: "Only project contributors are allowed to add new contributors!"
+                this.checkUserIsContributor(params.event, params.year, params.project, req.session.uid, conn)
+                    .then(isContrib => {
+                        if (isContrib) {
+                            this.addUserToProject(res, req.body.uid, req.body.pid, conn);
+                            res.json({success: true});
+                        } else
+                            res.status(403).json({
+                                success: false,
+                                message: "Only project contributors are allowed to add new contributors!"
+                            });
+                        conn.end();
                     });
-                conn.end();
             })
         }
     }
@@ -489,7 +491,6 @@ class alpacrash extends dbController {
                     console.error(err);
                     reject("Could not get user info!");
                 })
-
         }));
     }
 }
