@@ -3,7 +3,7 @@
         <div class="card">
             <h2>Add another admin</h2>
             <ul class="add-user-admin">
-                <li v-for="user in users" class="user-list-item">
+                <li v-for="user in users" class="user-list-item" :key="user.id">
                     <span>{{user.email}}</span>
                     <button v-on:click="updateAdmin(user)" v-if="!user.is_admin" class="add-admin-btn action-admin-btn button button-primary">Add</button>
                     <button v-on:click="updateAdmin(user)" v-else class="remove-admin-btn action-admin-btn button button-secondary">Remove</button>
