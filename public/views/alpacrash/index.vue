@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="card" v-for="ev in events" @click="openEvent(ev.name)">
+        <div class="card" v-for="ev in events" :key="ev.id" @click="openEvent(ev.name)">
             <h2>Jugend hackt {{ev.name}}</h2>
             <img :src="getBadge(ev.name)" alt="A great badge" class="badge-img">
         </div>
