@@ -10,7 +10,7 @@
                     <canvas class="hide" id="qr-canvas"></canvas>
                 </div>
                 <ul :class="{ hide: isScanning}">
-                    <li v-for="user in users">
+                    <li v-for="user in users" :key="user.id">
                         <span>{{user.full_name}}</span> - <span>{{user.email}}</span>
                         <button @click="setActive(user.email)">Choose</button>
                     </li>
