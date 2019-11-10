@@ -405,10 +405,9 @@ class alpacrash extends dbController {
      * @param req
      * @param res
      */
-    async checkUser(req, res) {
-        await this.connect(res, async conn => {
+    checkUser(req, res) {
+        this.connect(res, conn => {
             const params = req.params;
-            // const isContrib = await this.checkUserIsContributor(params.event, params.year, params.project, req.session.uid, conn);
             this.checkUserIsContributor(params.event, params.year, params.project, req.session.uid, conn)
                 .then(isContrib => {
                     res.json({isContrib});
@@ -436,11 +435,12 @@ class alpacrash extends dbController {
                         if (isContrib) {
                             this.addUserToProject(res, req.body.uid, req.body.pid, conn);
                             res.json({success: true});
-                        } else
+                        } else {
                             res.status(403).json({
                                 success: false,
                                 message: "Only project contributors are allowed to add new contributors!"
                             });
+                        }
                         conn.end();
                     });
             })
@@ -485,8 +485,8 @@ class alpacrash extends dbController {
                           AND name = ?
                           AND title = ?
                           AND user_id = ?`,
-                [year, event, project, uid])
-                .then(user => resolve(Boolean(user)))
+                [year, event, project, uid ? uid : 0])
+                .then(user => resolve(Boolean(user[0])))
                 .catch(err => {
                     console.error(err);
                     reject("Could not get user info!");
