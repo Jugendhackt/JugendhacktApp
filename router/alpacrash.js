@@ -10,15 +10,16 @@ alpacrash.get('/names/:event', (req, res) => dbController.getEventYearNums(req, 
 alpacrash.get('/names/:event/:year', (req, res) => dbController.getProjectNames(req, res));
 
 alpacrash.get('/projects', (req, res) => dbController.getAllProjects(req, res));  // Needed for debug.vue
-alpacrash.get('/:event/',(req, res) => dbController.getEventYears(req, res));
+alpacrash.get('/users', (req, res) => dbController.getUsers(req, res));
+
+alpacrash.get('/:event/', (req, res) => dbController.getEventYears(req, res));
 alpacrash.get('/:event/:year/', (req, res) => dbController.getProjects(req, res));
 alpacrash.post('/:event/:year/', (req, res) => dbController.addProject(req, res));
 alpacrash.get('/:event/:year/:project', (req, res) => dbController.getProject(req, res));
 alpacrash.put('/:event/:year/:project', (req, res) => dbController.updateProject(req, res));
 alpacrash.get('/:event/:year/:project/user', (req, res) => dbController.checkUser(req, res));
+alpacrash.post('/:event/:year/:project/user', (req, res) => dbController.addProjectUser(req, res));
+alpacrash.delete('/:event/:year/:project/user', (req, res) => dbController.removeProjectUser(req, res));
 alpacrash.get('/:event/:year/:project/users', (req, res) => dbController.getProjectUsers(req, res));
-alpacrash.post('/:event/:year/:project/users', (req, res) => dbController.addProjectUser(req, res));
-
-alpacrash.get('/users', (req, res) => dbController.getUsers(req, res));
 
 module.exports = alpacrash;

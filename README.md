@@ -1,4 +1,4 @@
-# JugendhacktApp ![](https://travis-ci.com/Jugendhackt/JugendhacktApp.svg?branch=master) ![](https://jhbadge.com/?year=2019&event=hh)![](https://jhbadge.com/?year=2019&event=ber)
+# JugendhacktApp ![](https://travis-ci.com/Jugendhackt/JugendhacktApp.svg?branch=master) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/f0cbd831302d4747868461562cbe4262)](https://www.codacy.com/manual/LarsVomMars/JugendhacktApp?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Jugendhackt/JugendhacktApp&amp;utm_campaign=Badge_Grade) ![](https://jhbadge.com/?year=2019&event=hh)![](https://jhbadge.com/?year=2019&event=ber)
 
 We love Jugend hackt!
 Therefore we want to contribute to it with this App - The Jugendhackt App!

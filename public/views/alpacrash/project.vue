@@ -42,8 +42,26 @@
                     </form>
                 </div>
             </div>
-            <div>
-                Contributors: <i v-for="contrib in contributors" class="project-contrib">{{contrib.full_name}}</i>
+            <div class="project-contrib-div">
+                <div class="project-contrib-display">
+                    Contributors:
+                    <i v-for="contrib in contributors" class="project-contrib">
+                        {{contrib.full_name}}
+                        <img @click="removeUser()" class="remove-contrib" alt="Remove contrib" src="/assets/icons/x.svg"
+                             v-if="Boolean(isContrib)">
+                        ;
+                    </i>
+                    <img @click="changeContribEdit()" class="edit-pen" alt="Edit pen" src="/assets/icons/edit-2.svg"
+                         v-if="Boolean(isContrib)">
+                </div>
+                <div class="project-contrib-editor">
+                    <form @submit="submitContribChange()">
+                        <select id="contrib-add" v-model="newContribId">
+                            <option v-for="user in users" :value="user.id">{{user.full_name}} - {{user.email}}</option>
+                        </select>
+                        <input type="submit" value="Add" class="project-submit-btn"/>
+                    </form>
+                </div>
             </div>
         </div>
         <div class="alpacrash-nav-btn">
@@ -68,6 +86,8 @@
                 projectChange: {},
                 projects: [],
                 projectI: -1,
+                users: [],
+                newContribId: 0,
             }
         },
         methods: {
@@ -102,6 +122,20 @@
             changeLinkEdit() {
                 const titleElement = document.querySelector('.project-link-display');
                 const changeDiv = document.querySelector('.project-link-editor');
+                titleElement.style.display = 'none';
+                changeDiv.style.display = 'block';
+                const kd = e => {
+                    if (e.key === 'Esc' || e.key === 'Escape') {
+                        titleElement.style.display = 'block';
+                        changeDiv.style.display = 'none';
+                        window.removeEventListener('keydown', kd);
+                    }
+                };
+                window.addEventListener('keydown', kd);
+            },
+            changeContribEdit() {
+                const titleElement = document.querySelector('.project-contrib-display');
+                const changeDiv = document.querySelector('.project-contrib-editor');
                 titleElement.style.display = 'none';
                 changeDiv.style.display = 'block';
                 const kd = e => {
@@ -170,6 +204,24 @@
                 xhr.open("PUT", `/alpacrash/${this.$route.params.event}/${this.$route.params.year}/${this.$route.params.project}`);
                 xhr.send(formData);
             },
+            submitContribChange() {
+                const xhr = new XMLHttpRequest();
+                const formData = new FormData();
+                formData.append('uid', this.newContribId);
+                formData.append('pid', this.project.id);
+                xhr.responseType = 'json';
+                xhr.onload = () => {
+                    if (xhr.response.success) {
+                        const dpe = document.querySelector('.project-contrib-display');
+                        const changeDiv = document.querySelector('.project-contrib-editor');
+                        dpe.style.display = 'block';
+                        changeDiv.style.display = 'none';
+                        this.getProjectContributors();
+                    }
+                };
+                xhr.open("POST", `/alpacrash/${this.$route.params.event}/${this.$route.params.year}/${this.$route.params.project}/user`);
+                xhr.send(formData);
+            },
             getProject() {
                 this.$root.loading = true;
                 const xhr = new XMLHttpRequest();
@@ -204,7 +256,7 @@
             getImagePath() {
                 return `/alpacrash/images/${this.project.img_name}`;
             },
-            getProjectUsers() {
+            getProjectContributors() {
                 this.$root.loading = true;
                 const xhr = new XMLHttpRequest();
                 xhr.responseType = 'json';
@@ -218,10 +270,7 @@
             isProjectContributor() {
                 const xhr = new XMLHttpRequest();
                 xhr.responseType = 'json';
-                xhr.onload = () => {
-                    console.log(xhr.response);
-                    this.isContrib = xhr.response.isContrib;
-                };
+                xhr.onload = _ => this.isContrib = xhr.response.isContrib;
                 xhr.open("GET", `/alpacrash/${this.$route.params.event}/${this.$route.params.year}/${this.$route.params.project}/user`);
                 xhr.send();
             },
@@ -236,13 +285,35 @@
                     this.$router.push(`/alpacrash/${this.$route.params.event}/${this.$route.params.year}/${this.projects[this.projectI + 1]}`);
                     this.$router.go();
                 }
-            }
+            },
+            getUsers() {
+                const xhr = new XMLHttpRequest();
+                xhr.responseType = 'json';
+                xhr.onload = _ => this.users = xhr.response;
+                xhr.open("GET", "/alpacrash/users");
+                xhr.send();
+            },
+            removeUser() {
+                const xhr = new XMLHttpRequest();
+                const formData = new FormData();
+                formData.append('uid', this.newContribId);
+                formData.append('pid', this.project.id);
+                xhr.responseType = 'json';
+                xhr.onload = _ => {
+                    this.isProjectContributor();
+                    this.getProjectContributors();
+                    console.log(xhr.response);
+                };
+                xhr.open("DELETE", `/alpacrash/${this.$route.params.event}/${this.$route.params.year}/${this.$route.params.project}/user`);
+                xhr.send(formData);
+            },
         },
         beforeMount() {
             this.getProject();
             this.getProjects();
             this.isProjectContributor();
-            this.getProjectUsers();
+            this.getProjectContributors();
+            this.getUsers();
         },
     }
 </script>
@@ -270,7 +341,7 @@
         text-align: center;
     }
 
-    .project-title-editor, .project-desc-editor, .project-link-editor {
+    .project-title-editor, .project-desc-editor, .project-link-editor, .project-contrib-editor {
         display: none;
     }
 
@@ -336,5 +407,13 @@
     .notAct {
         background: #444 !important;
         cursor: default !important;
+    }
+
+    .remove-contrib {
+        cursor: pointer;
+    }
+
+    .remove-contrib:hover {
+        filter: invert(.5);
     }
 </style>

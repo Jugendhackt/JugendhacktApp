@@ -386,7 +386,7 @@ class alpacrash extends dbController {
     getUsers(req, res) {
         if (this.auth(req, res)) {
             this.connect(res, conn => {
-                conn.query("SELECT * FROM users WHERE is_verified = true")
+                conn.query("SELECT id, full_name, email FROM users WHERE is_verified = true")
                     .then(users => {
                         res.json(users);
                         conn.end();
@@ -448,7 +448,43 @@ class alpacrash extends dbController {
     }
 
     /**
-     * Helper function adding an user to a project
+     * Removes user as project contributor
+     * @param req
+     * @param res
+     */
+    removeProjectUser(req, res) {
+        if (this.validateRequest(req, res, ['uid', 'pid'])) {
+            this.connect(res, conn => {
+                const params = req.params;
+                this.checkUserIsContributor(params.event, params.year, params.project, req.session.uid, conn)
+                    .then(isContrib => {
+                        if (isContrib) {
+                            conn.query("DELETE FROM alpacrash_users WHERE user_id = ? AND project_id = ?",
+                                [req.body.uid, req.body.pid, req.session.uid ? req.session.uid : 0]
+                            )
+                                .then(_ => {
+                                    res.json({success: true});
+                                    conn.end();
+                                })
+                                .catch(err => {
+                                    console.error(err);
+                                    res.status(403).json({success: false, message: "Cannot remove contributor!"});
+                                    conn.end();
+                                });
+                        } else {
+                            res.status(403).json({
+                                success: false,
+                                message: "Only project contributors are allowed to remove contributors!"
+                            });
+                            conn.end();
+                        }
+                    });
+            })
+        }
+    }
+
+    /**
+     * Helper function adding a user to a project
      * @param res
      * @param uid
      * @param pid
