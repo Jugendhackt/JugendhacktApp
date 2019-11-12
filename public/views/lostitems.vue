@@ -57,7 +57,8 @@
             },
             fetchLostItemList() {
                 const xhr = new XMLHttpRequest();
-                xhr.onload = () => this.items = JSON.parse(xhr.response);
+                xhr.responseType = 'json';
+                xhr.onload = () => this.items = xhr.response;
                 xhr.open('GET', '/lostitems/');
                 xhr.send();
             },

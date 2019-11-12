@@ -50,7 +50,6 @@
                 formData.append('password', this.user.password);
                 xhr.onload = () => {
                     if (xhr.response.success === true) this.fetchUser();
-                    else window.location.replace('/user/logout');
                 };
                 xhr.open('PUT', '/user/update');
                 xhr.responseType = "json";

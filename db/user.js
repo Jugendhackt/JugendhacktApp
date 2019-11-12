@@ -129,10 +129,9 @@ class userController extends dbController {
                             if (err) {
                                 console.error(err);
                                 conn.end();
-                                res.json({success: false, message: "Error validation password hash!"});
+                                res.json({success: false, message: "Error validating password hash!"});
                                 return;
                             }
-                            console.log(checkPwd, bCrypt.compareSync(req.body.password, user[0].password), user[0]);
                             if (checkPwd) {
                                 req.session.loggedIn = true;
                                 req.session.isAdmin = user[0].is_admin;
@@ -218,27 +217,34 @@ class userController extends dbController {
                             res.json({success: false, message: "Error creating password hash"});
                             return;
                         }
-                        // TODO: Dns MX check
-                        let updateString = '';
-                        let updateParams = [];
-                        if (body.password !== undefined) {
-                            updateString = 'UPDATE users SET email = ?, password = ?, full_name = ?, birthday = ? WHERE email = ? AND id = ?';
-                            updateParams = [body.email, pwd, body.full_name, body.birthday, req.session.email, req.session.uid];
-                        } else {
-                            updateString = 'UPDATE users SET email = ?, full_name = ?, birthday = ? WHERE email = ? AND id = ?';
-                            updateParams = [body.email, body.full_name, body.birthday, req.session.email, req.session.uid];
-                        }
-                        conn.query(updateString, updateParams)
-                            .then(_ => {
-                                req.session.email = body.email;
-                                res.json({success: true});
+                        const domain = body.email.split('@')[1];
+                        dns.resolve(domain, 'MX', (err, addresses) => {
+                            if (err || !addresses && addresses.length <= 0) {
                                 conn.end();
-                            })
-                            .catch(err => {
-                                console.error(err);
-                                res.status(400).json({success: false, message: "Could not update user details"});
-                                conn.end();
-                            })
+                                res.json({success: false, message: "Email couldn't get verified!"});
+                                return;
+                            }
+                            let updateString = '';
+                            let updateParams = [];
+                            if (body.password !== undefined) {
+                                updateString = 'UPDATE users SET email = ?, password = ?, full_name = ?, birthday = ? WHERE email = ? AND id = ?';
+                                updateParams = [body.email, pwd, body.full_name, body.birthday, req.session.email, req.session.uid];
+                            } else {
+                                updateString = 'UPDATE users SET email = ?, full_name = ?, birthday = ? WHERE email = ? AND id = ?';
+                                updateParams = [body.email, body.full_name, body.birthday, req.session.email, req.session.uid];
+                            }
+                            conn.query(updateString, updateParams)
+                                .then(_ => {
+                                    req.session.email = body.email;
+                                    res.json({success: true});
+                                    conn.end();
+                                })
+                                .catch(err => {
+                                    console.error(err);
+                                    res.status(400).json({success: false, message: "Could not update user details"});
+                                    conn.end();
+                                })
+                        })
                     })
                 })
             }
