@@ -47,7 +47,7 @@
                     Contributors:
                     <i v-for="contrib in contributors" class="project-contrib">
                         {{contrib.full_name}}
-                        <img @click="removeUser()" class="remove-contrib" alt="Remove contrib" src="/assets/icons/x.svg"
+                        <img @click="removeUser(contrib.id)" class="remove-contrib" alt="Remove contrib" src="/assets/icons/x.svg"
                              v-if="Boolean(isContrib)">
                         ;
                     </i>
@@ -293,10 +293,10 @@
                 xhr.open("GET", "/alpacrash/users");
                 xhr.send();
             },
-            removeUser() {
+            removeUser(id) {
                 const xhr = new XMLHttpRequest();
                 const formData = new FormData();
-                formData.append('uid', this.newContribId);
+                formData.append('uid', id);
                 formData.append('pid', this.project.id);
                 xhr.responseType = 'json';
                 xhr.onload = _ => {

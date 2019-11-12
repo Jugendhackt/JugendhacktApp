@@ -459,7 +459,7 @@ class alpacrash extends dbController {
                 this.checkUserIsContributor(params.event, params.year, params.project, req.session.uid, conn)
                     .then(isContrib => {
                         if (isContrib) {
-                            conn.query("DELETE FROM alpacrash_users WHERE user_id = ? AND project_id = ?",
+                            conn.query("DELETE FROM alpacrash_users WHERE user_id = ? AND project_id = ? AND NOT user_id = ?",
                                 [req.body.uid, req.body.pid, req.session.uid ? req.session.uid : 0]
                             )
                                 .then(_ => {
@@ -491,14 +491,27 @@ class alpacrash extends dbController {
      * @param conn
      */
     addUserToProject(res, uid, pid, conn) {
-        conn.query("INSERT INTO alpacrash_users (user_id, project_id) VALUE (?,?)", [uid, pid])
-            .then(_ => {
-                res.json({success: true});
-                conn.end();
+        conn.query("SELECT * FROM alpacrash_users WHERE user_id = ? AND project_id = ?", [uid, pid])
+            .then(users => {
+                if (!users[0]) {
+                    conn.query("INSERT INTO alpacrash_users (user_id, project_id) VALUE (?,?)", [uid, pid])
+                        .then(_ => {
+                            res.json({success: true});
+                            conn.end();
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            res.status(400).json({success: false, message: "Could not add user"});
+                            conn.end();
+                        })
+                } else {
+                    res.status(400).json({success: false, message: "Cannot add user multiple times to a project"});
+                    conn.end();
+                }
             })
             .catch(err => {
                 console.error(err);
-                res.status(400).json({success: false, message: "Could not add user"});
+                res.status(400).json({success: false, message: "Could not get user data"});
                 conn.end();
             })
     }
