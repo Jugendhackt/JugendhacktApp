@@ -6,7 +6,9 @@
                 <div>
                     <label for="event_id">Event: </label>
                     <select id="event_id" v-model="creatorForm.eventId">
-                        <option v-for="event in events" :value="computeEventPath(event)">{{event.name}}: {{event.year}}</option>
+                        <option v-for="event in events" :value="computeEventPath(event)">{{event.name}}:
+                            {{event.year}}
+                        </option>
                     </select>
                 </div>
                 <label for="project_title">Title:</label>

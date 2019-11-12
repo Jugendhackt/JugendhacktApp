@@ -102,7 +102,7 @@ class alpacrash extends dbController {
                 this.connect(res, conn => {
                     conn.query("SELECT * FROM alpacrash_event WHERE name = ? AND year = ?", [req.body.name, req.body.year])
                         .then(events => {
-                            if (events) {
+                            if (events) {  // Is this right?
                                 res.json({success: false, message: "Event already exists!"});
                                 conn.end();
                                 return;
