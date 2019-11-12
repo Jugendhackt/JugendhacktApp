@@ -29,34 +29,40 @@
             fetchUser() {
                 const xhr = new XMLHttpRequest();
                 xhr.onload = () => {
-                    this.user = xhr.response[0];
-                    this.user.birthday = (new Date(this.user.birthday)).dateToInput();
-                    this.user.password = '';
-                    // TODO: Redirect if not logged in
+                    if (xhr.response.success === true) {
+                        this.user = xhr.response.data[0];
+                        this.user.birthday = (new Date(this.user.birthday)).dateToInput();
+                        this.user.password = '';
+                    } else {
+                        this.$router.push('/');
+                    }
                 };
                 xhr.responseType = "json";
                 xhr.open("GET", "/user/get");
                 xhr.send();
             },
             update() {
-                const data = JSON.stringify(this.user);
+                const formData = new FormData();
                 const xhr = new XMLHttpRequest();
-                xhr.onload = function () {
-                    if (xhr.response.success) location.replace("/");
+                formData.append('email', this.user.email);
+                formData.append('full_name', this.user.full_name);
+                formData.append('birthday', this.user.birthday);
+                formData.append('password', this.user.password);
+                xhr.onload = () => {
+                    if (xhr.response.success === true) this.fetchUser();
+                    else window.location.replace('/user/logout');
                 };
                 xhr.open('PUT', '/user/update');
-                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
                 xhr.responseType = "json";
-                xhr.send(data);
+                xhr.send(formData);
             }
-
         },
         beforeMount() {
             this.fetchUser();
         }
     };
-    Date.prototype.dateToInput = function(){
-        return this.getFullYear() + '-' + ('0' + (this.getMonth() + 1)).substr(-2,2) + '-' + ('0' + this.getDate()).substr(-2,2);
+    Date.prototype.dateToInput = function () {
+        return this.getFullYear() + '-' + ('0' + (this.getMonth() + 1)).substr(-2, 2) + '-' + ('0' + this.getDate()).substr(-2, 2);
     }
 </script>
 

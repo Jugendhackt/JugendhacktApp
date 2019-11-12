@@ -26,7 +26,9 @@
             fetchUsers() {
                 const xhr = new XMLHttpRequest();
                 xhr.onload = () => {
-                    this.users = xhr.response
+                    if (xhr.response.success === true) {
+                        this.users = xhr.response.data
+                    } else console.log(xhr.response.message);
                 };
                 xhr.responseType = "json";
                 xhr.open("GET", "/user/getAll");

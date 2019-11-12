@@ -132,6 +132,7 @@ class userController extends dbController {
                                 res.json({success: false, message: "Error validation password hash!"});
                                 return;
                             }
+                            console.log(checkPwd, bCrypt.compareSync(req.body.password, user[0].password), user[0]);
                             if (checkPwd) {
                                 req.session.loggedIn = true;
                                 req.session.isAdmin = user[0].is_admin;
@@ -209,8 +210,8 @@ class userController extends dbController {
         if (this.validateRequest(req, res, ['email', 'full_name', 'birthday'])) {
             if (this.auth(req, res, false)) {
                 this.connect(res, conn => {
-                    const b = req.body;
-                    bCrypt.hash(b.password, 12, (err, pwd) => {
+                    const body = req.body;
+                    bCrypt.hash(body.password, 12, (err, pwd) => {
                         if (err) {
                             console.error(err);
                             conn.end();
@@ -220,17 +221,17 @@ class userController extends dbController {
                         // TODO: Dns MX check
                         let updateString = '';
                         let updateParams = [];
-                        if (b.password) {
-                            updateString = 'UPDATE users SET email = ? AND password = ? AND full_name = ? AND birthday = ? WHERE email = ? AND id = ?';
-                            updateParams = [b.email, pwd, b.full_name, b.birthday, req.session.email, req.session.uid];
+                        if (body.password !== undefined) {
+                            updateString = 'UPDATE users SET email = ?, password = ?, full_name = ?, birthday = ? WHERE email = ? AND id = ?';
+                            updateParams = [body.email, pwd, body.full_name, body.birthday, req.session.email, req.session.uid];
                         } else {
-                            updateString = 'UPDATE users SET email = ? AND full_name = ? AND birthday = ? WHERE email = ? AND id = ?';
-                            updateParams = [b.email, b.full_name, b.birthday, req.session.email, req.session.uid];
+                            updateString = 'UPDATE users SET email = ?, full_name = ?, birthday = ? WHERE email = ? AND id = ?';
+                            updateParams = [body.email, body.full_name, body.birthday, req.session.email, req.session.uid];
                         }
                         conn.query(updateString, updateParams)
                             .then(_ => {
-                                req.session.email = b.email;
-                                res.redirect('/user/logout');
+                                req.session.email = body.email;
+                                res.json({success: true});
                                 conn.end();
                             })
                             .catch(err => {
@@ -253,7 +254,7 @@ class userController extends dbController {
         if (this.validateRequest(req, res, ['email'])) {
             if (this.auth(req, res, true, true)) {
                 this.connect(res, conn => {
-                    conn.query("UPDATE users SET is_verified = true WHERE email = ?")
+                    conn.query("UPDATE users SET is_verified = true WHERE email = ?", [req.body.email])
                         .then(_ => {
                             conn.end();
                             res.json({success: true});

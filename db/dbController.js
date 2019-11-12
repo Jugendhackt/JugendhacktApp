@@ -61,7 +61,7 @@ class dbController {
             req.session.loggedIn) {
             return true;
         } else {
-            res.status(403).json({success: true, message: "Not allowed!"});
+            res.status(403).json({success: false, message: "Not allowed!"});
             return false;
         }
     }
