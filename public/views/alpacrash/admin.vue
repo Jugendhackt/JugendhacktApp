@@ -4,6 +4,7 @@
             <h1>Alpacrash - Admin interface</h1>
         </div>
         <div class="card">
+            <h1>Add new event</h1>
             <form @submit="addEvent()">
                 <label for="event-name">Name: </label>
                 <input id="event-name" v-model="newEvent.name" type="text">
@@ -34,7 +35,6 @@
                 xhr.open("POST", "/alpacrash/");
                 xhr.responseType = 'json';
                 xhr.send(formData);
-                this.getEvents();
             },
             checkAdmin() {
                 const xhr = new XMLHttpRequest();
