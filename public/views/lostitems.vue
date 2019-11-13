@@ -1,20 +1,22 @@
 <template>
     <div>
-        <div class="card">
-            <h2 class="name">Lost and Found</h2>
-            <div v-if="isAdmin">
+        <div class="card" v-if="isAdmin">
+            <h2 class="name">Add Lost and Found Items</h2>
+            <div>
                 <form @submit="submitLostItem()" enctype="multipart/form-data" id="lnf-form">
                     <label for="lnf_what">Item found:</label>
                     <input type="text" id="lnf_what" v-model="lnf.what" required>
                     <label for="lnf_location">Item found where:</label>
                     <input type="text" id="lnf_location" v-model="lnf.location" required>
                     <label for="lnf_img">Image of lost item</label>
-                    <input type="file" id="lnf_img" v-model=lnf.img required>
+                    <input type="file" id="lnf_img" accept="image/*" required>
                     <button type="submit" class="button primary">Add item to list</button>
                 </form>
             </div>
-            <div class="card">
-                <div v-for="item in items" class="lost-item">
+        </div>
+        <div class="card">
+            <h2 class="name">Lost and Found Items</h2>
+                <div v-for="item in items" :key="item.id" class="lost-item">
                     <v-image :src="'/lostitems/images/' + item.img_name" alt="Image of the item" class="image"></v-image>
                     <div class="desc">
                         <h1>{{item.what}}</h1>
@@ -33,8 +35,7 @@
             return {
                 lnf: {
                     what: "",
-                    location: "",
-                    img: ""
+                    location: ""
                 },
                 items: [],
                 isAdmin: false
@@ -52,7 +53,6 @@
                 xhr.send(formData);
                 this.lnf.what = '';
                 this.lnf.location = '';
-                this.lnf.img = '';
                 this.fetchLostItemList();
             },
             fetchLostItemList() {

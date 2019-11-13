@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="event card" v-for="event in events">
+        <div class="event card" v-for="event in events" :key="event.id">
             <img class="cover" :src="event.img">
             <p>{{ event.date }}</p>
             <p>{{ event.location }}</p>

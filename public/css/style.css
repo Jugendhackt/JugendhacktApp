@@ -166,6 +166,8 @@ body {
 }
 
 .loading.hide {
+    display: none;
+    visibility: hidden;
     transition: background-color 300ms linear;
     background: transparent;
     pointer-events: none;

@@ -1,10 +1,10 @@
 <template>
     <div>
-        <div class="card" v-for="post in feed">
+        <div class="card" v-for="post in feed" :key="post.time">
             <h3>{{ post.name }} @ <small>{{ new Date(post.time * 1000).toLocaleString("de") }}</small></h3>
             <p>{{ post.text }}</p>
-            <v-image :src="picture" alt="" v-for="picture in post.pictures"></v-image>
-            <img :src="emoji" alt="" v-for="emoji in post.emojis" class="emoji-image">
+            <v-image :src="picture" alt="" v-for="(picture, i) in post.pictures" :key="i"></v-image>
+            <img :src="emoji" alt="" v-for="(emoji, e) in post.emojis" :key="e" class="emoji-image">
         </div>
     </div>
 </template>
