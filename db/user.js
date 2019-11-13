@@ -27,13 +27,13 @@ class userController extends dbController {
      */
     getUser(req, res) {
         if (this.auth(req, res, false)) {
-            this.connect(res, (conn) => {
+            this.connect(res, conn => {
                 conn.query("SELECT full_name, email, birthday FROM users WHERE id = ?", [req.session.uid])
                     .then(user => {
                         res.json({success: true, data: user});
                         conn.end();
                     })
-                    .catch((err) => {
+                    .catch(err => {
                         console.error(err);
                         res.status(400).json({success: false, message: "Invalid user!"});
                         conn.end();
@@ -49,13 +49,13 @@ class userController extends dbController {
      */
     getUsers(req, res) {
         if (this.auth(req, res, true, true)) {
-            this.connect(res, (conn) => {
+            this.connect(res, conn => {
                 conn.query("SELECT id, email, full_name, is_admin, is_verified, birthday FROM users")
                     .then(users => {
                         res.json({success: true, data: users});
                         conn.end();
                     })
-                    .catch((err) => {
+                    .catch(err => {
                         console.error(err);
                         res.status(500).json({success: false, message: "This should never happen!"});
                         conn.end();
@@ -72,7 +72,7 @@ class userController extends dbController {
     addUser(req, res) {
         if (this.validateRequest(req, res, ["password", "fullName", "email", "birthday"])) {
             const body = req.body;
-            this.connect(res, (conn) => {
+            this.connect(res, conn => {
                 bCrypt.hash(body.password, 12, (err, pwd) => {
                     if (err) {
                         console.error(err);
@@ -98,14 +98,14 @@ class userController extends dbController {
                                         conn.end();
                                         this.login(req, res);
                                     })
-                                    .catch((err) => {
+                                    .catch(err => {
                                         console.error(err);
                                         res.status(400).json({success: false, message: "User already exists"});
                                         conn.end();
                                     })
                             })
                         })
-                        .catch((err) => {
+                        .catch(err => {
                             console.error(err);
                             res.status(500).json({success: false, message: "This should never happen!"});
                             conn.end();
@@ -122,7 +122,7 @@ class userController extends dbController {
      */
     login(req, res) {
         if (this.validateRequest(req, res, ["email", "password"])) {
-            this.connect(res, (conn) => {
+            this.connect(res, conn => {
                 conn.query("SELECT * FROM users WHERE email = ?", [req.body.email])
                     .then(user => {
                         bCrypt.compare(req.body.password, user[0].password, (err, checkPwd) => {
@@ -143,7 +143,7 @@ class userController extends dbController {
                             conn.end();
                         })
                     })
-                    .catch((err) => {
+                    .catch(err => {
                         console.error(err);
                         res.status(400).json({success: false, message: "Wrong email and/or password!"});
                         conn.end();
@@ -170,27 +170,27 @@ class userController extends dbController {
     updateAdmin(req, res) {
         if (this.validateRequest(req, res, ["email"])) {
             if (this.auth(req, res, true, true)) {
-                this.connect(res, (conn) => {
+                this.connect(res, conn => {
                     conn.query("SELECT * FROM users WHERE is_admin = true")
-                        .then((users) => {
+                        .then(users => {
                             if (users.length > 1) this.updateAdminState(req, res, conn);
                             else {
                                 conn.query("SELECT * FROM users WHERE email = ?", [req.body.email])
-                                    .then((user) => {
+                                    .then(user => {
                                         if (!user[0].is_admin) this.updateAdminState(req, res, conn);
                                         else {
                                             conn.end();
                                             res.json({success: false, message: "Can't remove last admin user!"});
                                         }
                                     })
-                                    .catch((err) => {
+                                    .catch(err => {
                                         console.error(err);
                                         conn.end();
                                         res.json({success: false, message: "User does not exist!"});
                                     })
                             }
                         })
-                        .catch((err) => {
+                        .catch(err => {
                             console.error(err);
                             res.status(500).json({success: false, message: "This should never happen!"});
                             conn.end();
@@ -208,7 +208,7 @@ class userController extends dbController {
     updateUserCredentials(req, res) {
         if (this.validateRequest(req, res, ["email", "full_name", "birthday"])) {
             if (this.auth(req, res, false)) {
-                this.connect(res, (conn) => {
+                this.connect(res, conn => {
                     const body = req.body;
                     bCrypt.hash(body.password, 12, (err, pwd) => {
                         if (err) {
@@ -239,7 +239,7 @@ class userController extends dbController {
                                     res.json({success: true});
                                     conn.end();
                                 })
-                                .catch((err) => {
+                                .catch(err => {
                                     console.error(err);
                                     res.status(400).json({success: false, message: "Could not update user details"});
                                     conn.end();
@@ -259,18 +259,18 @@ class userController extends dbController {
     verifyUser(req, res) {
         if (this.validateRequest(req, res, ["email"])) {
             if (this.auth(req, res, true, true)) {
-                this.connect(res, (conn) => {
+                this.connect(res, conn => {
                     conn.query("UPDATE users SET is_verified = true WHERE email = ?", [req.body.email])
                         .then(() => {
                             conn.end();
                             res.json({success: true});
                         })
-                        .catch((err) => {
+                        .catch(err => {
                             console.error(err);
                             res.status(400).json({success: false, message: "User does not exist"});
                             conn.end();
                         })
-                })
+                });
             }
         }
     }
@@ -287,7 +287,7 @@ class userController extends dbController {
                 res.json({success: true});
                 conn.end();
             })
-            .catch((err) => {
+            .catch(err => {
                 console.error(err);
                 res.status(400).json({success: false, message: "User does not exist!"});
                 conn.end();

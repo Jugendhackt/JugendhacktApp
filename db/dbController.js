@@ -18,11 +18,11 @@ class dbController {
      */
     init() {
         this.pool.getConnection()
-            .then((conn) => {
+            .then(conn => {
                 console.log(`Connected to database: ${process.env.DBName}`);
                 for (const table of tables) {
                     conn.query(table)
-                        .catch((err) => {
+                        .catch(err => {
                             console.error("Could not create table:", table, err);
                             conn.end();
                         });
@@ -38,10 +38,10 @@ class dbController {
      */
     connect(res, cb) {
         this.pool.getConnection()
-            .then((conn) => {
+            .then(conn => {
                 cb(conn);
             })
-            .catch((err) => {
+            .catch(err => {
                 console.error(err);
                 res.json({success: false, message: "Cannot connect to database"});
             });
