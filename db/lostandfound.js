@@ -19,8 +19,7 @@ class lostAndFound extends dbController {
                     conn.end();
                 })
                 .catch(err => {
-                    console.error(err);
-                    res.status(400).json({success: false, message: "Unable to get items"});
+                    this.handleError(err, "Unable to get items", res);
                     conn.end();
                 })
         });
@@ -49,11 +48,10 @@ class lostAndFound extends dbController {
                                         conn.end();
                                     })
                                     .catch(err => {
-                                        console.error(err);
-                                        res.status(500).json({success: false, message: "Could not save the image!"});
+                                        this.handleError(err, "Could not save the image", res);
                                         conn.end();
                                     })
-                            })
+                            });this.handleError(err, , res);
                         }
                     }
                 }
@@ -77,8 +75,7 @@ class lostAndFound extends dbController {
                             fs.unlinkSync(this.uploadFolder + req.body.img);
                         })
                         .catch(err => {
-                            console.error(err);
-                            res.status(400).json({success: false, message: "Item does not exist"});
+                            this.handleError(err, "Item does not exist", res);
                             conn.end();
                         });
                 });

@@ -34,8 +34,7 @@ class userController extends dbController {
                         conn.end();
                     })
                     .catch(err => {
-                        console.error(err);
-                        res.status(400).json({success: false, message: "Invalid user!"});
+                        this.handleError(err, "Invalid user", res);
                         conn.end();
                     })
             });
@@ -56,8 +55,7 @@ class userController extends dbController {
                         conn.end();
                     })
                     .catch(err => {
-                        console.error(err);
-                        res.status(500).json({success: false, message: "This should never happen!"});
+                        this.handleError(err, "Cannot get users", res);
                         conn.end();
                     })
             });
@@ -75,9 +73,8 @@ class userController extends dbController {
             this.connect(res, conn => {
                 bCrypt.hash(body.password, 12, (err, pwd) => {
                     if (err) {
-                        console.error(err);
+                        this.handleError(err, "Error creating password hash", res, 500);
                         conn.end();
-                        res.json({success: false, message: "Error creating password hash"});
                         return;
                     }
                     const fullName = body.fullName.length <= 100 ? body.fullName : body.fullName.slice(0, 101);
@@ -87,8 +84,8 @@ class userController extends dbController {
                             const domain = body.email.split("@")[1];
                             dns.resolve(domain, "MX", (err, addresses) => {
                                 if (err || !addresses && addresses.length <= 0) {
+                                    this.handleError(err, "Email couldn't get verified", res);
                                     conn.end();
-                                    res.json({success: false, message: "Email couldn't get verified!"});
                                     return;
                                 }
                                 conn.query("INSERT INTO users (full_name, password, email, birthday, is_admin, is_verified) VALUE (?,?,?,?,?,?)",
@@ -99,15 +96,13 @@ class userController extends dbController {
                                         this.login(req, res);
                                     })
                                     .catch(err => {
-                                        console.error(err);
-                                        res.status(400).json({success: false, message: "User already exists"});
+                                        this.handleError(err, "User already exist", res);
                                         conn.end();
                                     })
                             })
                         })
                         .catch(err => {
-                            console.error(err);
-                            res.status(500).json({success: false, message: "This should never happen!"});
+                            this.handleError(err, "Cannot get user", res);
                             conn.end();
                         })
                 });
@@ -127,9 +122,8 @@ class userController extends dbController {
                     .then(user => {
                         bCrypt.compare(req.body.password, user[0].password, (err, checkPwd) => {
                             if (err) {
-                                console.error(err);
+                                this.handleError(err, "Error validating password hash", res);
                                 conn.end();
-                                res.json({success: false, message: "Error validating password hash!"});
                                 return;
                             }
                             if (checkPwd) {
@@ -144,8 +138,7 @@ class userController extends dbController {
                         })
                     })
                     .catch(err => {
-                        console.error(err);
-                        res.status(400).json({success: false, message: "Wrong email and/or password!"});
+                        this.handleError(err, "Wrong email and/or password", res);
                         conn.end();
                     })
             });
@@ -184,15 +177,13 @@ class userController extends dbController {
                                         }
                                     })
                                     .catch(err => {
-                                        console.error(err);
+                                        this.handleError(err, "User does not exist", res);
                                         conn.end();
-                                        res.json({success: false, message: "User does not exist!"});
                                     })
                             }
                         })
                         .catch(err => {
-                            console.error(err);
-                            res.status(500).json({success: false, message: "This should never happen!"});
+                            this.handleError(err, "Cannot get users", res);
                             conn.end();
                         })
                 })
@@ -212,16 +203,15 @@ class userController extends dbController {
                     const body = req.body;
                     bCrypt.hash(body.password, 12, (err, pwd) => {
                         if (err) {
-                            console.error(err);
+                            this.handleError(err, "Error creating password hash", res);
                             conn.end();
-                            res.json({success: false, message: "Error creating password hash"});
                             return;
                         }
                         const domain = body.email.split("@")[1];
                         dns.resolve(domain, "MX", (err, addresses) => {
                             if (err || !addresses && addresses.length <= 0) {
+                                this.handleError(err, "Email couldn't get verified", res);
                                 conn.end();
-                                res.json({success: false, message: "Email couldn't get verified!"});
                                 return;
                             }
                             let updateString = "";
@@ -240,8 +230,7 @@ class userController extends dbController {
                                     conn.end();
                                 })
                                 .catch(err => {
-                                    console.error(err);
-                                    res.status(400).json({success: false, message: "Could not update user details"});
+                                    this.handleError(err, "Could not update user credentials", res);
                                     conn.end();
                                 })
                         })
@@ -266,8 +255,7 @@ class userController extends dbController {
                             res.json({success: true});
                         })
                         .catch(err => {
-                            console.error(err);
-                            res.status(400).json({success: false, message: "User does not exist"});
+                            this.handleError(err, "User does not exist", res);
                             conn.end();
                         })
                 });
@@ -288,8 +276,7 @@ class userController extends dbController {
                 conn.end();
             })
             .catch(err => {
-                console.error(err);
-                res.status(400).json({success: false, message: "User does not exist!"});
+                this.handleError(err, "User does not exist", res);
                 conn.end();
             });
     }

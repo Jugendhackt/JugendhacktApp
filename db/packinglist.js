@@ -18,8 +18,7 @@ class packingList extends dbController {
                     conn.end();
                 })
                 .catch(err => {
-                    console.error(err);
-                    res.status(400).json({success: false, message: "Unable to get items"});
+                    this.handleError(err, "Unable to get items", res);
                     conn.end();
                 })
         });
@@ -40,11 +39,10 @@ class packingList extends dbController {
                             conn.end();
                         })
                         .catch(err => {
-                            console.error(err);
-                            res.status(400).json({success: false, message: "Cannot add new item!"});
+                            this.handleError(err, "Cannot add new item", res);
                             conn.end();
                         })
-                })
+                });
             }
         }
     }
@@ -64,8 +62,7 @@ class packingList extends dbController {
                             conn.end();
                         })
                         .catch(err => {
-                            console.error(err);
-                            res.status(400).json({success: false, message: "Item does not exist"});
+                            this.handleError(err, "Item does not exist", res);
                             conn.end();
                         });
                 });

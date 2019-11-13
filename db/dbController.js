@@ -89,6 +89,18 @@ class dbController {
         }
         return true;
     }
+
+    /**
+     * Handles errors
+     * @param err
+     * @param message
+     * @param res
+     * @param code
+     */
+    handleError(err, message, res, code = 400) {
+        console.error(err);
+        res.status(code).json({success: false, message});
+    }
 }
 
 module.exports = dbController;

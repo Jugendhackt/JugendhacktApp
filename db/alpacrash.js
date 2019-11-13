@@ -20,8 +20,7 @@ class alpacrash extends dbController {
                     conn.end();
                 })
                 .catch(err => {
-                    console.error(err);
-                    res.status(400).json({success: false, message: "Could not get events!"});
+                    this.handleError(err, "Could not get events!", res);
                     conn.end();
                 })
         })
@@ -42,8 +41,7 @@ class alpacrash extends dbController {
                     conn.end();
                 })
                 .catch(err => {
-                    console.error(err);
-                    res.status(400).json({success: false, message: "Could not get event names!"});
+                    this.handleError(err, "Could not get event names!", res);
                     conn.end();
                 })
         })
@@ -64,8 +62,7 @@ class alpacrash extends dbController {
                     conn.end();
                 })
                 .catch(err => {
-                    console.error(err);
-                    res.status(400).json({success: false, message: "Could not get event years"});
+                    this.handleError(err, "Could not get event years", res);
                     conn.end();
                 })
         })
@@ -84,8 +81,7 @@ class alpacrash extends dbController {
                     conn.end();
                 })
                 .catch(err => {
-                    console.error(err);
-                    res.status(400).json({success: false, message: "Could not get event years"});
+                    this.handleError(err, "Could not get years", res);
                     conn.end();
                 })
         })
@@ -113,8 +109,7 @@ class alpacrash extends dbController {
                                     conn.end();
                                 })
                                 .catch(err => {
-                                    console.error(err);
-                                    res.status(400).json({success: false, message: "Could not add event!"});
+                                    this.handleError(err, "Could not add event", res);
                                     conn.end();
                                 })
 
@@ -139,8 +134,7 @@ class alpacrash extends dbController {
                     conn.end();
                 })
                 .catch(err => {
-                    console.error(err);
-                    res.status(400).json({success: false, message: "Could not get projects!"});
+                    this.handleError(err, "Could not get projects", res);
                     conn.end();
                 })
         })
@@ -167,8 +161,7 @@ class alpacrash extends dbController {
                     conn.end();
                 })
                 .catch(err => {
-                    console.error(err);
-                    res.status(400).json({success: false, message: "Could not get project data!"});
+                    this.handleError(err, "Could not get project data", res);
                     conn.end();
                 })
         })
@@ -189,8 +182,7 @@ class alpacrash extends dbController {
                     conn.end();
                 })
                 .catch(err => {
-                    console.error(err);
-                    res.status(400).json({success: false, message: "Could not get project data!"});
+                    this.handleError(err, "Could not get project data", res);
                     conn.end();
                 })
         })
@@ -253,8 +245,7 @@ class alpacrash extends dbController {
                             })
                     })
                     .catch(err => {
-                        console.error(err);
-                        res.status(400).json({success: false, message: "Wrong parameters!"});
+                        this.handleError(err, "Wrong parameters", res);
                         conn.end();
                     })
             })
@@ -280,8 +271,7 @@ class alpacrash extends dbController {
                     conn.end();
                 })
                 .catch(err => {
-                    console.error(err);
-                    res.status(400).json({success: false, message: "Could not get projects!"});
+                    this.handleError(err, "Could not get event projects", res);
                     conn.end();
                 })
         })
@@ -333,14 +323,12 @@ class alpacrash extends dbController {
                                     this.addUserToProject(res, req.session.uid, r.insertId, conn);
                                 })
                                 .catch(err => {
-                                    console.error(err);
-                                    res.status(400).json({success: false, message: "Could not add new project"});
+                                    this.handleError(err, "Could not add new project", res);
                                     conn.end();
                                 })
                         })
                         .catch(err => {
-                            console.error(err);
-                            res.status(400).json({success: false, message: "Could not get projects!"});
+                            this.handleError(err, "Could not get projects", res);
                             conn.end();
                         })
                 })
@@ -371,8 +359,7 @@ class alpacrash extends dbController {
                     conn.end();
                 })
                 .catch(err => {
-                    console.error(err);
-                    res.status(400).json({success: false, message: "Could not get project users!"});
+                    this.handleError(err, "Could not get project users", res);
                     conn.end();
                 })
         })
@@ -392,8 +379,7 @@ class alpacrash extends dbController {
                         conn.end();
                     })
                     .catch(err => {
-                        console.error(err);
-                        res.status(400).json({success: false, message: "Could not get users!"});
+                        this.handleError(err, "Could not get users", res);
                         conn.end();
                     })
             });
@@ -414,8 +400,7 @@ class alpacrash extends dbController {
                     conn.end();
                 })
                 .catch(err => {
-                    console.error(err);
-                    res.status(400).json({success: false, message: "Could not get user data!"});
+                    this.handleError(err, "Could not get user data", res);
                     conn.end();
                 });
         })
@@ -467,8 +452,7 @@ class alpacrash extends dbController {
                                     conn.end();
                                 })
                                 .catch(err => {
-                                    console.error(err);
-                                    res.status(403).json({success: false, message: "Cannot remove contributor!"});
+                                    this.handleError(err, "Cannot remove contributor", res);
                                     conn.end();
                                 });
                         } else {
@@ -479,7 +463,7 @@ class alpacrash extends dbController {
                             conn.end();
                         }
                     });
-            })
+            });
         }
     }
 
@@ -500,8 +484,7 @@ class alpacrash extends dbController {
                             conn.end();
                         })
                         .catch(err => {
-                            console.error(err);
-                            res.status(400).json({success: false, message: "Could not add user"});
+                            this.handleError(err, "Could not add user", res);
                             conn.end();
                         });
                 } else {
@@ -510,8 +493,7 @@ class alpacrash extends dbController {
                 }
             })
             .catch(err => {
-                console.error(err);
-                res.status(400).json({success: false, message: "Could not get user data"});
+                this.handleError(err, "Could not get user data", res);
                 conn.end();
             });
     }

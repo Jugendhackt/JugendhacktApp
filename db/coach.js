@@ -20,8 +20,7 @@ class coach extends dbController {
                     conn.end();
                 })
                 .catch(err => {
-                    console.error(err);
-                    res.status(400).json({success: false, message: "Could not get questions!"});
+                    this.handleError(err, "Could not get questions", res);
                     conn.end();
                 })
         })
@@ -40,8 +39,7 @@ class coach extends dbController {
                     conn.end();
                 })
                 .catch(err => {
-                    console.error(err);
-                    res.status(400).json({success: false, message: "Could not get answers!"});
+                    this.handleError(err, "Could not get answers", res);
                     conn.end();
                 })
         })
@@ -63,11 +61,10 @@ class coach extends dbController {
                             conn.end();
                         })
                         .catch(err => {
-                            console.error(err);
-                            res.status(400).json({success: false, message: "Could not add new question!"});
+                            this.handleError(err, "Could not add question", res);
                             conn.end();
                         })
-                })
+                });
             }
         }
     }
@@ -88,8 +85,7 @@ class coach extends dbController {
                             conn.end();
                         })
                         .catch(err => {
-                            console.error(err);
-                            res.status(400).json({success: false, message: "Could not add new answer!"});
+                            this.handleError(err, "Could not add answer", res);
                             conn.end();
                         });
                 });
