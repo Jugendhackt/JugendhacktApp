@@ -48,7 +48,7 @@ class lostAndFound extends dbController {
                                         res.json({success: true});
                                         conn.end();
                                     })
-                                    .catch(err => {
+                                    .catch((err) => {
                                         console.error(err);
                                         res.status(500).json({success: false, message: "Could not save the image!"});
                                         conn.end();
@@ -81,7 +81,7 @@ class lostAndFound extends dbController {
                             res.status(400).json({success: false, message: "Item does not exist"});
                             conn.end();
                         })
-                })
+                });
             }
         }
     }

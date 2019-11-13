@@ -1,4 +1,4 @@
-const dbController = require('./dbController');
+const dbController = require("./dbController");
 
 class coach extends dbController {
     constructor() {
@@ -92,7 +92,7 @@ class coach extends dbController {
                             res.status(400).json({success: false, message: "Could not add new answer!"});
                             conn.end();
                         })
-                })
+                });
             }
         }
     }

@@ -172,11 +172,11 @@ class userController extends dbController {
             if (this.auth(req, res, true, true)) {
                 this.connect(res, (conn) => {
                     conn.query("SELECT * FROM users WHERE is_admin = true")
-                        .then(users => {
+                        .then((users) => {
                             if (users.length > 1) this.updateAdminState(req, res, conn);
                             else {
                                 conn.query("SELECT * FROM users WHERE email = ?", [req.body.email])
-                                    .then(user => {
+                                    .then((user) => {
                                         if (!user[0].is_admin) this.updateAdminState(req, res, conn);
                                         else {
                                             conn.end();
@@ -291,7 +291,7 @@ class userController extends dbController {
                 console.error(err);
                 res.status(400).json({success: false, message: "User does not exist!"});
                 conn.end();
-            })
+            });
     }
 
 }

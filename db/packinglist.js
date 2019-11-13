@@ -13,7 +13,7 @@ class packingList extends dbController {
     get(req, res) {
         this.connect(res, (conn) => {
             conn.query("SELECT * FROM packing_list")
-                .then(items => {
+                .then((items) => {
                     res.json(items);
                     conn.end();
                 })
@@ -68,7 +68,7 @@ class packingList extends dbController {
                             res.status(400).json({success: false, message: "Item does not exist"});
                             conn.end();
                         })
-                })
+                });
             }
         }
     }
