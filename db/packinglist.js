@@ -20,7 +20,7 @@ class packingList extends dbController {
                 .catch(err => {
                     this.handleError(err, "Unable to get items", res);
                     conn.end();
-                })
+                });
         });
     }
 
@@ -41,7 +41,7 @@ class packingList extends dbController {
                         .catch(err => {
                             this.handleError(err, "Cannot add new item", res);
                             conn.end();
-                        })
+                        });
                 });
             }
         }

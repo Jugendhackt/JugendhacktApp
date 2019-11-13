@@ -51,7 +51,7 @@ class lostAndFound extends dbController {
                                         this.handleError(err, "Could not save the image", res);
                                         conn.end();
                                     })
-                            });this.handleError(err, , res);
+                            });
                         }
                     }
                 }
