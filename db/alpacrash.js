@@ -1,4 +1,4 @@
-const dbController = require('./dbController');
+const dbController = require("./dbController");
 
 class alpacrash extends dbController {
     constructor() {
@@ -35,9 +35,9 @@ class alpacrash extends dbController {
     getEventNames(req, res) {
         this.connect(res, conn => {
             conn.query("SELECT name FROM alpacrash_event")
-                .then(eventNames => {
+                .then((eventNames) => {
                     const flattenedEventNames = [];
-                    eventNames.forEach(e => flattenedEventNames.push(e.name));
+                    eventNames.forEach((e) => flattenedEventNames.push(e.name));
                     res.json(flattenedEventNames);
                     conn.end();
                 })
@@ -59,7 +59,7 @@ class alpacrash extends dbController {
             conn.query("SELECT year FROM alpacrash_event WHERE name LIKE ? ORDER BY year DESC", [req.params.event])
                 .then(years => {
                     const flattenedYears = [];
-                    years.forEach(y => flattenedYears.push(y.year));
+                    years.forEach((y) => flattenedYears.push(y.year));
                     res.json(flattenedYears);
                     conn.end();
                 })
@@ -79,7 +79,7 @@ class alpacrash extends dbController {
     getEventYears(req, res) {
         this.connect(res, conn => {
             conn.query("SELECT * FROM alpacrash_event WHERE name LIKE ? ORDER BY year DESC", [req.params.event])
-                .then(years => {
+                .then((years) => {
                     res.json(years);
                     conn.end();
                 })
@@ -97,18 +97,18 @@ class alpacrash extends dbController {
      * @param res
      */
     addEvent(req, res) {
-        if (this.validateRequest(req, res, ['name', 'year'])) {
+        if (this.validateRequest(req, res, ["name", "year"])) {
             if (this.auth(req, res, true, true)) {
                 this.connect(res, conn => {
                     conn.query("SELECT * FROM alpacrash_event WHERE name = ? AND year = ?", [req.body.name, req.body.year])
-                        .then(events => {
+                        .then((events) => {
                             if (events[0]) {
                                 res.json({success: false, message: "Event already exists!"});
                                 conn.end();
                                 return;
                             }
                             conn.query("INSERT INTO alpacrash_event (name, year) VALUE (?,?)", [req.body.name, req.body.year])
-                                .then(_ => {
+                                .then(() => {
                                     res.json({success: true});
                                     conn.end();
                                 })
@@ -184,7 +184,7 @@ class alpacrash extends dbController {
                           AND name LIKE ?`,
                 [params.year, params.event]
             )
-                .then(projectNames => {
+                .then((projectNames) => {
                     res.json(projectNames);
                     conn.end();
                 })
@@ -215,24 +215,24 @@ class alpacrash extends dbController {
                               AND title = ?
                               AND user_id = ?`,
                     [params.year, params.event, params.project, req.session.uid])
-                    .then(res => {
+                    .then((res) => {
                         if (!res) {
                             res.status(400).json({success: true, message: "Unknown project"});
                             conn.end();
                             return;
                         }
-                        let updateString = '';
+                        let updateString = "";
                         let updateParams = [];
                         if (body.title) {
-                            updateString += updateString ? 'AND title = ?' : 'title = ?';
+                            updateString += updateString ? "AND title = ?" : "title = ?";
                             updateParams.push(body.title);
                         }
                         if (body.description) {
-                            updateString += updateString ? 'AND description = ?' : 'description = ?';
+                            updateString += updateString ? "AND description = ?" : "description = ?";
                             updateParams.push(body.description);
                         }
                         if (body.link) {
-                            updateString += updateString ? 'AND link = ?' : 'link = ?';
+                            updateString += updateString ? "AND link = ?" : "link = ?";
                             updateParams.push(body.link);
                         }
                         updateParams.push(res[0].project_id);
@@ -242,7 +242,7 @@ class alpacrash extends dbController {
                             return;
                         }
                         conn.query(`UPDATE alpacrash_project SET ${updateString} WHERE id = ?`, updateParams)
-                            .then(_ => {
+                            .then(() => {
                                 res.json({success: true});
                                 conn.end();
                             })
@@ -293,7 +293,7 @@ class alpacrash extends dbController {
      * @param res
      */
     addProject(req, res) {
-        if (this.validateRequest(req, res, ['title', 'description', 'link'])) {
+        if (this.validateRequest(req, res, ["title", "description", "link"])) {
             if (this.auth(req, res)) {
                 const hasImage = Boolean(req.files);
                 const body = req.body;
@@ -301,8 +301,8 @@ class alpacrash extends dbController {
                 let image, imageType, imageName;
                 if (hasImage) {
                     image = req.files.img;
-                    imageType = image.name.split('.').reverse()[0];
-                    imageName = `${(new Date()).getTime()}.${imageType}`
+                    imageType = image.name.split(".").reverse()[0];
+                    imageName = `${(new Date()).getTime()}.${imageType}`;
                 }
                 if (hasImage && !this.allowedTypes.includes(imageType.toLowerCase())) {
                     res.status(400).json({success: false, message: "File type not allowed!"});
@@ -315,7 +315,7 @@ class alpacrash extends dbController {
                                 WHERE name LIKE ?
                                   AND year = ?`,
                         [params.event, params.year])
-                        .then(projects => {
+                        .then((projects) => {
                             for (const project of projects) {
                                 if (project.title === body.title) {
                                     res.status(400).json({
@@ -327,9 +327,9 @@ class alpacrash extends dbController {
                                 }
                             }
                             conn.query("INSERT INTO alpacrash_project (event_id, title, img_name, `description`, link) VALUES (?,?,?,?,?)",
-                                [projects[0].id, body.title, hasImage ? image.name : 'placeholder.jpg', body.description, body.link])
-                                .then(r => {
-                                    if (hasImage) image.mv(this.uploadFolder + 'alpacrash/' + imageName);
+                                [projects[0].id, body.title, hasImage ? image.name : "placeholder.jpg", body.description, body.link])
+                                .then((r) => {
+                                    if (hasImage) image.mv(this.uploadFolder + "alpacrash/" + imageName);
                                     this.addUserToProject(res, req.session.uid, r.insertId, conn);
                                 })
                                 .catch(err => {
@@ -427,7 +427,7 @@ class alpacrash extends dbController {
      * @param res
      */
     addProjectUser(req, res) {
-        if (this.validateRequest(req, res, ['uid', 'pid'])) {
+        if (this.validateRequest(req, res, ["uid", "pid"])) {
             this.connect(res, conn => {
                 const params = req.params;
                 this.checkUserIsContributor(params.event, params.year, params.project, req.session.uid, conn)
@@ -453,16 +453,16 @@ class alpacrash extends dbController {
      * @param res
      */
     removeProjectUser(req, res) {
-        if (this.validateRequest(req, res, ['uid', 'pid'])) {
+        if (this.validateRequest(req, res, ["uid", "pid"])) {
             this.connect(res, conn => {
                 const params = req.params;
                 this.checkUserIsContributor(params.event, params.year, params.project, req.session.uid, conn)
-                    .then(isContrib => {
+                    .then((isContrib) => {
                         if (isContrib) {
                             conn.query("DELETE FROM alpacrash_users WHERE user_id = ? AND project_id = ? AND NOT user_id = ?",
                                 [req.body.uid, req.body.pid, req.session.uid ? req.session.uid : 0]
                             )
-                                .then(_ => {
+                                .then(() => {
                                     res.json({success: true});
                                     conn.end();
                                 })
@@ -492,10 +492,10 @@ class alpacrash extends dbController {
      */
     addUserToProject(res, uid, pid, conn) {
         conn.query("SELECT * FROM alpacrash_users WHERE user_id = ? AND project_id = ?", [uid, pid])
-            .then(users => {
+            .then((users) => {
                 if (!users[0]) {
                     conn.query("INSERT INTO alpacrash_users (user_id, project_id) VALUE (?,?)", [uid, pid])
-                        .then(_ => {
+                        .then(() => {
                             res.json({success: true});
                             conn.end();
                         })
@@ -535,11 +535,11 @@ class alpacrash extends dbController {
                           AND title = ?
                           AND user_id = ?`,
                 [year, event, project, uid ? uid : 0])
-                .then(user => resolve(Boolean(user[0])))
+                .then((user) => resolve(Boolean(user[0])))
                 .catch(err => {
                     console.error(err);
                     reject("Could not get user info!");
-                })
+                });
         }));
     }
 }

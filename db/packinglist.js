@@ -1,4 +1,4 @@
-const dbController = require('./dbController');
+const dbController = require("./dbController");
 
 class packingList extends dbController {
     constructor() {
@@ -11,13 +11,13 @@ class packingList extends dbController {
      * @param res
      */
     get(req, res) {
-        this.connect(res, conn => {
+        this.connect(res, (conn) => {
             conn.query("SELECT * FROM packing_list")
                 .then(items => {
                     res.json(items);
                     conn.end();
                 })
-                .catch(err => {
+                .catch((err) => {
                     console.error(err);
                     res.status(400).json({success: false, message: "Unable to get items"});
                     conn.end();
@@ -31,15 +31,15 @@ class packingList extends dbController {
      * @param res
      */
     add(req, res) {
-        if (this.validateRequest(req, res, ['item'])) {
+        if (this.validateRequest(req, res, ["item"])) {
             if (this.auth(req, res, true, true)) {
-                this.connect(res, conn => {
+                this.connect(res, (conn) => {
                     conn.query("INSERT INTO packing_list (item) VALUE (?)", [req.body.item])
-                        .then(_ => {
+                        .then(() => {
                             res.json({success: true});
                             conn.end();
                         })
-                        .catch(err => {
+                        .catch((err) => {
                             console.error(err);
                             res.status(400).json({success: false, message: "Cannot add new item!"});
                             conn.end();
@@ -55,15 +55,15 @@ class packingList extends dbController {
      * @param res
      */
     delete(req, res) {
-        if (this.validateRequest(req, res, ['id'])) {
+        if (this.validateRequest(req, res, ["id"])) {
             if (this.auth(req, res, true, true)) {
-                this.connect(res, conn => {
+                this.connect(res, (conn) => {
                     conn.query("DELETE FROM packing_list WHERE id = ?", [req.body.id])
-                        .then(_ => {
+                        .then(() => {
                             res.json({success: true});
                             conn.end();
                         })
-                        .catch(err => {
+                        .catch((err) => {
                             console.error(err);
                             res.status(400).json({success: false, message: "Item does not exist"});
                             conn.end();

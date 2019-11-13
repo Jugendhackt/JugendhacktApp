@@ -1,6 +1,6 @@
-const dbController = require('./dbController');
-const bCrypt = require('bcrypt');
-const dns = require('dns');
+const dbController = require("./dbController");
+const bCrypt = require("bcrypt");
+const dns = require("dns");
 
 class userController extends dbController {
     constructor() {
@@ -27,13 +27,13 @@ class userController extends dbController {
      */
     getUser(req, res) {
         if (this.auth(req, res, false)) {
-            this.connect(res, conn => {
+            this.connect(res, (conn) => {
                 conn.query("SELECT full_name, email, birthday FROM users WHERE id = ?", [req.session.uid])
                     .then(user => {
                         res.json({success: true, data: user});
                         conn.end();
                     })
-                    .catch(err => {
+                    .catch((err) => {
                         console.error(err);
                         res.status(400).json({success: false, message: "Invalid user!"});
                         conn.end();
@@ -49,13 +49,13 @@ class userController extends dbController {
      */
     getUsers(req, res) {
         if (this.auth(req, res, true, true)) {
-            this.connect(res, conn => {
+            this.connect(res, (conn) => {
                 conn.query("SELECT id, email, full_name, is_admin, is_verified, birthday FROM users")
                     .then(users => {
                         res.json({success: true, data: users});
                         conn.end();
                     })
-                    .catch(err => {
+                    .catch((err) => {
                         console.error(err);
                         res.status(500).json({success: false, message: "This should never happen!"});
                         conn.end();
@@ -70,9 +70,9 @@ class userController extends dbController {
      * @param res
      */
     addUser(req, res) {
-        if (this.validateRequest(req, res, ['password', 'fullName', 'email', 'birthday'])) {
+        if (this.validateRequest(req, res, ["password", "fullName", "email", "birthday"])) {
             const body = req.body;
-            this.connect(res, conn => {
+            this.connect(res, (conn) => {
                 bCrypt.hash(body.password, 12, (err, pwd) => {
                     if (err) {
                         console.error(err);
@@ -84,8 +84,8 @@ class userController extends dbController {
                     conn.query("SELECT * FROM users LIMIT 1")
                         .then(user => {
                             const isAdmin = !user[0];
-                            const domain = body.email.split('@')[1];
-                            dns.resolve(domain, 'MX', (err, addresses) => {
+                            const domain = body.email.split("@")[1];
+                            dns.resolve(domain, "MX", (err, addresses) => {
                                 if (err || !addresses && addresses.length <= 0) {
                                     conn.end();
                                     res.json({success: false, message: "Email couldn't get verified!"});
@@ -94,18 +94,18 @@ class userController extends dbController {
                                 conn.query("INSERT INTO users (full_name, password, email, birthday, is_admin, is_verified) VALUE (?,?,?,?,?,?)",
                                     [fullName, pwd, body.email, body.birthday, isAdmin, isAdmin]
                                 )
-                                    .then(_ => {
+                                    .then(() => {
                                         conn.end();
                                         this.login(req, res);
                                     })
-                                    .catch(err => {
+                                    .catch((err) => {
                                         console.error(err);
                                         res.status(400).json({success: false, message: "User already exists"});
                                         conn.end();
                                     })
                             })
                         })
-                        .catch(err => {
+                        .catch((err) => {
                             console.error(err);
                             res.status(500).json({success: false, message: "This should never happen!"});
                             conn.end();
@@ -121,8 +121,8 @@ class userController extends dbController {
      * @param res
      */
     login(req, res) {
-        if (this.validateRequest(req, res, ['email', 'password'])) {
-            this.connect(res, conn => {
+        if (this.validateRequest(req, res, ["email", "password"])) {
+            this.connect(res, (conn) => {
                 conn.query("SELECT * FROM users WHERE email = ?", [req.body.email])
                     .then(user => {
                         bCrypt.compare(req.body.password, user[0].password, (err, checkPwd) => {
@@ -143,7 +143,7 @@ class userController extends dbController {
                             conn.end();
                         })
                     })
-                    .catch(err => {
+                    .catch((err) => {
                         console.error(err);
                         res.status(400).json({success: false, message: "Wrong email and/or password!"});
                         conn.end();
@@ -159,7 +159,7 @@ class userController extends dbController {
      */
     logout(req, res) {
         req.session = null;  // Break session
-        res.redirect('/#/login');
+        res.redirect("/#/login");
     }
 
     /**
@@ -168,9 +168,9 @@ class userController extends dbController {
      * @param res
      */
     updateAdmin(req, res) {
-        if (this.validateRequest(req, res, ['email'])) {
+        if (this.validateRequest(req, res, ["email"])) {
             if (this.auth(req, res, true, true)) {
-                this.connect(res, conn => {
+                this.connect(res, (conn) => {
                     conn.query("SELECT * FROM users WHERE is_admin = true")
                         .then(users => {
                             if (users.length > 1) this.updateAdminState(req, res, conn);
@@ -183,14 +183,14 @@ class userController extends dbController {
                                             res.json({success: false, message: "Can't remove last admin user!"});
                                         }
                                     })
-                                    .catch(err => {
+                                    .catch((err) => {
                                         console.error(err);
                                         conn.end();
                                         res.json({success: false, message: "User does not exist!"});
                                     })
                             }
                         })
-                        .catch(err => {
+                        .catch((err) => {
                             console.error(err);
                             res.status(500).json({success: false, message: "This should never happen!"});
                             conn.end();
@@ -206,9 +206,9 @@ class userController extends dbController {
      * @param res
      */
     updateUserCredentials(req, res) {
-        if (this.validateRequest(req, res, ['email', 'full_name', 'birthday'])) {
+        if (this.validateRequest(req, res, ["email", "full_name", "birthday"])) {
             if (this.auth(req, res, false)) {
-                this.connect(res, conn => {
+                this.connect(res, (conn) => {
                     const body = req.body;
                     bCrypt.hash(body.password, 12, (err, pwd) => {
                         if (err) {
@@ -217,29 +217,29 @@ class userController extends dbController {
                             res.json({success: false, message: "Error creating password hash"});
                             return;
                         }
-                        const domain = body.email.split('@')[1];
-                        dns.resolve(domain, 'MX', (err, addresses) => {
+                        const domain = body.email.split("@")[1];
+                        dns.resolve(domain, "MX", (err, addresses) => {
                             if (err || !addresses && addresses.length <= 0) {
                                 conn.end();
                                 res.json({success: false, message: "Email couldn't get verified!"});
                                 return;
                             }
-                            let updateString = '';
+                            let updateString = "";
                             let updateParams = [];
                             if (body.password !== undefined) {
-                                updateString = 'UPDATE users SET email = ?, password = ?, full_name = ?, birthday = ? WHERE email = ? AND id = ?';
+                                updateString = "UPDATE users SET email = ?, password = ?, full_name = ?, birthday = ? WHERE email = ? AND id = ?";
                                 updateParams = [body.email, pwd, body.full_name, body.birthday, req.session.email, req.session.uid];
                             } else {
-                                updateString = 'UPDATE users SET email = ?, full_name = ?, birthday = ? WHERE email = ? AND id = ?';
+                                updateString = "UPDATE users SET email = ?, full_name = ?, birthday = ? WHERE email = ? AND id = ?";
                                 updateParams = [body.email, body.full_name, body.birthday, req.session.email, req.session.uid];
                             }
                             conn.query(updateString, updateParams)
-                                .then(_ => {
+                                .then(() => {
                                     req.session.email = body.email;
                                     res.json({success: true});
                                     conn.end();
                                 })
-                                .catch(err => {
+                                .catch((err) => {
                                     console.error(err);
                                     res.status(400).json({success: false, message: "Could not update user details"});
                                     conn.end();
@@ -257,15 +257,15 @@ class userController extends dbController {
      * @param res
      */
     verifyUser(req, res) {
-        if (this.validateRequest(req, res, ['email'])) {
+        if (this.validateRequest(req, res, ["email"])) {
             if (this.auth(req, res, true, true)) {
-                this.connect(res, conn => {
+                this.connect(res, (conn) => {
                     conn.query("UPDATE users SET is_verified = true WHERE email = ?", [req.body.email])
-                        .then(_ => {
+                        .then(() => {
                             conn.end();
                             res.json({success: true});
                         })
-                        .catch(err => {
+                        .catch((err) => {
                             console.error(err);
                             res.status(400).json({success: false, message: "User does not exist"});
                             conn.end();
@@ -287,7 +287,7 @@ class userController extends dbController {
                 res.json({success: true});
                 conn.end();
             })
-            .catch(err => {
+            .catch((err) => {
                 console.error(err);
                 res.status(400).json({success: false, message: "User does not exist!"});
                 conn.end();

@@ -1,5 +1,5 @@
-const mariadb = require('mariadb');
-const tables = require('./tables');
+const mariadb = require("mariadb");
+const tables = require("./tables");
 
 class dbController {
     constructor() {
@@ -9,8 +9,8 @@ class dbController {
             password: process.env.DBPassword,
             database: process.env.DBName
         });
-        this.allowedTypes = ['jpg', 'jpeg', 'png', 'webm'];
-        this.uploadFolder = '../uploads/';
+        this.allowedTypes = ["jpg", "jpeg", "png", "webm"];
+        this.uploadFolder = "../uploads/";
     }
 
     /**
@@ -23,12 +23,12 @@ class dbController {
                 for (const table of tables) {
                     conn.query(table)
                         .catch(err => {
-                            console.error('Could not create table:', table, err);
+                            console.error("Could not create table:", table, err);
                             conn.end();
                         })
                 }
                 conn.end();
-            }).catch(console.error)
+            }).catch(console.error);
     }
 
     /**
@@ -38,13 +38,13 @@ class dbController {
      */
     connect(res, cb) {
         this.pool.getConnection()
-            .then(conn => {
+            .then((conn) => {
                 cb(conn);
             })
-            .catch(err => {
+            .catch((err) => {
                 console.error(err);
                 res.json({success: false, message: "Cannot connect to database"});
-            })
+            });
     }
 
     /**
