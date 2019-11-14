@@ -44,7 +44,6 @@
                 const xhr = new XMLHttpRequest();
                 xhr.onload = () => {
                     this.user = xhr.response;
-                    if (!this.user.isVerified) this.$router.replace('/');
                 };
                 xhr.open("GET", "/user/status");
                 xhr.responseType = "json";
