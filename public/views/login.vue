@@ -49,24 +49,29 @@
         },
         methods: {
             login() {
-                const data = JSON.stringify(this.login_data);
+                const formData = new FormData();
+                formData.append('email', this.login_data.email);
+                formData.append('password', this.login_data.password);
                 const xhr = new XMLHttpRequest();
                 xhr.onload = () => {
                     if (xhr.response.success) this.$router.replace("/user");
                 };
                 xhr.open('POST', '/user/login');
-                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
                 xhr.responseType = "json";
-                xhr.send(data);
+                xhr.send(formData);
             },
             register() {
                 const data = JSON.stringify(this.register_data);
                 const xhr = new XMLHttpRequest();
+                const formData = new FormData();
+                formData.append('email', this.register_data.email);
+                formData.append('birthday', this.register_data.birthday);
+                formData.append('fullName', this.register_data.fullName);
+                formData.append('password', this.register_data.password);
                 xhr.onload = () => {
                     if (xhr.response.success) this.$router.replace("/user");
                 };
                 xhr.open('POST', '/user/register');
-                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
                 xhr.responseType = "json";
                 xhr.send(data);
             }

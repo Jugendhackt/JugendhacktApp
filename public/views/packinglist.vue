@@ -33,18 +33,22 @@
         },
         methods: {
             updatePackingList() {
-                const data = JSON.stringify(this.pl);
                 const xhr = new XMLHttpRequest();
-                xhr.onload = () => this.handleResponse(xhr.response);
+                const formData = new FormData();
+                formData.append('item', this.pl.item);
+                xhr.onload = () => {
+                    this.handleResponse(xhr.response);
+                    this.fetchPackingList();
+                };
                 xhr.open('PUT', '/packinglist/');
-                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-                xhr.send(data);
-                this.pl.item = '';
-                this.fetchPackingList();
+                xhr.responseType = 'json';
+                xhr.send(formData);
+
             },
             fetchPackingList() {
                 const xhr = new XMLHttpRequest();
-                xhr.onload = () => this.items = JSON.parse(xhr.response);
+                xhr.responseType = 'json';
+                xhr.onload = () => this.items = xhr.response;
                 xhr.open('GET', '/packinglist/');
                 xhr.send();
             },

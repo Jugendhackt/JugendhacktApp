@@ -3,7 +3,6 @@ const express = require("express");
 const fileupload = require("express-fileupload");
 const bodyParser = require("body-parser");
 const cookieSession = require("cookie-session");
-const dbController = require("./dbController");
 
 const api = require("./router/api");
 const user = require("./router/userHandler");
@@ -32,8 +31,6 @@ app.use(cookieSession({
     name: 'session',
     secret: 'theBestSecretKey'  // TODO: Random key
 }));
-
-dbController.init();
 
 app.use("/api", api);
 app.use("/user", user);

@@ -44,7 +44,7 @@
                     this.$root.loading = false;
                 };
                 xhr.responseType = "json";
-                xhr.open("GET", `/alpacrash/?event=${this.$route.params.event}`);
+                xhr.open("GET", `/alpacrash/${this.$route.params.event}/`);
                 xhr.send();
             },
             getEvents() {
@@ -55,7 +55,7 @@
                     this.eventI = this.events.indexOf(this.capitalizeFirstLetter(this.$route.params.event.toLowerCase()));
                     this.$root.loading = false;
                 };
-                xhr.open('GET', '/alpacrash/all/names');
+                xhr.open('GET', '/alpacrash/names');
                 xhr.responseType = "json";
                 xhr.send();
             },
