@@ -263,6 +263,7 @@
                 xhr.onload = () => {
                     if (xhr.response)
                         this.contributors = xhr.response;
+                    this.$root.loading = false;
                 };
                 xhr.open("GET", `/alpacrash/${this.$route.params.event}/${this.$route.params.year}/${this.$route.params.project}/users`);
                 xhr.send();
