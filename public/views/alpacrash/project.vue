@@ -45,7 +45,7 @@
             <div class="project-contrib-div">
                 <div class="project-contrib-display">
                     Contributors:
-                    <i v-for="contrib in contributors" class="project-contrib">
+                    <i v-for="contrib in contributors" :key="contrib.id" class="project-contrib">
                         {{contrib.full_name}}
                         <img @click="removeUser(contrib.id)" class="remove-contrib" alt="Remove contrib" src="/assets/icons/x.svg"
                              v-if="Boolean(isContrib)">
@@ -57,7 +57,7 @@
                 <div class="project-contrib-editor">
                     <form @submit="submitContribChange()">
                         <select id="contrib-add" v-model="newContribId">
-                            <option v-for="user in users" :value="user.id">{{user.full_name}} - {{user.email}}</option>
+                            <option v-for="user in users" :value="user.id" :key="user.id">{{user.full_name}} - {{user.email}}</option>
                         </select>
                         <input type="submit" value="Add" class="project-submit-btn"/>
                     </form>

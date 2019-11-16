@@ -3,7 +3,7 @@
         <div class="card">
             <h1 class="name">{{capitalizeFirstLetter($route.params.event)}} {{$route.params.year}}</h1>
         </div>
-        <div class="card project" v-for="project of projects" @click="openProject(project)">
+        <div class="card project" :key="project.id" v-for="project of projects" @click="openProject(project)">
             <h2 class="name">{{project.title}}</h2>
         </div>
         <div class="alpacrash-nav-btn">

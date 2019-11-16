@@ -8,7 +8,7 @@
             <img src="assets/icons/plus.svg" alt="Add project" @click="openCreator()">
         </div>
 
-        <div class="card event" v-for="ev in years" @click="openYear(ev)">
+        <div class="card event" v-for="ev in years" :key="ev.id" @click="openYear(ev)">
             <h2>Jugend hackt {{ev.name}} {{ev.year}}</h2>
             <img :src="getBadge(ev.name, ev.year)" alt="A great badge" class="badge-img">
         </div>

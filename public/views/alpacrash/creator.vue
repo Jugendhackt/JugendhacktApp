@@ -6,15 +6,15 @@
                 <div>
                     <label for="event_id">Event: </label>
                     <select id="event_id" v-model="creatorForm.eventId">
-                        <option v-for="event in events" :value="computeEventPath(event)">{{event.name}}:
-                            {{event.year}}
+                        <option v-for="event in events" :value="computeEventPath(event)" :key="event.id">
+                            {{event.name}}: {{event.year}}
                         </option>
                     </select>
                 </div>
                 <label for="project_title">Title:</label>
                 <input type="text" id="project_title" v-model="creatorForm.title" required>
                 <label for="project_image">Image:</label>
-                <input type="file" id="project_image" v-model="creatorForm.img_name">
+                <input type="file" id="project_image">
                 <div>
                     <label for="project_desc">Description:</label> <br>
                     <textarea id="project_desc" v-model="creatorForm.description" required> </textarea>

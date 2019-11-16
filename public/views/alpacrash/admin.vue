@@ -39,7 +39,10 @@
             checkAdmin() {
                 const xhr = new XMLHttpRequest();
                 xhr.onload = () => {
-                    this.isAdmin = xhr.response.isAdmin;
+                    const resp = xhr.response;
+                    if (resp.success === true)
+                        this.isAdmin = xhr.response.isAdmin;
+                    else console.log(resp);
                     if (!this.isAdmin) this.$router.replace('/');
                 };
                 xhr.open("GET", "/user/status");
