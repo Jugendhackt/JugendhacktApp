@@ -68,6 +68,7 @@ class userController extends dbController {
      * @param res
      */
     addUser(req, res) {
+        console.log(req.body);
         if (this.validateRequest(req, res, ["password", "fullName", "email", "birthday"])) {
             const body = req.body;
             this.connect(res, conn => {

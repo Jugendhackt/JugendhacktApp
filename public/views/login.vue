@@ -61,7 +61,6 @@
                 xhr.send(formData);
             },
             register() {
-                const data = JSON.stringify(this.register_data);
                 const xhr = new XMLHttpRequest();
                 const formData = new FormData();
                 formData.append('email', this.register_data.email);
@@ -73,7 +72,7 @@
                 };
                 xhr.open('POST', '/user/register');
                 xhr.responseType = "json";
-                xhr.send(data);
+                xhr.send(formData);
             }
         }
     }
