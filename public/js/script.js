@@ -1,31 +1,31 @@
-httpVueLoader.register(Vue, "js/components/navigation.vue");
-httpVueLoader.register(Vue, "js/components/v-image.vue");
+import Vue from "vue";
+import VueRouter from "vue-router";
+import App from "../views/App.vue";
 
-let app;
+Vue.use(VueRouter);
 
 const routes = [
     {path: "/", redirect: "/events"},
-    {path: "/events", component: httpVueLoader("views/events.vue")},
-    {path: "/login", component: httpVueLoader("views/login.vue")},
-    {path: "/hackdash", component: httpVueLoader("views/hackdash.vue")},
-    {path: "/feed", component: httpVueLoader("views/feed.vue")},
-    {path: "/lostitems", component: httpVueLoader("views/lostitems.vue")},
-    {path: "/packinglist", component: httpVueLoader("views/packinglist.vue")},
-    {path: "/admin", component: httpVueLoader("views/admin.vue")},
-    {path: "/user", component: httpVueLoader("views/user.vue")},
-    {path: "/badges", component: httpVueLoader("views/badges.vue")},
-    {path: "/test", component: httpVueLoader("views/testing.vue")},
-    {path: "/info", component: httpVueLoader("views/infos.vue")},
-    {path: "/alpacrash", component: httpVueLoader("views/alpacrash/index.vue")},
-    {path: "/alpacrash/admin", component: httpVueLoader("views/alpacrash/admin.vue")},
-    {path: "/alpacrash/:event/creator", component: httpVueLoader("views/alpacrash/creator.vue")},
-    {path: "/alpacrash/:event", component: httpVueLoader("views/alpacrash/event.vue")},
-    {path: "/alpacrash/:event/:year", component: httpVueLoader("views/alpacrash/event-year.vue")},
-    {path: "/alpacrash/:event/:year/:project", component: httpVueLoader("views/alpacrash/project.vue")},
-    {path: "/404", component: httpVueLoader("views/404.vue")},
-    {path: "*", component: httpVueLoader("views/404.vue")},
+    {path: "/events", component: () => import("/views/events.vue")},
+    {path: "/login", component: () => import("/views/login.vue")},
+    {path: "/hackdash", component: () => import("/views/hackdash.vue")},
+    {path: "/feed", component: () => import("/views/feed.vue")},
+    {path: "/lostitems", component: () => import("/views/lostitems.vue")},
+    {path: "/packinglist", component: () => import("/views/packinglist.vue")},
+    {path: "/admin", component: () => import("/views/admin.vue")},
+    {path: "/user", component: () => import("/views/user.vue")},
+    {path: "/badges", component: () => import("/views/badges.vue")},
+    {path: "/test", component: () => import("/views/testing.vue")},
+    {path: "/info", component: () => import("/views/infos.vue")},
+    {path: "/alpacrash", component: () => import("/views/alpacrash/index.vue")},
+    {path: "/alpacrash/admin", component: () => import("/views/alpacrash/admin.vue")},
+    {path: "/alpacrash/:event/creator", component: () => import("/views/alpacrash/creator.vue")},
+    {path: "/alpacrash/:event", component: () => import("/views/alpacrash/event.vue")},
+    {path: "/alpacrash/:event/:year", component: () => import("/views/alpacrash/event-year.vue")},
+    {path: "/alpacrash/:event/:year/:project", component: () => import("/views/alpacrash/project.vue")},
+    {path: "*", component: () => import("/views/404.vue")},
     {
-        path: "/coaching", component: httpVueLoader("views/coaching/index.vue"),
+        path: "/coaching", component: () => import("/views/coaching/index.vue"),
         children: [
             {
                 path: "",
@@ -33,11 +33,11 @@ const routes = [
             },
             {
                 path: "asking",
-                component: httpVueLoader("views/coaching/asking.vue")
+                component: () => import("/views/coaching/asking.vue")
             },
             {
                 path: "helping",
-                component: httpVueLoader("views/coaching/helping.vue")
+                component: () => import("/views/coaching/helping.vue")
             }
         ]
     },
@@ -47,10 +47,12 @@ const router = new VueRouter({
     routes: routes,
     scrollBehavior(to, from, savedPosition) {
         return {x: 0, y: 0}
-    }
+    },
+    mode: "history"
 });
 
-app = new Vue({
+let app = new Vue({
+    router,
     data: function () {
         return {
             loading: false,
@@ -60,7 +62,7 @@ app = new Vue({
     beforeRouteLeave() {
         this.$root.loading = false;
     },
-    router,
+    render: h => h(App),
     el: "#app"
 });
 

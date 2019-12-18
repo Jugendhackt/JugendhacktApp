@@ -10,7 +10,10 @@
 </template>
 
 <script>
+    import VImage from "/js/components/v-image.vue";
+
     module.exports = {
+        components: {VImage},
         data: function () {
             return {
                 feed: [{

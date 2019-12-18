@@ -5,7 +5,7 @@
             <img :src="getBadge(ev.name)" alt="A great badge" class="badge-img">
         </div>
         <div class="card creator-btn" v-if="user.isAdmin">
-            <img src="assets/icons/plus.svg" alt="Add event" @click="openCreator()">
+            <img src="/assets/icons/plus.svg" alt="Add event" @click="openCreator()">
         </div>
     </div>
 </template>

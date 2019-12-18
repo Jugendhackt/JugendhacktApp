@@ -5,7 +5,7 @@
         </div>
 
         <div class="card creator-btn" v-if="user.isVerified">
-            <img src="assets/icons/plus.svg" alt="Add project" @click="openCreator()">
+            <img src="/assets/icons/plus.svg" alt="Add project" @click="openCreator()">
         </div>
 
         <div class="card event" v-for="ev in years" :key="ev.id" @click="openYear(ev)">

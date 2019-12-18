@@ -4,6 +4,9 @@ node_modules
 uploads/lostItems/*
 uploads/alpacrash/*
 
+dist/
+.cache/
+
 package-lock.json
 yarn.lock
 yarn-error.log
