@@ -5,6 +5,7 @@
             <p>{{ event.date }}</p>
             <p>{{ event.location }}</p>
             <a class="button primary" target="_blank" v-if="event.anmelden !== 'expired'" :href="event.anmelden">Anmelden</a>
+            <a class="button secondary disabled" target="_blank" v-else>Anmelden</a>
             <a :href="event.information" target="_blank" class="button secondary">Mehr Infos</a>
         </div>
     </div>
@@ -45,6 +46,10 @@
     .card.event {
         padding-top: 16px;
         padding-bottom: 16px;
+    }
+
+    .button.disabled {
+        cursor: default;
     }
 
     @media only screen and (min-width: 900px) {

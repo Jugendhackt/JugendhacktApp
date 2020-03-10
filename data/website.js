@@ -17,7 +17,7 @@ module.exports.getEvents = async () => {
             object["date"] = event.getElementsByTagName("time")[0].textContent;
 
             const buttons = event.querySelectorAll(".events-list-actions a");
-            if (buttons.length > 1 && buttons[1].textContent === " Anmelden") { // Thx for the space @JH!
+            if (buttons.length > 1 && buttons[1].textContent.trim() === "Anmelden") { // Thx for the space @JH!
                 object["anmelden"] = buttons[1].href;
                 object["information"] = buttons[0].href;
             } else {
